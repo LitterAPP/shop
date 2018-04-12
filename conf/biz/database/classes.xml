@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classes> 
+  <!--
+        <package name="demo.ddl">
+            <class name="Demo" comment="测试" />
+        </package>
+        -->  
+  <package name="modules.shop.ddl">    
+    <class name="WxAccessTokenDDL" comment=""/>  
+    <class name="SmsCodeHistoryDDL" comment=""/>     
+    <class name="ShopOrderDDL" comment=""/>  
+    <class name="ShopProductAttrDDL" comment=""/>  
+    <class name="ShopProductAttrRelDDL" comment=""/>  
+    <class name="ShopProductCategoryDDL" comment=""/>  
+    <class name="ShopProductCategoryChildDDL" comment=""/>  
+    <class name="ShopProductCategoryRelDDL" comment=""/>  
+    <class name="ShopProductGroupDDL" comment=""/>  
+    <class name="UserAccountDDL" comment=""/>  
+    <class name="UsersDDL" comment=""/>  
+    <class name="ShopTogetherDDL" comment=""/>  
+    <class name="ShopTogetherJoinerDDL" comment=""/>  
+    <class name="ShopProductImagesDDL" comment=""/>  
+    <class name="ShopProductCommunityDDL" comment=""/>  
+    <class name="ShopProductCommunityRelDDL" comment=""/>  
+    <class name="ShopExpressDDL" comment=""/>  
+    <class name="ShopExpressCodeDDL" comment=""/>  
+    <class name="ShopExpressTracesDDL" comment=""/>  
+    <class name="ShopCouponMngDDL" comment=""/>  
+    <class name="ShopApplyInfoDDL" comment=""/>  
+    <class name="ShopIndexDDL" comment=""/>  
+    <class name="ShopMngUserDDL" comment=""/>  
+    <class name="ShopMngSessionDDL" comment=""/> 
+    <class name="ShopProductDDL" comment=""/> 
+  </package>   
+  <package name="modules.common.ddl"> 
+    <class name="FormIdsDDL" comment=""/> 
+  </package> 
+</classes>

@@ -1,0 +1,27 @@
+.card{
+    background: #F0F0F0;
+    margin-bottom:10px ;
+    font-size: 14px;
+    color: #000;
+}
+.card div{
+    display: inline-block;
+    margin: 10px;
+}
+
+.productBanner img{
+    height: 100px;
+    width: 100px;
+}
+
+.playImage img{
+    height: 100px;
+    width: 100px;
+}
+.groupImage img{
+    height: 60px;
+    width: 60px;
+}
+[v-cloak] {
+    display: none;
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<memcached>
+	<client name="client0">
+		<servers>${cache.host}</servers>
+	</client>
+</memcached>

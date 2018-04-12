@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link type="text/css" rel="styleSheet"  href="../../css/shopMng.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+</head>
+<body>
+<div id="shopMng">
+    <div v-if="mask" class="mask">
+        <div v-cloak>
+            {{maskText}}
+        </div>
+    </div>
+    <div class="card">
+        <div style="display: block;">
+            <div class="setting-title" class="setting-title">设置店铺名称及头像(100*100)</div>
+        </div>
+        <div>
+            <input v-cloak v-model="shopName" value="{{shopName}}"  placeholder="请输入店铺名称"/>
+        </div>
+        <div class="shopAvatar">
+
+            <img  v-if="shopAvatar" @click="avatarClick" v-bind:src="shopAvatar"/>
+            <img  v-else @click="avatarClick" src="../../images/default-img.png"/>
+
+            <input accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="shopAvatarChange" type="file" id="shopAvatarInput" style="display: none;"><br/>
+        </div>
+        <div class="setting-title">(点击头像修改100*100)</div>
+    </div>
+
+    <div class="card">
+        <div style="display: block;">
+            <div class="setting-title">设置店铺欢迎语</div>
+        </div>
+        <div>
+            <input v-cloak v-model="wellcomeText" value="{{wellcomeText}}"  placeholder="请输入欢迎语"/>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display: block;">
+            <div class="setting-title">设置店铺顶部Banner(320*120)</div>
+        </div>
+        <div class="shopBanner">
+
+            <img  v-if="shopBanner" @click="shopBannerClick" v-bind:src="shopBanner"/>
+            <img  v-else @click="shopBannerClick" src="../../images/default-img.png"/>
+
+            <input accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="shopBannerChange" type="file" id="shopBannerInput" style="display: none;"><br/>
+        </div>
+        <div class="setting-title">(点击Banner修改)</div>
+    </div>
+
+    <div class="card">
+        <div style="display: block;">
+            <div class="setting-title">设置首页活动背景及文案(320*400)</div>
+        </div>
+        <div class="activityBg">
+            <input type="text" v-bind:value="activityText" v-model="activityText" placeholder="输入活动文案" />
+            <img  v-if="activityBg" @click="activityBgClick" v-bind:src="activityBg"/>
+            <img  v-else @click="activityBgClick" src="../../images/default-img.png"/>
+            <input accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="activityBgChange" type="file" id="activityBgInput" style="display: none;"><br/>
+        </div>
+        <div class="setting-title">(点击修改)</div>
+    </div>
+
+    <div class="card">
+        <div  style="display: block;">
+            <div class="setting-title">设置店铺第一部分导航(60*30)</div>
+        </div>
+        <div style="display: block;border:1px solid #fff;" v-for="(item,index) in firstNavList">
+            <div>
+                <select v-model="item.linkType">
+                    <option value="0" disabled selected >导航类型</option>
+                    <option value="1" >文字</option>
+                    <option value="2" >图片</option>
+                </select>
+            </div>
+            <div v-if="item.linkType==1">
+                <input v-model="item.text" type="text" placeholder="导航名称" value="item.text" maxlength="5" style="width: 100px;" />
+            </div>
+            <div v-if="item.linkType==2">
+                <div class="navImage">
+                    <img data-flag="1"  v-bind:data-idx="index"  v-if="item.img" @click="navImgClick" v-bind:src="item.img"/>
+                    <img data-flag="1"  v-bind:data-idx="index" v-else @click="navImgClick" src="../../images/default-img.png"/>
+                    <input data-flag="1" v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="navImgChanged()" type="file" id="firstNavImageInput" style="display: none;"><br/>
+                </div>
+            </div>
+            <div>
+                <select v-model="item.type">
+                    <option value="0" disabled selected >链接类型</option>
+                    <option value="1" >小程序链接</option>
+                    <option value="2" >H5链接</option>
+                </select>
+            </div>
+            <div>
+                <input v-model="item.url" type="text" placeholder="链接" value="{{item.url}}"  style="width: 200px;" />
+            </div>
+            <div @click="delNavItem" data-flag="1" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+        </div>
+        <div  style="display: block;">
+            <div @click="addNavItem" data-flag="1" style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <div  style="display: block;">
+            <div class="setting-title">设置店铺第二部分导航(60*30)</div>
+        </div>
+        <div style="display: block;border:1px solid #fff;" v-for="(item,index) in secondNavList">
+            <div>
+                <select v-model="item.linkType">
+                    <option value="0" disabled selected >导航类型</option>
+                    <option value="1" >文字</option>
+                    <option value="2" >图片</option>
+                </select>
+            </div>
+            <div v-if="item.linkType==1">
+                <input v-model="item.text" type="text" placeholder="导航名称" value="item.text" maxlength="5" style="width: 100px;" />
+            </div>
+            <div v-if="item.linkType==2">
+                <div class="navImage">
+                    <img data-flag="2"  v-bind:data-idx="index" v-if="item.img" @click="navImgClick" v-bind:src="item.img"/>
+                    <img data-flag="2"  v-bind:data-idx="index" v-else @click="navImgClick" src="../../images/default-img.png"/>
+                    <input data-flag="2"   v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="navImgChanged" type="file" id="secondNavImageInput" style="display: none;"><br/>
+                </div>
+            </div>
+            <div>
+                <select v-model="item.type">
+                    <option value="0" disabled selected >链接类型</option>
+                    <option value="1" >小程序链接</option>
+                    <option value="2" >H5链接</option>
+                </select>
+            </div>
+            <div>
+                <input v-model="item.url" type="text" placeholder="链接" value="{{item.url}}"  style="width: 200px;" />
+            </div>
+            <div @click="delNavItem" data-flag="2" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+        </div>
+        <div  style="display: block;">
+            <div @click="addNavItem" data-flag="2" style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <div  style="display: block;">
+            <div class="setting-title">设置店铺滚动横幅(320*170)</div>
+        </div>
+        <div style="display: block;border:1px solid #fff;" v-for="(item,index) in swiperList">
+            <div>
+                <select v-model="item.linkType">
+                    <option value="0" disabled selected >导航类型</option>
+                    <option value="1" >文字</option>
+                    <option value="2" >图片</option>
+                </select>
+            </div>
+            <div v-if="item.linkType==1">
+                <input v-model="item.text" type="text" placeholder="导航名称" value="item.text" maxlength="5" style="width: 100px;" />
+            </div>
+            <div v-if="item.linkType==2">
+                <div class="bannerImage">
+                    <img data-flag="3"  v-bind:data-idx="index" v-if="item.img" @click="navImgClick" v-bind:src="item.img"/>
+                    <img data-flag="3"  v-bind:data-idx="index" v-else @click="navImgClick" src="../../images/default-img.png"/>
+                    <input data-flag="3"   v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="navImgChanged" type="file" id="swiperImageInput" style="display: none;"><br/>
+                </div>
+            </div>
+            <div>
+                <select v-model="item.type">
+                    <option value="0" disabled selected >链接类型</option>
+                    <option value="1" >小程序链接</option>
+                    <option value="2" >H5链接</option>
+                </select>
+            </div>
+            <div>
+                <input v-model="item.url" type="text" placeholder="链接" value="{{item.url}}"  style="width: 200px;" />
+            </div>
+            <div @click="delNavItem" data-flag="3" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+        </div>
+        <div  style="display: block;">
+            <div @click="addNavItem" data-flag="3" style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div  style="display: block;">
+            <div class="setting-title">设置店铺第三部分导航(40*40)</div>
+        </div>
+        <div style="display: block;border:1px solid #fff;" v-for="(item,index) in thirdNavList">
+            <div>
+                <select v-model="item.linkType">
+                    <option value="0" disabled selected >导航类型</option>
+                    <option value="1" >文字</option>
+                    <option value="2" >图片</option>
+                </select>
+            </div>
+            <div v-if="item.linkType==1">
+                <input v-model="item.text" type="text" placeholder="导航名称" value="item.text" maxlength="5" style="width: 100px;" />
+            </div>
+            <div v-if="item.linkType==2">
+                <div class="thirdImage">
+                    <img data-flag="4"  v-bind:data-idx="index" v-if="item.img" @click="navImgClick" v-bind:src="item.img"/>
+                    <img data-flag="4"  v-bind:data-idx="index" v-else @click="navImgClick" src="../../images/default-img.png"/>
+                    <input data-flag="4"   v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="navImgChanged" type="file" id="thirdImageInput" style="display: none;"><br/>
+                </div>
+            </div>
+            <div>
+                <select v-model="item.type">
+                    <option value="0" disabled selected >链接类型</option>
+                    <option value="1" >小程序链接</option>
+                    <option value="2" >H5链接</option>
+                </select>
+            </div>
+            <div>
+                <input v-model="item.url" type="text" placeholder="链接" value="{{item.url}}"  style="width: 200px;" />
+            </div>
+            <div @click="delNavItem" data-flag="4" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+        </div>
+        <div  style="display: block;">
+            <div @click="addNavItem" data-flag="4" style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <div  style="display: block;">
+            <div class="setting-title">设置店铺第四部分导航(320*120)</div>
+        </div>
+        <div style="display: block;border:1px solid #fff;" v-for="(item,index) in fourthNavList">
+            <div>
+                <select v-model="item.linkType">
+                    <option value="0" disabled selected >导航类型</option>
+                    <option value="1" >文字</option>
+                    <option value="2" >图片</option>
+                </select>
+            </div>
+            <div v-if="item.linkType==1">
+                <input v-model="item.text" type="text" placeholder="导航名称" value="item.text" maxlength="5" style="width: 100px;" />
+            </div>
+            <div v-if="item.linkType==2">
+                <div class="fourthImage">
+                    <img data-flag="5"  v-bind:data-idx="index" v-if="item.img" @click="navImgClick" v-bind:src="item.img"/>
+                    <img data-flag="5"  v-bind:data-idx="index" v-else @click="navImgClick" src="../../images/default-img.png"/>
+                    <input data-flag="5"   v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="navImgChanged" type="file" id="fourthImageInput" style="display: none;"><br/>
+                </div>
+            </div>
+            <div>
+                <select v-model="item.type">
+                    <option value="0" disabled selected >链接类型</option>
+                    <option value="1" >小程序链接</option>
+                    <option value="2" >H5链接</option>
+                </select>
+            </div>
+            <div>
+                <input v-model="item.url" type="text" placeholder="链接" value="{{item.url}}"  style="width: 200px;" />
+            </div>
+            <div @click="delNavItem" data-flag="5" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+        </div>
+        <div  style="display: block;">
+            <div @click="addNavItem" data-flag="5" style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <div  style="display: block;">
+            <div class="setting-title">设置店铺第五部分导航(60*30)</div>
+        </div>
+        <div style="display: block;border:1px solid #fff;" v-for="(item,index) in fiveNavList">
+            <div>
+                <select v-model="item.linkType">
+                    <option value="0" disabled selected >导航类型</option>
+                    <option value="1" >文字</option>
+                    <option value="2" >图片</option>
+                </select>
+            </div>
+            <div v-if="item.linkType==1">
+                <input v-model="item.text" type="text" placeholder="导航名称" value="item.text" maxlength="5" style="width: 100px;" />
+            </div>
+            <div v-if="item.linkType==2">
+                <div class="navImage">
+                    <img data-flag="6"  v-bind:data-idx="index" v-if="item.img" @click="navImgClick" v-bind:src="item.img"/>
+                    <img data-flag="6"  v-bind:data-idx="index" v-else @click="navImgClick" src="../../images/default-img.png"/>
+                    <input data-flag="6"   v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="navImgChanged" type="file" id="fiveImageInput" style="display: none;"><br/>
+                </div>
+            </div>
+            <div>
+                <select v-model="item.type">
+                    <option value="0" disabled selected >链接类型</option>
+                    <option value="1" >小程序链接</option>
+                    <option value="2" >H5链接</option>
+                </select>
+            </div>
+            <div>
+                <input v-model="item.url" type="text" placeholder="链接" value="{{item.url}}"  style="width: 200px;" />
+            </div>
+            <div @click="delNavItem" data-flag="6" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+        </div>
+        <div  style="display: block;">
+            <div @click="addNavItem" data-flag="6" style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        </div>
+    </div>
+
+    <div  style="position: fixed;top: 25px;right:15px;">
+        <div  style="display: block;text-align: center;">
+            <button @click="saveShopConfig" class="button1">发布商铺</button>
+        </div>
+    </div>
+</div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/shopMng.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+.mask{
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background: rgba(0,0,0,0.9);
+
+    animation:myfirst 3s;
+}
+
+.mask div{
+    height: 40px;
+    width: 300px;
+    background: #fff;
+    color: #000;
+    position: absolute;
+    top:50%;
+    left: 50%;
+    margin-left: -150px;
+    margin-top: -20px;
+    line-height: 40px;
+    font-size: 13px;
+    text-align: center;
+    border-radius: 3px;
+    animation:mySecond 3s;
+}
+
+@keyframes myfirst
+{
+    from {background: rgba(0,0,0,0.9);}
+    to {background: rgba(0,0,0,0);}
+}
+
+@keyframes mySecond
+{
+    from {background: #FF6347;color: #fff;}
+    to {background: #fff;color:#000;}
+}

@@ -1,0 +1,73 @@
+body{
+    margin: auto;
+}
+.nav{
+
+}
+.logo{
+    width: 80px;
+    text-align: center;
+    margin: 10px 0px;
+}
+.item{
+    text-align: left;
+    padding-left: 10px;
+    height: 35px;
+    line-height: 35px;
+    cursor: Pointer;
+    margin: 10px 0px;
+    font-size: 15px;
+    color: #DDDDDD;
+}
+.item:hover{
+   background: #666666;
+    box-shadow: 0px 1px 8px #666666 ;
+}
+.activite{
+    color:#000;
+    background: #fff;
+    box-shadow: 0px 1px 8px #fff ;
+    font-weight: bold;
+}
+.userinfo{
+    position: fixed;
+    left: 0px;
+    bottom: 10px;
+    width: 80px;
+    text-align: center;
+    font-size: 14px;
+    color: #178FE5;
+}
+
+
+button {
+    /*background-color: #178FE5; */
+    border: none;
+    outline: none;
+    color: white;
+    padding: 5px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.button1 {
+    background-color: #333333;
+    color: #E0EEEE;
+    margin-top: 10px;
+}
+.button1:hover {
+    background-color: #666666;
+    color: white;
+    box-shadow: 0px 1px 8px #666666 ;
+}
+
+
+[v-cloak] {
+    display: none;
+}

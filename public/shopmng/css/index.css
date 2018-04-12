@@ -1,0 +1,43 @@
+body{
+    margin: auto;
+}
+html { overflow-y: hidden; }
+.top{
+    padding: 10px;
+    background: #FF7256;
+    height: 60px;
+    line-height: 60px;
+    color:#fff;
+}
+.top div{
+    display: inline-block;
+}
+.top-title{
+    font-size: 30px;
+}
+.login{
+    float: right;
+}
+.login div{
+    font-size: 15px;
+}
+
+.container div{
+    display: inline-block;
+}
+.nav{
+    width: 80px;
+    background: #333333;
+    vertical-align: top;
+}
+.content{
+    background: #fff;
+    vertical-align: top;
+}
+iframe{
+    width: 100%;
+    height: 100%;
+}
+[v-cloak] {
+    display: none;
+}

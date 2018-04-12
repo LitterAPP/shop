@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link type="text/css" rel="styleSheet"  href="../../css/addCoupon.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/jquery.datetimepicker.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+</head>
+<body>
+<div id="addCoupon">
+    <div class="card" style="padding: 20px 10px;">
+        <div style="display: block;">
+            <div style="font-size:10px;color:#888;">代金券信息</div>
+        </div>
+        <div v-if="couponId"  style="display: block;">
+            代金券ID：{{couponId}}
+        </div>
+        <div  style="display: block;">
+            代金券名称： <input style="width: 680px;" v-model="couponName" value="{{couponName}}"  placeholder="代金券名称"/>
+        </div>
+        <div  style="display: block;">
+            代金券面额：<input style="width: 100px;" v-model="amount" value="{{amount}}"  placeholder="代金券面额"/>
+        </div>
+        <div style="display: block;">
+            限商品可用：
+            <input type="checkbox" id="limitProductId" value="限商品可用" v-model="limitProductChecked">
+
+            <div v-if="limitProductChecked">
+                商品ID：<input style="width: 160px;" v-model="limitProductId" value="{{limitProductId}}"  placeholder="限商品ID可用"/>
+            </div>
+        </div>
+        <div  style="display: block;">
+            限制支付额度可用：
+            <input type="checkbox"   id="limitPrice" value="限制支付额度可用" v-model="limitPriceChecked">
+
+            <div v-if="limitPriceChecked">
+                限制额度可用：<input style="width: 160px;" v-model="limitPrice" value="{{limitPrice}}"  placeholder=" 限制额度可用"/>
+            </div>
+        </div>
+        <div  style="display: block;">
+            最多领取次数/人：<input  type="text" style="width: 100px;" v-model="limitTimes" value="{{limitTimes}}"  placeholder=" 最多领取次数/人"/>
+        </div>
+
+        <div  style="display: block;">
+            使用时间范围：<input id="startTimePicker"    type="text" style="width: 150px;"  readonly placeholder="开始时间"/>
+                         ~<input id="endTimePicker"  type="text" style="width: 150px;"   readonly  placeholder="结束时间"/>
+        </div>
+
+        <div  style="display: block;">
+            过期时间：<input id="expireTimePicker" readonly  type="text" style="width: 150px;"  readonly  placeholder="过期时间"/>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 50px;"></div>
+    <div  style="position: fixed;bottom: 10px;right:10px;">
+        <div  style="display: block;text-align: center;">
+            <button @click="saveCoupon" class="button1">保存</button>
+        </div>
+    </div>
+    <div style="position: fixed;bottom: 10px;left:10px;">
+        <div  style="display: block;text-align: center;">
+            <button  @click="goBack" class="button1">&lt;返回</button>
+        </div>
+    </div>
+    <div v-if="mask" class="mask">
+        <div v-cloak>
+            {{maskText}}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/addCoupon.js"></script>
+<script src="../../js/jquery.datetimepicker.js"></script>
+
+<script>
+    $('#startTimePicker').datetimepicker(
+            {
+                lang:'ch',
+                format:"Y-m-d H:i:00"
+            }
+    );
+    $('#endTimePicker').datetimepicker(
+            {
+                lang:'ch',
+                format:"Y-m-d H:i:00"
+            }
+    );
+    $('#expireTimePicker').datetimepicker(
+            {
+                lang:'ch',
+                format:"Y-m-d H:i:00"
+            }
+    );
+</script>
+</body>
+</html>

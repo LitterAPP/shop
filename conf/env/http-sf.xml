@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<httpclient.sf>
+    <root>
+        <!--
+        failNumber:某个接口连续超时该次数后，对接口降级处理，标识为不可用；
+        failRate :某个接口最近count数量的请求，失败率到达了50%，对接口降级处理，标识为不可用；
+        failedCheckNumberLimit:某个接口标识为不可用后，累计访问了当前次数，必须检测一次接口可用性健康检测；
+        failedCheckTimeLimit:某个接口标识为不可用后，超过了该时间范围后，必须检测一次接口可用性健康检测；
+        -->
+        <failNumber>10</failNumber>
+        <failRate count="10">50%</failRate>
+        <failedCheckNumberLimit>100</failedCheckNumberLimit>
+        <failedCheckTimeLimit>30s</failedCheckTimeLimit>
+    </root>
+    <!--配置具体的服务接口（支持宏替换）
+        name：服务名，请确保统一应用该配置值唯一
+        address：服务器对应的地址（无需带协议头，例如：account.9game.cn:9020）
+        secure：是否使用https协议，true/false，默认false
+                    代码示例：
+                    需要引入：jws.http.sf.HTTP
+        Request req = new Request("pf", "search", "");
+        Response resp = HTTP.GET(req);
+    -->
+    <service name ="wx" address="${wx.host}" secure="true" comment="微信接口" >
+        <api name="session" path="/sns/jscode2session"  timeout="15s"/>
+        <api name="token" path="/cgi-bin/token"  timeout="15s"/>
+        <api name="msgSend" path="/cgi-bin/message/wxopen/template/send"  timeout="15s"/> 
+    </service>
+</httpclient.sf>

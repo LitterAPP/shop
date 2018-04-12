@@ -1,0 +1,41 @@
+body{
+    margin: auto;
+    background: rgba(0,0,0,0.6);
+}
+.container{
+    height: 260px;
+    width: 400px;
+    background: #FF6347;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -130px;
+    margin-left: -200px;
+    border-radius: 5px;
+}
+.login-title{
+    margin-top: 10px;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 35px;
+    height: 35px;
+    color: #fff;
+}
+.container div{
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+}
+[v-cloak] {
+    display: none;
+}
+
+input{
+    width: 180px;
+    font-size:15px;
+    color: #333333;
+}
+button{
+    margin-top: 25px;
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link type="text/css" rel="styleSheet"  href="../../css/categoryMng.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+</head>
+<body>
+<div id="categoryMng" >
+    <div v-if="mask" class="mask">
+        <div v-cloak>
+            {{maskText}}
+        </div>
+    </div>
+    <div class="add">
+        <div style="font-size: 14px;">新增一级分类：</div>
+        <div><input v-bind:value="addPcatText" placeholder="请输入分类名称" v-model="addPcatText"/></div>
+
+        <button @click="addPCategory"  class="button1">新增一级分类</button>
+    </div>
+    <div class="container" v-for="(parent,index) in pCategory.options">
+        <div class="pcat">
+            <div><input v-bind:value="parent.text" v-model="parent.text"/></div>
+
+            <button v-bind:data-id="parent.value" v-bind:data-text="parent.text" @click="savePCategory"class="button1">保存</button>
+            <button  v-bind:data-id="parent.value"  @click="deletePCategory" class="button-del">删除</button>
+            <div style="float: right;">
+                <button  v-if="index!=0" v-bind:data-idx="index" @click="up" class="button1">上移</button>
+                <button  v-if="index!=pCategory.options.length-1"  v-bind:data-idx="index" @click="down" class="button1">下移</button>
+            </div>
+        </div>
+        <div v-if="parent.subCategory && parent.subCategory.options && parent.subCategory.options.length>0">
+            <div  class="subcat" v-for="sub in parent.subCategory.options">
+                <div><input v-bind:value="sub.text" v-model="sub.text"/></div>
+                <button v-bind:data-id="sub.value" v-bind:data-text="sub.text" @click="saveSubCategory"  class="button1">保存</button>
+                <button  v-bind:data-id="sub.value" @click="deleteSubCategory"  class="button-del">删除</button>
+            </div>
+            <div class="add" style="padding: 10px 20px;">
+                <div>
+                    <input v-if="pidx==index" v-bind:data-pidx="index" v-bind:value="addSubcatText" v-model="addSubcatText"  placeholder="请输入分类名称" v-on:focus="subCatInputFocus"/>
+                    <input v-else v-bind:data-pidx="index"  placeholder="请输入分类名称" v-on:focus="subCatInputFocus"/>
+                </div>
+                <button v-bind:data-pidx="index" @click="addSubCategory"  class="button1">新增二级分类</button>
+
+            </div>
+        </div>
+        <div v-else>
+            <div class="add-sub" style="">
+                <div>
+                    <input v-if="pidx==index" v-bind:data-pidx="index" v-bind:value="addSubcatText" v-model="addSubcatText" placeholder="请输入分类名称" v-on:focus="subCatInputFocus"/>
+                    <input v-else v-bind:data-pidx="index"  placeholder="请输入分类名称" v-on:focus="subCatInputFocus" />
+                </div>
+                <button v-bind:data-pidx="index" @click="addSubCategory"  class="button1">新增二级分类</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/categoryMng.js"></script>
+</body>
+</html>

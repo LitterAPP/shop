@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+    <link type="text/css" rel="styleSheet"  href="../../css/orderMng.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/table.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/search.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/page.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+</head>
+<body>
+<div id="orderMng">
+    <div v-if="mask" class="mask">
+        <div v-cloak>
+            {{maskText}}
+        </div>
+    </div>
+    <div class="search">
+        <div>订单ID：<input  v-model="condition.orderId" type="text" placeholder=" 订单ID"/></div>
+        <div>商品名称：<input v-model="condition.keyword"  type="text" placeholder="商品名称"/></div>
+        <div>状态：
+            <select v-model="condition.status.selected">
+                <option  value="-1">请选择</option>
+                <option v-for="option in condition.status.options" v-bind:value="option.value">
+                    {{ option.text }}
+                </option>
+            </select>
+        </div>
+
+        <div>
+            <button class="button1" @click="search">查询</button>
+        </div>
+
+    </div>
+
+    <div class="table">
+        <div class="table-column-group">
+            <div class="table-column"></div>
+            <div class="table-column"></div>
+            <div class="table-column"></div>
+        </div>
+        <div class="table-header-group">
+            <ul class="table-row">
+                <li class="table-cell">订单ID</li>
+                <li class="table-cell">状态</li>
+                <li class="table-cell">是否团购</li>
+                <li class="table-cell">团购ID</li>
+                <li class="table-cell">团购价</li>
+                <li class="table-cell">商品ICON</li>
+                <li class="table-cell">商品组名称</li>
+                <li class="table-cell">商品名称</li>
+                <li class="table-cell">购买数量</li>
+                <li class="table-cell">商品组价格</li>
+                <li class="table-cell">应付总额</li>
+                <li class="table-cell">余额支付</li>
+                <li class="table-cell">现金支付</li>
+                <li class="table-cell">代金券支付</li>
+                <li class="table-cell">下单时间</li>
+                <li class="table-cell">支付时间</li>
+            </ul>
+        </div>
+        <!--
+        <div class="table-footer-group">
+            <ul class="table-row">
+                <li class="table-cell"></li>
+                <li class="table-cell"></li>
+                <li class="table-cell"></li>
+                <li class="table-cell"></li>
+            </ul>
+        </div>-->
+        <div class="table-row-group">
+            <ul class="table-row" v-for="item in list">
+                <li class="table-cell">{{item.orderId}}</li>
+                <li  v-if="item.orderStatus==0" class="table-cell">支付中</li>
+                <li  v-else-if="item.orderStatus==1" class="table-cell">支付成功:待发货</li>
+                <li  v-else-if="item.orderStatus==2" class="table-cell">支付取消</li>
+                <li  v-else-if="item.orderStatus==3" class="table-cell">支付失败</li>
+                <li  v-else-if="item.orderStatus==4" class="table-cell">支付完成:拼团中</li>
+                <li  v-else-if="item.orderStatus==5" class="table-cell">退款成功</li>
+                <li  v-else-if="item.orderStatus==6" class="table-cell">拼团成功:待发货</li>
+                <li  v-else-if="item.orderStatus==7" class="table-cell">已投递:已揽件</li>
+                <li  v-else-if="item.orderStatus==8" class="table-cell">已签收</li>
+                <li  v-else-if="item.orderStatus==9" class="table-cell">已确认收货</li>
+                <li  v-else  class="table-cell">未知状态</li>
+                <li v-if="item.togetherId" class="table-cell">是</li>
+                <li v-else class="table-cell">是</li>
+                <li class="table-cell">{{item.togetherId}}</li>
+                <li class="table-cell">{{item.groupTogetherPrice}}</li>
+                <li class="table-cell">
+                    <img style="height: 100px;width: 100px;" v-bind:src="item.groupImg"/>
+                </li>
+                <li class="table-cell">{{item.groupName}}</li>
+                <li class="table-cell">{{item.productName}}</li>
+                <li class="table-cell">{{item.buyNum}}件</li>
+                <li class="table-cell">￥{{item.groupPrice}}</li>
+                <li class="table-cell">￥{{item.totalPay}}</li>
+                <li class="table-cell">￥{{item.balancePay}}</li>
+                <li class="table-cell">￥{{item.cashPay}}</li>
+                <li class="table-cell">￥{{item.couponPay}}</li>
+                <li class="table-cell">{{item.orderTime}}</li>
+                <li class="table-cell">{{item.payTime}}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div v-cloak class="pageInfo">
+        <div v-cloak data-flag="-1" @click="more">&lt;&lt;上一页</div>
+        {{page}}/{{pageTotal}}
+        <div v-cloak  data-flag="1" @click="more">下一页&gt;&gt;</div>
+    </div>
+
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/orderMng.js"></script>
+
+</body>
+</html>

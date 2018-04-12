@@ -1,0 +1,36 @@
+.shopAvatar img{
+    height: 45px;
+    width: 45px;
+    border:2px solid #fff;
+}
+
+.shopBanner img{
+    height: 120px;
+    width: 320px;
+}
+
+.navImage img{
+    height: 30px;
+    width: 60px;
+}
+
+.bannerImage img{
+    height: 170px;
+    width: 320px;
+}
+.thirdImage img{
+    height: 40px;
+    width: 40px;
+}
+.fourthImage img{
+    height: 120px;
+    width: 320px;
+}
+.activityBg img{
+    height: 320px;
+    width: 320px;
+}
+
+[v-cloak] {
+    display: none;
+}

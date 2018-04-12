@@ -1,0 +1,17 @@
+.pageInfo{
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 10px;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    font-size: 15px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    padding: 3px;
+    cursor: pointer;
+}
+.pageInfo div{
+    display: inline-block;
+}
