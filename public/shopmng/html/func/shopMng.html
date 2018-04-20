@@ -3,18 +3,19 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.min.css">
     <link type="text/css" rel="styleSheet"  href="../../css/shopMng.css" />
     <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
     <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
 </head>
 <body>
-<div id="shopMng">
+<div id="shopMng" style="margin-bottom: 55px;">
     <div v-if="mask" class="mask">
         <div v-cloak>
             {{maskText}}
         </div>
     </div>
-    <div class="card">
+    <div id="shopHeader" class="card">
         <div style="display: block;">
             <div class="setting-title" class="setting-title">设置店铺名称及头像(100*100)</div>
         </div>
@@ -31,7 +32,7 @@
         <div class="setting-title">(点击头像修改100*100)</div>
     </div>
 
-    <div class="card">
+    <div id="shopWellcome" class="card">
         <div style="display: block;">
             <div class="setting-title">设置店铺欢迎语</div>
         </div>
@@ -40,7 +41,7 @@
         </div>
     </div>
 
-    <div class="card">
+    <div id="shopBanner" class="card">
         <div style="display: block;">
             <div class="setting-title">设置店铺顶部Banner(320*120)</div>
         </div>
@@ -54,7 +55,7 @@
         <div class="setting-title">(点击Banner修改)</div>
     </div>
 
-    <div class="card">
+    <div id="shopActivity" class="card">
         <div style="display: block;">
             <div class="setting-title">设置首页活动背景及文案(320*400)</div>
         </div>
@@ -67,7 +68,7 @@
         <div class="setting-title">(点击修改)</div>
     </div>
 
-    <div class="card">
+    <div id="shopFirstNav" class="card">
         <div  style="display: block;">
             <div class="setting-title">设置店铺第一部分导航(60*30)</div>
         </div>
@@ -107,7 +108,7 @@
     </div>
 
 
-    <div class="card">
+    <div id="shopSecondNav"  class="card">
         <div  style="display: block;">
             <div class="setting-title">设置店铺第二部分导航(60*30)</div>
         </div>
@@ -147,7 +148,7 @@
     </div>
 
 
-    <div class="card">
+    <div id="shopSwiperNav"  class="card">
         <div  style="display: block;">
             <div class="setting-title">设置店铺滚动横幅(320*170)</div>
         </div>
@@ -186,7 +187,7 @@
         </div>
     </div>
 
-    <div class="card">
+    <div id="shopThirdNav"  class="card">
         <div  style="display: block;">
             <div class="setting-title">设置店铺第三部分导航(40*40)</div>
         </div>
@@ -226,7 +227,7 @@
     </div>
 
 
-    <div class="card">
+    <div id="shopFourthNav"  class="card">
         <div  style="display: block;">
             <div class="setting-title">设置店铺第四部分导航(320*120)</div>
         </div>
@@ -266,7 +267,7 @@
     </div>
 
 
-    <div class="card">
+    <div id="shopFiveNav"  class="card">
         <div  style="display: block;">
             <div class="setting-title">设置店铺第五部分导航(60*30)</div>
         </div>
@@ -305,16 +306,154 @@
         </div>
     </div>
 
-    <div  style="position: fixed;top: 25px;right:15px;">
+    <div  style="position: fixed;bottom: 10px;left:50%;margin-left: -63px;">
         <div  style="display: block;text-align: center;">
             <button @click="saveShopConfig" class="button1">发布商铺</button>
+        </div>
+    </div>
+
+    <div id="previewOnMobile" class="preview_1">
+        <div class="screen-header">
+
+        </div>
+        <div class="screen-middle">
+            <a href="#shopHeader">
+                <div class="screen-middle-1">
+                    <img  style="position: absolute;top: 0px;left: 0px;height: 120px;width: 300px;" v-bind:src="shopBanner">
+                    <img  style="position: absolute;bottom: 10px;left: 10px;height: 35px;width: 35px;border: 2px solid #fff;" v-bind:src="shopAvatar">
+                    <div style="position: absolute;bottom: 30px;left: 55px;font-size: 15px;color: #fff;">
+                        {{shopName}}
+                    </div>
+                </div>
+            </a>
+            <a href="#shopFirstNav">
+                <div class="screen-middle-2">
+                    <div style="border-bottom:2px solid #ff4040;">
+                        首页
+                    </div>
+                    <div v-for="item in firstNavList">
+                        <div v-if="item.linkType==1">
+                           {{item.text}}
+                        </div>
+                        <img  v-if="item.linkType==2"  style="height: 30px;width: 60px;" v-bind:src="item.img">
+                    </div>
+                </div>
+            </a>
+
+
+            <div class="screen-middle-middle">
+                <a href="#shopWellcome">
+                    <div style="height: 35px;line-height: 35px; font-size: 13px;color: #CDB79E; margin-left:10px; ">
+                            {{wellcomeText}}
+                    </div>
+                </a>
+
+                <a href="#shopSecondNav">
+                    <div  style="height: 35px;line-height: 35px; width: 300px;text-align: center;  background: #fff;">
+                        <div style="display:inline-block;text-align: left;font-size: 13px;color: #515151; width: 50px; border-left: 1px solid #ccc;" v-for="item in secondNavList">
+                            <span v-if="item.linkType==1" style="margin-left:5px;">
+                                {{item.text}}
+                            </span>
+                            <img  v-if="item.linkType==2"  style="display:inline-block;height: 30px;width: 60px;" v-bind:src="item.img">
+                        </div>
+                    </div>
+                </a>
+
+                <a href="#shopSwiperNav">
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide" v-for="item in swiperList">
+                                <img  v-bind:src="item.img" style="width: 300px;">
+                            </div>
+                        </div>
+                        <!-- 如果需要分页器 -->
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </a>
+
+                <a href="#shopThirdNav">
+                    <div  style="height: 60px;line-height: 60px; width: 300px;text-align: center;  background: #fff;">
+                        <div style="display:inline-block;text-align: left;font-size: 13px;color: #515151; width: 50px;"
+                             v-for="item in thirdNavList">
+                            <span v-if="item.linkType==1" style="margin-left:5px;">
+                                {{item.text}}
+                            </span>
+                            <img  v-if="item.linkType==2"  style="display:inline-block;height: 60px;width: 60px;" v-bind:src="item.img">
+                        </div>
+                    </div>
+                </a>
+
+                <a href="#shopFourthNav">
+                    <div  style="width: 300px;text-align: center;  background: #fff;">
+                        <div style="display:block;text-align: left;font-size: 13px;color: #515151; width: 50px;"
+                             v-for="item in fourthNavList">
+                            <span v-if="item.linkType==1" style="margin-left:5px;">
+                                {{item.text}}
+                            </span>
+                            <img  v-if="item.linkType==2"  style="display:inline-block;height: 170px;width: 300px;" v-bind:src="item.img">
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+            <a href="#shopFiveNav">
+                <div class="screen-middle-bottom">
+                    <div v-for="item in fiveNavList">
+                        <div v-if="item.linkType==1">
+                            {{item.text}}
+                        </div>
+                        <img  v-if="item.linkType==2"  style="height: 30px;width: 60px;" v-bind:src="item.img">
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="screen-footer">
+
         </div>
     </div>
 </div>
 </div>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="../../js/config.js"></script>
 <script src="../../js/shopMng.js"></script>
+<script>
+    var initShow = true
+
+
+    $(document).ready(function () {
+        $(".screen-footer").on('click',function(){
+            console.log('hideOrShwoMobile',initShow)
+            initShow = !initShow
+            if(initShow){
+                $("#previewOnMobile").removeClass("preview_0")
+                $("#previewOnMobile").addClass("preview_1")
+            }else{
+                $("#previewOnMobile").removeClass("preview_1")
+                $("#previewOnMobile").addClass("preview_0")
+            }
+        })
+
+        var mySwiper = new Swiper ('.swiper-container', {
+            // 如果需要分页器
+            observer:true,//修改swiper自己或子元素时，自动初始化swiper
+            observeParents:true,//修改swiper的父元素时，自动初始化swiper
+            pagination: {
+                el: '.swiper-pagination',
+            },
+            /*如果需要前进后退按钮
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },*/
+
+            /*
+            scrollbar: {
+                el: '.swiper-scrollbar',
+            },*/
+        })
+    })
+</script>
 </body>
 </html>

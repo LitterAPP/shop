@@ -592,6 +592,8 @@ var addProduct = new Vue({
                         that.together_info=result.data.together_info||{}
                         that.text_details=result.data.text_details
                         that.pic_details=result.data.pic_details
+                        that.contact_mobile = result.data.contact_mobile
+                        that.contact_wx = result.data.contact_wx
                         that.groups=result.data.groups
                         console.log('加载商品成功',productId,result.data,that.together_info)
                     }else{

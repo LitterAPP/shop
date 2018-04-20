@@ -364,9 +364,9 @@ public class ShopProductService {
 			defalutGroup.setProductId(product.productId);
 			defalutGroup.setGroupImage(p.getProductBanner());
 			defalutGroup.setGroupName("【单件】"+p.getProductName());
-			defalutGroup.setGroupPrice(AmountUtil.y2f(p.getProductNowAmount()));
+			defalutGroup.setGroupPrice(p.getProductNowAmount());
 			if(p.getJoinTogether() == 1){
-				defalutGroup.setGroupTogetherPrice(AmountUtil.y2f(p.getProductTogetherAmount()));
+				defalutGroup.setGroupTogetherPrice(p.getProductTogetherAmount());
 			}else{
 				defalutGroup.setGroupTogetherPrice(0);
 			}

@@ -4,6 +4,10 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import common.GlobalConstants;
+import controllers.dto.SelectSourceDto;
+import jws.Logger;
+import jws.cache.Cache;
 import jws.dal.Dal;
 import jws.dal.sqlbuilder.Condition;
 import jws.dal.sqlbuilder.Sort;
@@ -11,6 +15,7 @@ import modules.shop.ddl.ShopProductCategoryChildDDL;
 import modules.shop.ddl.ShopProductCategoryDDL;
 import modules.shop.ddl.ShopProductCategoryRelDDL;
 import util.IDUtil;
+import util.ThreadUtil;
 
 public class ShopCategoryService {
 
@@ -45,10 +50,22 @@ public class ShopCategoryService {
 		ShopProductCategoryDDL p = new ShopProductCategoryDDL();
 		p.setCategoryId(IDUtil.gen("CAT"));
 		p.setCategoryName(pCategoryName);
-		p.setOrderBy(0);
+		
+		ShopProductCategoryDDL maxSortP = getMaxSortPCategory();
+		p.setOrderBy(maxSortP==null?0:(maxSortP.getOrderBy()+1));
 		int id = (int)Dal.insertSelectLastId(p);
 		p.setId(id);
+		 
 		return p;
+	}
+	
+	public static ShopProductCategoryDDL getMaxSortPCategory(){
+		List<ShopProductCategoryDDL> list = Dal.select("ShopProductCategoryDDL.*", null, new Sort("ShopProductCategoryDDL.orderBy",false), 0, 1);
+		if(list==null || list.size()==0){
+			return null;
+		}else{
+			return list.get(0);
+		}
 	}
 	
 	public static void updatePCategoryName(String pid,String newName) throws Exception{
@@ -84,7 +101,8 @@ public class ShopCategoryService {
  		p1.setOrderBy(p2OrderByTmp);
  		p2.setOrderBy(p1OrderByTmp);
  		Dal.update(p1, "ShopProductCategoryDDL.orderBy", new Condition("ShopProductCategoryDDL.id","=",p1.getId()));
- 		Dal.update(p2, "ShopProductCategoryDDL.orderBy", new Condition("ShopProductCategoryDDL.id","=",p2.getId()));
+ 		Dal.update(p2, "ShopProductCategoryDDL.orderBy", new Condition("ShopProductCategoryDDL.id","=",p2.getId())); 		
+ 		 
 	}
 	
 	public static void delPCategory(String pCategoryId){
@@ -97,6 +115,7 @@ public class ShopCategoryService {
 		//再删除一级分类
 		Condition parentDelCond = new Condition("ShopProductCategoryDDL.categoryId","=",pCategoryId);
 		Dal.delete(parentDelCond);
+		 
 	}
 	
 	public static void delSubCategory(String subCategoryId){
@@ -107,6 +126,13 @@ public class ShopCategoryService {
 		
 		Condition subDelCond = new Condition("ShopProductCategoryChildDDL.categoryId","=",subCategoryId);
 		Dal.delete(subDelCond);
+		
+		ThreadUtil.sumbit(new Runnable(){
+			@Override
+			public void run() {
+				reflushCategoryALL(true);
+			}
+		});
 	}
 	
 	public static ShopProductCategoryChildDDL createChildCategory(String subCategoryName,String pid){
@@ -116,6 +142,12 @@ public class ShopCategoryService {
 		sub.setCategoryName(subCategoryName);
 		int id = (int)Dal.insertSelectLastId(sub);
 		sub.setId(id);
+		ThreadUtil.sumbit(new Runnable(){
+			@Override
+			public void run() {
+				reflushCategoryALL(true);
+			}
+		});
 		return sub;
 	}
 	
@@ -192,6 +224,50 @@ public class ShopCategoryService {
 			return list;
 		}
 		return null;
+	}
+	
+	/**
+	 * 后台更新完后，传true进入，刷新当前缓存
+	 * 小程序默认是false，保证永远从cache读取
+	 * @param force
+	 * @return
+	 */
+	public static SelectSourceDto reflushCategoryALL(boolean force){
+		
+		//加个缓存	
+		SelectSourceDto selectSourceFromCache = Cache.get(GlobalConstants.CacheKey.CATEGORY_ALL, SelectSourceDto.class);
+		if(selectSourceFromCache!=null && !force){
+			Logger.info("loading category from cache", "");
+			return selectSourceFromCache;
+		}
+		Logger.info("loading category from db", "");
+		SelectSourceDto selectSource = new SelectSourceDto();
+		selectSource.selected="";
+		List<ShopProductCategoryDDL> pList = ShopCategoryService.searchByPCategoryName(null);
+		if(pList!=null && pList.size()>0){
+			for(ShopProductCategoryDDL pcat : pList){
+				
+				SelectSourceDto.Soruce source = new  SelectSourceDto().new Soruce(); 
+				source.value = pcat.getCategoryId();
+				source.text = pcat.getCategoryName(); 
+				
+					List<ShopProductCategoryChildDDL> childCats = ShopCategoryService.listByParentId(pcat.getCategoryId());
+				if(childCats!=null && childCats.size()>0){		
+					SelectSourceDto subSelectSource = new SelectSourceDto();
+					for(ShopProductCategoryChildDDL child : childCats){							
+						subSelectSource.selected="0";
+						SelectSourceDto.Soruce subSource = new  SelectSourceDto().new Soruce(); 
+						subSource.value = child.getCategoryId();
+						subSource.text = child.getCategoryName();  
+						subSelectSource.options.add(subSource); 
+					}
+					source.subCategory = subSelectSource;
+				} 
+				selectSource.options.add(source);
+			}
+		}
+		Cache.set(GlobalConstants.CacheKey.CATEGORY_ALL, selectSource, "20d");
+		return selectSource;
 	}
 	
 	

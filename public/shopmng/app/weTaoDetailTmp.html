@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>微淘</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link type="text/css" rel="styleSheet"  href="/shopmng/css/mask.css" />
+    <link type="text/css" rel="styleSheet"  href="../css/weTao.css" />
+    <meta name="title" content="${detail.seoTitle}">
+    <meta name="keywords" content="${detail.seoKey}">
+    <meta name="description" content="${detail.seoDesc}" />
+</head>
+<body style="background: #E0EEEE;margin: auto;">
+<div id="weTao">
+    <div class="topPlaceHolder"></div>
+    <div v-if="mask" class="mask">
+        <div v-cloak>
+            {{maskText}}
+        </div>
+    </div>
+
+    <div class="container" style="" v-for="item in list" >
+        <div style="cursor: pointer;z-index:99;" @click.stop="getDetail"  v-bind:data-id="item.id">
+            <div class="title">
+                <span v-html="item.content"></span>
+            </div>
+            <div class="image-container">
+                <div class="images" v-for="img in item.images">
+                    <img style="display: inline-block;" v-bind:src="img.remoteUrl">
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div style="float: left;">
+                    <span>{{item.createTime}}</span>
+                    <div class="wrap">
+                        <img src="../images/view-0.png">
+                        <span>{{item.view}}</span>
+                    </div>
+                </div>
+                <div style="float: right;">
+                    <div class="wrap">
+                        <img v-if="item.isZan" src="../images/zan-1.png"  @click.stop="zan" v-bind:data-id="item.id" >
+                        <img @click.stop="zan" v-bind:data-id="item.id" v-else src="../images/zan-0.png">
+                        <span>{{item.zan}}</span>
+                    </div>
+                    <div class="wrap">
+                        <img src="../images/comment-0.png">
+                        <span>{{item.comment}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="top">
+        <img @click="goBackMinapp" src="/public/shopmng/images/pull_down_icon.png" style="height:30px;width:30px;transform: rotate(90deg);">
+        <span class="top-title">微淘</span>
+    </div>
+</div>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="/public/shopmng/js/config.js"></script>
+<script src="/public/shopmng/js/weTao.js"></script>
+</body>
+</html>

@@ -6,6 +6,7 @@ var nav = new Vue({
     data: {
        list:[
            {title:'店铺',url:'../html/func/shopMng.html',activite:false},
+           {title:'微淘',url:'../html/func/weTaoMng.html',activite:false},
            {title:'分类',url:'../html/func/categoryMng.html',activite:false},
            {title:'商品',url:'../html/func/productMng.html',activite:false},
            {title:'订单',url:'../html/func/orderMng.html',activite:false},

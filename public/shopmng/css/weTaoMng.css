@@ -1,0 +1,56 @@
+.container{
+    margin: 10px 10px;
+    background: #fff;
+    border:1px solid #E0EEEE;
+
+}
+[v-cloak] {
+    display: none;
+}
+.title{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:4;
+    font-size: 18px;
+    color: #333333;
+    margin:10px;
+
+}
+.images{
+    height: 100px;
+    width: 100px;
+    display: inline-block;
+    margin: 5px;
+}
+
+.images img{
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.bottom{
+    height: 45px;
+    line-height: 45px;
+    margin: 5px;
+}
+.bottom div{
+    display: inline-block;
+}
+.wrap{
+    margin-left:10px;
+}
+
+.wrap img{
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    vertical-align: text-bottom;
+}
+.bottom span{
+    font-size:10px;
+    color: #cbcbcb;
+}

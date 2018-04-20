@@ -35,6 +35,7 @@ import modules.shop.ddl.UsersDDL;
 import modules.shop.ddl.ShopCouponMngDDL;
 import modules.shop.ddl.ShopExpressDDL;
 import modules.shop.ddl.ShopIndexDDL;
+import modules.shop.ddl.ShopMngSessionDDL;
 import modules.shop.ddl.ShopOrderDDL;
 import modules.shop.ddl.ShopProductAttrRelDDL;
 import modules.shop.ddl.ShopProductCommunityRelDDL;
@@ -43,17 +44,20 @@ import modules.shop.ddl.ShopProductGroupDDL;
 import modules.shop.ddl.ShopProductImagesDDL;
 import modules.shop.ddl.ShopTogetherDDL;
 import modules.shop.ddl.ShopTogetherJoinerDDL;
+import modules.shop.ddl.ShopWetaoDDL;
 import modules.shop.ddl.UserAccountDDL;
 import modules.shop.service.ShopCommunityService;
 import modules.shop.service.ShopCouponMngService;
 import modules.shop.service.ShopExpressService;
 import modules.shop.service.ShopIndexService;
+import modules.shop.service.ShopMngService;
 import modules.shop.service.ShopOrderService;
 import modules.shop.service.ShopProductAttrService;
 import modules.shop.service.ShopProductGroupService;
 import modules.shop.service.ShopProductImageService;
 import modules.shop.service.ShopProductService;
 import modules.shop.service.ShopTogetherService;
+import modules.shop.service.ShopWeTaoService;
 import modules.shop.service.UserAccountService;
 import modules.shop.service.UserService;
 import util.API;
@@ -956,6 +960,21 @@ public class Shop extends Controller{
 		}
 	} 
 	
+	
+	public static void isTogethering(String togetherid){
+		try{
+			ShopTogetherDDL together = ShopTogetherService.getShopTogether(togetherid);
+			if(together!=null && together.getStatus() == ShopTogetherService.TOGETHER_ING){
+				renderJSON(RtnUtil.returnSuccess("OK",true));
+			}
+			renderJSON(RtnUtil.returnSuccess("OK",false));			
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail(e.getMessage()));
+		}
+	} 
+	
+	
 	/**
 	 * 查询店铺首页配置
 	 * @param shopId
@@ -1013,8 +1032,7 @@ public class Shop extends Controller{
 			//兼容小程序吧
 			result.put("shopName", shopIndex.getName());
 			result.put("shopAvatar",API.getObjectAccessUrlSimple(shopIndex.getAvatar()));
-			result.put("follow", shopIndex.getFollow());
-			
+			result.put("follow", shopIndex.getFollow());			
 			
 			//获取可领取的代金券
 			List<ShopCouponMngDDL> couponList = ShopCouponMngService.selectCouponActivities(null,0, 10);
@@ -1040,4 +1058,139 @@ public class Shop extends Controller{
 		}
 	} 
 	
+	
+	public static void listWeTao(int page,int pageSize,int id){
+		try{
+			 
+			List<Map<String,Object>> weTaos = new ArrayList<Map<String,Object>>();
+			Map<String,Object> response = new HashMap<String,Object>();
+			
+			int total = ShopWeTaoService.countWeTao("");
+			response.put("total", total);
+			response.put("pageTotal", Math.ceil(total/(double)pageSize));
+			 
+			if(total == 0){
+				response.put("list", weTaos);
+				renderJSON(RtnUtil.returnSuccess("OK",response));
+			}			
+			
+			String ip = request.remoteAddress;
+			
+			if(id>0){		
+				String key = ip+"_"+id;
+				if(Cache.safeAdd(key, "1", "1d")){
+					ShopWeTaoService.zan(id);
+				}else{
+					Cache.delete(key);
+					ShopWeTaoService.cancelZan(id);
+				}
+			}
+			
+			page = page==0?1:page;
+			pageSize = pageSize==0?10:pageSize;
+			
+			
+			List<ShopWetaoDDL>  list = ShopWeTaoService.listWeTao("", page, pageSize);			
+ 			
+			for(ShopWetaoDDL weTao : list){
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("id",weTao.getId());
+				map.put("content", weTao.getContent());
+				map.put("createTime", DateUtil.timeDesc(weTao.getCreateTime()));
+				map.put("comment", weTao.getComment());
+				String key = ip+"_"+weTao.getId();
+				if(Cache.get(key)!=null){
+					map.put("isZan",true);
+				}
+				//deal Image
+				if(!StringUtils.isEmpty(weTao.getImages())){
+					List<Map<String,Object>> imgs = new ArrayList<Map<String,Object>>();
+					for(String ossKey : weTao.getImages().split(",")){
+						Map<String,Object> imgOne = new HashMap<String,Object>();
+						imgOne.put("remoteUrl", API.getObjectAccessUrlSimple(ossKey));
+						imgOne.put("osskey", ossKey);
+						imgs.add(imgOne);
+					}	
+					map.put("images", imgs);
+				}
+				
+				map.put("view", weTao.getView());
+				map.put("zan", weTao.getZan());			
+				 
+				weTaos.add(map);
+			}
+			response.put("list", weTaos);
+			renderJSON(RtnUtil.returnSuccess("OK", response));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	public static void zanOnDetailPage(int id){
+		try{
+			Map<String,Object> detail = new HashMap<String,Object>();
+			ShopWetaoDDL weTao = ShopWeTaoService.get(id);
+			if(weTao==null){
+				renderJSON(RtnUtil.returnFail("点赞失败"));
+			}
+			String ip = request.remoteAddress;
+			String key = ip+"_"+id;
+			if(Cache.safeAdd(key, "1", "1d")){
+				ShopWeTaoService.zan(id);
+				detail.put("isZan", true);
+			}else{
+				Cache.delete(key);
+				ShopWeTaoService.cancelZan(id);
+				detail.put("isZan", false);
+			}
+			weTao = ShopWeTaoService.get(id);
+			detail.put("zan", weTao.getZan());
+			renderJSON(RtnUtil.returnSuccess("OK", detail));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	public static void weTaoDetail(int id){
+		try{
+			Map<String,Object> detail = new HashMap<String,Object>();
+			ShopWetaoDDL weTao = ShopWeTaoService.get(id);
+			if(weTao==null){
+				renderText("找不到网页");
+			}
+			
+			detail.put("id", weTao.getId());
+			detail.put("seoTitle", weTao.getSeoTitle());
+			detail.put("seoKey", weTao.getSeoKey());
+			detail.put("seoDesc", weTao.getSeoDesc());
+			detail.put("content", weTao.getContent());
+			detail.put("zan", weTao.getZan());
+			detail.put("comment", weTao.getComment());			
+			 
+			
+			String ip = request.remoteAddress;
+			String key = ip+"_"+id;
+			if(Cache.get(key)!=null){
+				detail.put("isZan",true);
+			}else{
+				detail.put("isZan",false);
+			}
+			
+			
+			List<String> images = new ArrayList<String>();
+			if(!StringUtils.isEmpty(weTao.getImages())){
+				for(String ossKey : weTao.getImages().split(",")){
+					images.add(API.getObjectAccessUrlSimple(ossKey));
+				}
+			}			
+			
+			ShopWeTaoService.view(id);
+			renderTemplate("weTaoDetailTmp.html",detail,images);
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderText("服务器异常");
+		}
+	}
+	 
 }

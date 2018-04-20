@@ -9,8 +9,8 @@
     <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
 </head>
 <body>
-<div id="addCoupon">
-    <div class="card" style="padding: 20px 10px;">
+<div id="addCoupon" style="margin-bottom: 55px;">
+    <div class="card" style="padding: 20px 10px;background: #E0EEEE;border-radius: 6px;">
         <div style="display: block;">
             <div style="font-size:10px;color:#888;">代金券信息</div>
         </div>
@@ -18,7 +18,7 @@
             代金券ID：{{couponId}}
         </div>
         <div  style="display: block;">
-            代金券名称： <input style="width: 680px;" v-model="couponName" value="{{couponName}}"  placeholder="代金券名称"/>
+            代金券名称： <input style="width: 300px;" v-model="couponName" value="{{couponName}}"  placeholder="代金券名称"/>
         </div>
         <div  style="display: block;">
             代金券面额：<input style="width: 100px;" v-model="amount" value="{{amount}}"  placeholder="代金券面额"/>
@@ -40,7 +40,7 @@
             </div>
         </div>
         <div  style="display: block;">
-            最多领取次数/人：<input  type="text" style="width: 100px;" v-model="limitTimes" value="{{limitTimes}}"  placeholder=" 最多领取次数/人"/>
+            最多领取次数/人：<input  type="text" style="width: 180px;" v-model="limitTimes" value="{{limitTimes}}"  placeholder=" 最多领取次数/人"/>
         </div>
 
         <div  style="display: block;">
@@ -53,8 +53,7 @@
         </div>
     </div>
 
-    <div style="margin-bottom: 50px;"></div>
-    <div  style="position: fixed;bottom: 10px;right:10px;">
+     <div  style="position: fixed;bottom: 10px;right:10px;">
         <div  style="display: block;text-align: center;">
             <button @click="saveCoupon" class="button1">保存</button>
         </div>

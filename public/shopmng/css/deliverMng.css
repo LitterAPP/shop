@@ -12,16 +12,20 @@
 }
 
 .prompt-1{
-    height: 200px;
+    height: 300px;
     width: 400px;
-    background: #fff;
+    background: #E0EEEE;
     color: #000;
     position: absolute;
     top:50%;
     left: 50%;
     margin-left: -200px;
-    margin-top: -100px;
-    line-height: 40px;
+    margin-top: -150px;
     font-size: 15px;
-    text-align: center;
+    line-height: 30px;
+    text-align: left;
+    border-radius: 6px;
+}
+.prompt-1 div{
+    margin: 10px;
 }

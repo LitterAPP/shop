@@ -1,6 +1,7 @@
 package modules.shop.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,13 +16,13 @@ import jws.Logger;
 import jws.dal.Dal;
 import jws.dal.sqlbuilder.Condition;
 import jws.dal.sqlbuilder.Sort;
-import modules.shop.ddl.UsersDDL;
 import modules.shop.ddl.ShopApplyInfoDDL;
 import modules.shop.ddl.ShopOrderDDL;
 import modules.shop.ddl.ShopProductDDL;
 import modules.shop.ddl.ShopProductGroupDDL;
 import modules.shop.ddl.ShopTogetherDDL;
 import modules.shop.ddl.ShopTogetherJoinerDDL;
+import modules.shop.ddl.UsersDDL;
 import util.API;
 import util.AmountUtil;
 import util.IDUtil;
@@ -46,12 +47,23 @@ public class ShopOrderService {
 	public static boolean createOrder(boolean together,String togetherId,
 			String userAccountId,String couponAccountId,
 			int useUserAccount,int useCouponAccount,int useCash,
-			int buyNum,String orderId,int buyerUserId,String litterAppParams,String address,ShopProductDDL product,ShopProductGroupDDL group){
+			int buyNum,String orderId,int buyerUserId,String litterAppParams,
+			String address,ShopProductDDL product,ShopProductGroupDDL group) throws Exception{
 		 
 		ShopOrderDDL order = new ShopOrderDDL();
 		//生成拼团Id
 		if(together){
-			order.setTogetherId(StringUtils.isEmpty(togetherId)?IDUtil.gen("TOG"):togetherId);
+			if(StringUtils.isEmpty(togetherId)){
+				order.setTogetherId(IDUtil.gen("TOG"));
+			}else{
+				ShopTogetherDDL togetherInfo = ShopTogetherService.getShopTogether(togetherId);
+				if(togetherInfo!=null && togetherInfo.getStatus() == ShopTogetherService.TOGETHER_ING ){
+					order.setTogetherId(togetherId);
+				}else{
+					throw new Exception("团已结束");
+				}
+			}
+			
 		}		
 		order.setSellerTelNumber(product.getSellerTelNumber());
 		order.setSellerWxNumber(product.getSellerWxNumber());
@@ -281,7 +293,7 @@ public class ShopOrderService {
 		
 		
 		Condition condition = new Condition("ShopOrderDDL.togetherId","=",together.getTogetherId());
-		List<ShopOrderDDL> list = Dal.select("ShopOrderDDL.*", condition, null, 0, 1);
+		List<ShopOrderDDL> list = Dal.select("ShopOrderDDL.*", condition, null, 0, -1);
 		if(list == null || list.size() ==0 ) return ;
 		for(ShopOrderDDL order : list){
 			order.setStatus(ORDER_PAYED_TOGETHER_1); 			
@@ -309,7 +321,15 @@ public class ShopOrderService {
 			condition = new Condition("ShopOrderDDL.buyerUserId","=",userId);
 		}
 		if(status!=-1){
-			condition.add(new Condition("ShopOrderDDL.status","=",status), "and");
+			if(status == 1){
+				List<Integer> statusList = new ArrayList<Integer>();
+				statusList.add(ShopOrderService.ORDER_PAYED);
+				statusList.add(ShopOrderService.ORDER_PAYED_TOGETHER_1);
+				condition.add(new Condition("ShopOrderDDL.status","in",statusList), "and");
+			}else{
+				condition.add(new Condition("ShopOrderDDL.status","=",status), "and");
+			}
+			
 		}
 		Sort sort = new Sort("ShopOrderDDL.id",false);
 		return  Dal.select("ShopOrderDDL.*", condition, sort, (page-1)*pageSize, pageSize);

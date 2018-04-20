@@ -219,5 +219,8 @@ public class GlobalConstants {
     }
     
     public static final String dbSource = "dbbase";
-    public static final String dbSoruceCook="cookbook_db";
+    public static final String dbSoruceCook="shop_db";
+    public static class CacheKey{
+    	public static final String CATEGORY_ALL= "category_all";
+    }
 }

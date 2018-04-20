@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>微淘</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link type="text/css" rel="styleSheet"  href="/shopmng/css/mask.css" />
+    <link type="text/css" rel="styleSheet"  href="/shopmng/css/weTao.css" />
+    <meta name="title" content="${detail?.seoTitle}">
+    <meta name="keywords" content="${detail?.seoKey}">
+    <meta name="description" content="${detail?.seoDesc}" />
+</head>
+<body style="background: #E0EEEE;margin: auto;">
+<div id="weTaoDetail">	
+    <div class="topPlaceHolder"></div> 
+    <div v-if="mask" class="mask">
+        <div v-cloak>
+            {{maskText}}
+        </div>
+    </div>
+    <div class="container" style="margin:0px;">     
+        <div style="cursor: pointer;z-index:99;">
+            <div class="title">
+               ${detail?.content.raw()}
+            </div>
+            <div class="image-container">
+                 #{list items:images,as:'img'} 
+                <div style="width:100%;">                	       
+                   <img style="width:100%;" src="${img}">                   
+                </div>
+                 #{/list}
+            </div> 
+        </div>
+    </div>
+    <div class="container" style="margin:0px;border-bottom:1px solid #ebebeb;">
+    	评论
+    </div>
+    
+    <div class="container" style="margin:0px;border-bottom:1px solid #ebebeb;">
+    	<div>
+    		<img style="display:inline-block; vertical-align: text-bottom;border-radius:50%;height:30px;width:30x;" src="/shopmng/images/default-img.png">
+    		<div style="display:inline-block;height:45px;">
+    			<div style="font-size:13px;color:#000;">我是昵称</div>
+    			<div style="font-size:13px;color:#cbcbcb;">39分钟前</div>
+    		</div>
+    	</div>
+    	<div style="margin-top:5px;font-size:15px;color:#000;">
+    		我是留言啦，巴拉巴拉巴拉巴拉巴拉巴拉巴拉巴拉巴拉巴拉巴拉巴拉巴拉巴拉
+    	</div>
+    </div>
+    
+    <div class="container" style="margin:0px;margin-bottom:70px;border-bottom:1px solid #ebebeb;text-align:center;color:blue;font-size:15px;">
+    	查看全部评论(100)
+    </div>
+    
+    <div class="container" style="margin:0px;width:100%;position:fixed;left:0px;bottom:0px;">
+    	<div style="display:inline-block;border-radius:6px;padding:3px;background:#F5F5F5;color:#666;font-size:14px;height:35px;line-height:35px;width:200px;">我有话要说</div>
+    	 <div style="float: right;display:inline-block;margin-right:20px;width:110px; position: relative;">
+           <div class="wrap" style="display:inline-block;height:30px;position: absolute;left:0px;top:8px;">
+              <img v-cloak v-if="isZan" style='vertical-align:text-bottom;height:25px;width:25px;' @click.stop="zanDetail" data-id="${detail?.id}" 	src="/shopmng/images/zan-1.png" >
+              <img v-cloak v-else style='vertical-align:text-bottom;height:25px;width:25px;'  @click.stop="zanDetail"  data-id="${detail?.id}" src="/shopmng/images/zan-0.png">
+              <span v-if="zan>0" style='color:#cbcbcb;font-size:13px;'>{{zan}}</span>
+	          <span v-else style='color:#cbcbcb;font-size:13px;'>${detail?.zan}</span>
+			</div>
+            <div class="wrap" style="display:inline-block;height:30px;position: absolute;right:0px;top:13px;">
+	             <img style='vertical-align: text-top;height:25px;width:25px;'  src="/shopmng/images/comment-0.png">	             
+	             <span style='color:#cbcbcb;font-size:13px;'>${detail?.comment}</span>
+             </div>
+         </div>
+    </div>
+
+    <div class="top">
+        <img @click="goBackMinapp" src="/shopmng/images/pull_down_icon.png" style="height:30px;width:30px;transform: rotate(90deg);">
+        <span class="top-title">微淘  </span>
+    </div>
+</div>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="/public/shopmng/js/config.js"></script>
+<script src="/public/shopmng/js/weTaoDetail.js"></script>
+<script>	
+	weTaoDetail.isZan = ${detail.isZan}
+</script>
+</body>
+</html>

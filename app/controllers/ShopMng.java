@@ -26,7 +26,6 @@ import jws.dal.Dal;
 import jws.dal.sqlbuilder.Condition;
 import jws.mvc.Controller;
 import jws.mvc.Http;
-import modules.shop.ddl.UsersDDL;
 import modules.shop.ddl.ShopApplyInfoDDL;
 import modules.shop.ddl.ShopCouponMngDDL;
 import modules.shop.ddl.ShopExpressCodeDDL;
@@ -41,6 +40,8 @@ import modules.shop.ddl.ShopProductCategoryRelDDL;
 import modules.shop.ddl.ShopProductDDL;
 import modules.shop.ddl.ShopProductGroupDDL;
 import modules.shop.ddl.ShopProductImagesDDL;
+import modules.shop.ddl.ShopWetaoDDL;
+import modules.shop.ddl.UsersDDL;
 import modules.shop.service.ApplyService;
 import modules.shop.service.ShopCategoryService;
 import modules.shop.service.ShopCouponMngService;
@@ -52,6 +53,7 @@ import modules.shop.service.ShopProductAttrService;
 import modules.shop.service.ShopProductGroupService;
 import modules.shop.service.ShopProductImageService;
 import modules.shop.service.ShopProductService;
+import modules.shop.service.ShopWeTaoService;
 import modules.shop.service.SmsService;
 import modules.shop.service.UserService;
 import util.API;
@@ -500,34 +502,9 @@ public class ShopMng extends Controller{
 		}
 	}
 	
-	public static void categoryALL(){
-		try{
-			SelectSourceDto selectSource = new SelectSourceDto();
-			selectSource.selected="";
-			
- 			List<ShopProductCategoryDDL> pList = ShopCategoryService.searchByPCategoryName(null);
-			if(pList!=null && pList.size()>0){
-				for(ShopProductCategoryDDL pcat : pList){
-					
-					SelectSourceDto.Soruce source = new  SelectSourceDto().new Soruce(); 
-					source.value = pcat.getCategoryId();
-					source.text = pcat.getCategoryName(); 
-					
- 					List<ShopProductCategoryChildDDL> childCats = ShopCategoryService.listByParentId(pcat.getCategoryId());
-					if(childCats!=null && childCats.size()>0){		
-						SelectSourceDto subSelectSource = new SelectSourceDto();
-						for(ShopProductCategoryChildDDL child : childCats){							
-							subSelectSource.selected="0";
-							SelectSourceDto.Soruce subSource = new  SelectSourceDto().new Soruce(); 
-							subSource.value = child.getCategoryId();
-							subSource.text = child.getCategoryName();  
-							subSelectSource.options.add(subSource); 
-						}
-						source.subCategory = subSelectSource;
-					} 
-					selectSource.options.add(source);
-				}
-			}
+	public static void categoryALL(boolean force){
+		try{ 
+			SelectSourceDto selectSource =  ShopCategoryService.reflushCategoryALL(force);
 			renderJSON(RtnUtil.returnSuccess("OK", selectSource));
 		}catch(Exception e){
 			Logger.error(e, e.getMessage());
@@ -1193,5 +1170,130 @@ public class ShopMng extends Controller{
 		}
 	}
 	
+	
+	public static void listWeTao(String keyword,int page,int pageSize){
+		try{
+			if(request.cookies==null || !request.cookies.containsKey("shop_sid")){
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}
+			String sessionStr = request.cookies.get("shop_sid").value;
+			ShopMngSessionDDL session = ShopMngService.checkSession(sessionStr);
+			if(session==null){				 
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}
+			
+			List<Map<String,Object>> weTaos = new ArrayList<Map<String,Object>>();
+			Map<String,Object> response = new HashMap<String,Object>();
+			
+			int total = ShopWeTaoService.countWeTao(keyword);
+			response.put("total", total);
+			response.put("pageTotal", Math.ceil(total/(double)pageSize));
+			 
+			if(total == 0){
+				response.put("list", weTaos);
+				renderJSON(RtnUtil.returnSuccess("OK",response));
+			}			
+			
+			
+			page = page==0?1:page;
+			pageSize = pageSize==0?10:pageSize;
+			
+			
+			List<ShopWetaoDDL>  list = ShopWeTaoService.listWeTao(keyword, page, pageSize);
+			
+ 			
+			for(ShopWetaoDDL weTao : list){
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("id",weTao.getId());
+				map.put("content", weTao.getContent());
+				map.put("createTime", DateUtil.timeDesc(weTao.getCreateTime()));
+				map.put("comment", weTao.getComment());
+				
+				//deal Image
+				if(!StringUtils.isEmpty(weTao.getImages())){
+					List<Map<String,Object>> imgs = new ArrayList<Map<String,Object>>();
+					for(String ossKey : weTao.getImages().split(",")){
+						Map<String,Object> imgOne = new HashMap<String,Object>();
+						imgOne.put("remoteUrl", API.getObjectAccessUrlSimple(ossKey));
+						imgOne.put("osskey", ossKey);
+						imgs.add(imgOne);
+					}	
+					map.put("images", imgs);
+				}
+				
+				map.put("view", weTao.getView());
+				map.put("zan", weTao.getZan());			
+				 
+				weTaos.add(map);
+			}
+			response.put("list", weTaos);
+			renderJSON(RtnUtil.returnSuccess("OK", response));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	public static void addWeTao(int id,String content,String images,String seoTitle,String seoKey,String seoDesc){
+		try{
+			if(request.cookies==null || !request.cookies.containsKey("shop_sid")){
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}			
+			String sessionStr = request.cookies.get("shop_sid").value;
+			ShopMngSessionDDL session = ShopMngService.checkSession(sessionStr);
+			if(session==null){				 
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}
+			ShopWeTaoService.replace(id, content, images, seoTitle, seoKey, seoDesc);
+			renderJSON(RtnUtil.returnSuccess("OK"));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	public static void getOneWeTao(int id){
+		try{
+			if(request.cookies==null || !request.cookies.containsKey("shop_sid")){
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}			
+			String sessionStr = request.cookies.get("shop_sid").value;
+			ShopMngSessionDDL session = ShopMngService.checkSession(sessionStr);
+			if(session==null){				 
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}
+			
+			ShopWetaoDDL weTao = ShopWeTaoService.get(id);
+			if(weTao==null){
+				renderJSON(RtnUtil.returnFail("不存在或已刪除"));
+			}
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("id",weTao.getId());
+			map.put("content", weTao.getContent());
+			//map.put("createTime", weTao.getCreateTimeDesc());
+			//map.put("comment", weTao.getComment());		
+			map.put("seoDesc", weTao.getSeoDesc());
+			map.put("seoTitle", weTao.getSeoTitle());
+			map.put("seoKey", weTao.getSeoKey());
+			//deal Image
+			if(!StringUtils.isEmpty(weTao.getImages())){
+				List<Map<String,Object>> imgs = new ArrayList<Map<String,Object>>();
+				for(String ossKey : weTao.getImages().split(",")){
+					Map<String,Object> imgOne = new HashMap<String,Object>();
+					imgOne.put("remoteUrl", API.getObjectAccessUrlSimple(ossKey));
+					imgOne.put("osskey", ossKey);
+					imgs.add(imgOne);
+				}	
+				map.put("images", imgs);
+			}			
+			//map.put("view", weTao.getView());
+			//map.put("zan", weTao.getZan());	
+			
+			renderJSON(RtnUtil.returnSuccess("OK",map));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
 	
 }

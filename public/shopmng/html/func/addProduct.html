@@ -8,9 +8,7 @@
     <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
 </head>
 <body>
-<div id="addProduct">
-
-
+<div id="addProduct" style="margin-bottom: 55px;">
     <div class="card">
         <div style="display: block;">
             <div style="font-size:10px;color:#888;">商品信息</div>
@@ -58,7 +56,7 @@
             <div style="font-size:10px;color:#888;">商品分类</div>
         </div>
         <div class="">
-            <div style="display: inline-block;border:1px solid #fff;" v-for="(item,index) in category">
+            <div style="display: block;border:1px solid #fff;" v-for="(item,index) in category">
                <div> 一级分类：
                     <select v-bind:data-idx="index"  v-on:change="pCategoryChanged" v-model="item.selected">
                         <option value="0" disabled selected >请选择</option>
@@ -201,22 +199,22 @@
             <div style="font-size:10px;color:#888;">客服信息</div>
         </div>
         <div>
-            客服电话: <input style="width: 120px;" v-model="contact_mobile" value="{{contact_mobile}}"  placeholder="客服电话"/>
+            客服电话: <input style="width: 120px;" v-model="contact_mobile" v-bind:value="contact_mobile"  placeholder="客服电话"/>
         </div>
         <div>
-            客服微信: <input style="width: 120px;" v-model="contact_wx" value="{{contact_wx}}"  placeholder="客服微信"/>
+            客服微信: <input style="width: 120px;" v-model="contact_wx" v-bind:value="contact_wx"  placeholder="客服微信"/>
         </div>
     </div>
 
-    <div style="margin-bottom: 50px;"></div>
+
     <div  style="position: fixed;bottom: 10px;right:10px;">
         <div  style="display: block;text-align: center;">
-            <div @click="saveProduct" style="padding:5px;border-radius:20px;cursor: pointer;font-size:20px;background:darkgreen;color:#fff;text-align: center;">保存&上架</div>
+            <button @click="saveProduct" class="button1">上架商品</button>
         </div>
     </div>
     <div style="position: fixed;bottom: 10px;left:10px;">
         <div  style="display: block;text-align: center;">
-            <div @click="goBack" style="padding:5px;border-radius:20px;cursor: pointer;font-size:20px;background:#888888;color:#fff;text-align: center;"><返回</div>
+            <button @click="goBack" class="button1">&lt;返回</button>
         </div>
     </div>
 

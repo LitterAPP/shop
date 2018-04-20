@@ -24,6 +24,13 @@ var listSourceURL='/shopmng/listSource'
 var deliverURL='/shopmng/deliverMng'
 var listCouponURL = '/shopmng/listCoupon'
 var addCouponURL = '/shopmng/addCoupon'
+var listWeTaoURL = '/shopmng/listWeTao'
+var listWeTaoForUserURL = '/shop/listWeTao'
+var addWeTaoUrl = '/shopmng/addWeTao'
+var getOneWeTaoUrl = '/shopmng/getOneWeTao'
+var weTaoDetailUrl='/shop/weTaoDetail'
+var zanOnDetailPageURL='/shop/zanOnDetailPage'
+
 var urlTools = {
     //获取RUL参数值
     getUrlParam: function(name) {               /*?videoId=identification  */
@@ -56,7 +63,9 @@ var common = {
                 url:listCategroyURL,
                 type : "POST",
                 dataType:"json",
-                data : {},
+                data : {
+                    force:true,
+                },
                 success:function(result){
                     console.log('调用listCategroy结束')
                     if(result && result.code==1){

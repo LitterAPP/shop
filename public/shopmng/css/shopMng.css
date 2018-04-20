@@ -1,3 +1,12 @@
+[v-cloak] {
+    display: none;
+}
+a{
+    text-decoration: none;
+}
+a:hover{
+
+}
 .shopAvatar img{
     height: 45px;
     width: 45px;
@@ -30,7 +39,112 @@
     height: 320px;
     width: 320px;
 }
+.preview_1{
+    position: fixed;
+    right: 0px;
+    bottom: 10px;
+}
+.preview_0{
+    position: fixed;
+    right: -300px;
+    bottom: 10px;
+}
+.screen-header{
+    height: 80px;
+    width: 338px;
+    background-size:100% 100%;
+    background-image: url("../images/mobile_header_bg.png");
+}
+.screen-middle{
+    height: 450px;
+    width: 338px;
+    background-repeat: repeat-x;
+    background-size:100% 100%;
+    background-image: url("../images/mobile_middle_bg.png");
+    /*
+    background: #DDDDDD;
+    */
+    position: relative;
 
-[v-cloak] {
-    display: none;
+}
+.screen-footer{
+    height: 85px;
+    width: 338px;
+    background-size:100% 100%;
+    background-image: url("../images/mobile_footer_bg.png");
+}
+.screen-middle-1{
+    height: 120px;
+    width: 300px;
+    position: relative;
+    margin-left: 19px;
+}
+.screen-middle-2{
+    height: 45px;
+    line-height: 45px;
+    width: 300px;
+    position: relative;
+    margin-left: 19px;
+    background: #fff;
+}
+.screen-middle-2 div{
+    height: 40px;
+    text-align: center;
+    width:60px;background:rgba(0,0,0,0);color:#2c2c2c;
+    float: left;
+    margin-left: 5px;
+    font-size:13px;
+}
+.screen-middle-bottom{
+    height: 45px;
+    line-height: 45px;
+    width: 300px;
+    position: absolute;
+    bottom: 0px;
+    left: 19px;
+    background: #fff;
+}
+.screen-middle-bottom div{
+    text-align: center;
+    width:60px;background:rgba(0,0,0,0);color:#2c2c2c;
+    float: left;
+    margin-left: 5px;
+    font-size:13px;
+    background: #fff;
+}
+
+.screen-middle-middle{
+    height: 240px;
+    overflow-y: auto;
+    width: 300px;
+    margin-left: 19px;
+    background: #DDDDDD;
+    overflow-x: hidden;
+}
+
+.screen-middle-middle div{
+
+}
+
+.swiper-container {
+    width: 300px;
+    height: 170px;
+}
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    /* Center slide text vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
 }

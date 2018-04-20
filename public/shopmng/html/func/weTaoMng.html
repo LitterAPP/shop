@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+    <link type="text/css" rel="styleSheet"  href="../../css/weTaoMng.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/table.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/search.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/page.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+</head>
+<body>
+<div id="weTaoMng" style="margin-bottom: 50px;">
+    <div v-if="mask" class="mask">
+        <div v-cloak>
+            {{maskText}}
+        </div>
+    </div>
+    <div class="search">
+        <div>搜索关键字：<input v-model="condition.keyword"  type="text" placeholder="关键字"/></div>
+        <div>
+            <button class="button1" @click="search">查询</button>
+            <button class="button1" @click="add">新建</button>
+        </div>
+    </div>
+
+    <div class="container" style="" v-for="item in list" >
+        <div class="title">
+            <span v-html="item.content"></span>
+        </div>
+        <div class="image-container">
+            <div class="images" v-for="img in item.images">
+                <img style="display: inline-block;" v-bind:src="img.remoteUrl">
+            </div>
+        </div>
+
+        <div class="bottom">
+            <div style="float: left;">
+                <span>{{item.createTime}}</span>
+                <div class="wrap">
+                    <img src="../../images/view-0.png">
+                    <span>{{item.view}}</span>
+                </div>
+            </div>
+            <div style="float: right;">
+                <div class="wrap">
+                    <img src="../../images/zan-0.png">
+                    <span>{{item.zan}}</span>
+                </div>
+                <div class="wrap">
+                    <img src="../../images/comment-0.png">
+                    <span>{{item.comment}}</span>
+                </div>
+                <button v-bind:data-id="item.id" @click="goToEdit"  class="button1">编辑</button>
+            </div>
+        </div>
+    </div>
+
+    <div v-cloak class="pageInfo">
+        <div v-cloak data-flag="-1" @click="more">&lt;&lt;上一页</div>
+        {{page}}/{{pageTotal}}
+        <div v-cloak  data-flag="1" @click="more">下一页&gt;&gt;</div>
+    </div>
+
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/weTaoMng.js"></script>
+</body>
+</html>

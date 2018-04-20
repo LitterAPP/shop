@@ -50,6 +50,14 @@ var deliverMng = new Vue({
         deliverOK:function(){
             var that = this
             console.log('发货订单id', that.deliverOrderId,that.expressSelected)
+            if(stringEmpty(that.expressSelected)){
+                toast(that,'请选择物流公司')
+                return ;
+            }
+            if(stringEmpty(that.expressOrderCode)){
+                toast(that,'请填写物流订单号')
+                return ;
+            }
             showLoading(that,'发货登记中,请稍后...')
             $.ajax({
                 url:deliverURL,
