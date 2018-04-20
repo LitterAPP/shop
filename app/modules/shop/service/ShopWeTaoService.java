@@ -37,11 +37,21 @@ public class ShopWeTaoService {
 		Dal.update(weTao, "ShopWetaoDDL.view", new Condition("ShopWetaoDDL.id","=",id));
 	}
 	
-	public static void comment(int id,String avatar,String nickName){
+	public static void comment(int id,int userId,String avatar,String nickName,String comment,String clientIp){
 		ShopWetaoDDL weTao = get(id);
 		if(weTao==null)return ;
 		weTao.setComment(weTao.getComment()+1);
-		Dal.update(weTao, "ShopWetaoDDL.view", new Condition("ShopWetaoDDL.id","=",id));
+		Dal.update(weTao, "ShopWetaoDDL.comment", new Condition("ShopWetaoDDL.id","=",id));
+		
+		ShopWeTaoCommentService.addComment(id, comment, userId, nickName, avatar, clientIp);
+	}
+	
+	public static void deleteComment(int id,int commentId){
+		ShopWetaoDDL weTao = get(id);
+		if(weTao==null)return ;
+		weTao.setComment(weTao.getComment()-1);
+		Dal.update(weTao, "ShopWetaoDDL.comment", new Condition("ShopWetaoDDL.id","=",id));
+		ShopWeTaoCommentService.delComment(commentId);
 	}
 	
 	public static ShopWetaoDDL get(int id){

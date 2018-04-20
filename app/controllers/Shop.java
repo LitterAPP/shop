@@ -44,6 +44,7 @@ import modules.shop.ddl.ShopProductGroupDDL;
 import modules.shop.ddl.ShopProductImagesDDL;
 import modules.shop.ddl.ShopTogetherDDL;
 import modules.shop.ddl.ShopTogetherJoinerDDL;
+import modules.shop.ddl.ShopWetaoCommentDDL;
 import modules.shop.ddl.ShopWetaoDDL;
 import modules.shop.ddl.UserAccountDDL;
 import modules.shop.service.ShopCommunityService;
@@ -57,6 +58,7 @@ import modules.shop.service.ShopProductGroupService;
 import modules.shop.service.ShopProductImageService;
 import modules.shop.service.ShopProductService;
 import modules.shop.service.ShopTogetherService;
+import modules.shop.service.ShopWeTaoCommentService;
 import modules.shop.service.ShopWeTaoService;
 import modules.shop.service.UserAccountService;
 import modules.shop.service.UserService;
@@ -1183,14 +1185,103 @@ public class Shop extends Controller{
 				for(String ossKey : weTao.getImages().split(",")){
 					images.add(API.getObjectAccessUrlSimple(ossKey));
 				}
-			}			
+			}
 			
+			Map<String,Object> comments = wrapComments(1,5,id,null);
 			ShopWeTaoService.view(id);
-			renderTemplate("weTaoDetailTmp.html",detail,images);
+			renderTemplate("weTaoDetailTmp.html",detail,images,comments);
 		}catch(Exception e){
 			Logger.error(e, e.getMessage());
 			renderText("服务器异常");
 		}
+	}
+	
+	
+	public static void delWeTaoComment(int commentId,int weTaoId,String session,int page,int pageSize){
+		try{
+			UsersDDL user = UserService.findBySession(session);
+			if(user==null){
+				renderJSON(RtnUtil.returnLoginFail());
+			} 
+ 			ShopWeTaoService.deleteComment(weTaoId,commentId);
+			Map<String,Object> response = wrapComments(page,pageSize,weTaoId,user.getId().intValue());
+			renderJSON(RtnUtil.returnSuccess("OK", response));
+			
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	
+	public static void addWeTaoComment(int weTaoId,String session,String comment,int page,int pageSize){
+		try{
+			UsersDDL user = UserService.findBySession(session);
+			if(user==null){
+				renderJSON(RtnUtil.returnLoginFail());
+			} 
+			ShopWeTaoService.comment(weTaoId, user.getId().intValue(), user.getAvatarUrl(), user.getNickName(), comment, request.remoteAddress);
+			
+			
+			Map<String,Object> response = wrapComments(page,pageSize,weTaoId,user.getId().intValue());
+			renderJSON(RtnUtil.returnSuccess("OK", response));
+			
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	public static void listWeTaoComment(String session,int weTaoId,int page,int pageSize){
+		try{ 
+			Integer userId = null;
+			UsersDDL user = UserService.findBySession(session);
+			if(user!=null){
+				 userId = user.getId().intValue();
+			} 
+			Map<String,Object> response = wrapComments(page,pageSize,weTaoId,userId);
+			renderJSON(RtnUtil.returnSuccess("OK", response));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	private static Map<String,Object> wrapComments(int page,int pageSize,int weTaoId,Integer userId){
+		List<Map<String,Object>> comments = new ArrayList<Map<String,Object>>();
+		Map<String,Object> response = new HashMap<String,Object>();
+		
+		int total = ShopWeTaoCommentService.countComment(weTaoId);
+		response.put("total", total);
+		response.put("pageTotal", Math.ceil(total/(double)pageSize));
+		 
+		if(total == 0){
+			response.put("list", comments);
+			return response;
+		}	
+		
+		page = page==0?1:page;
+		pageSize = pageSize==0?10:pageSize;
+		
+		 List<ShopWetaoCommentDDL>  list = ShopWeTaoCommentService.list(weTaoId,page, pageSize);
+		 
+			
+		for(ShopWetaoCommentDDL comment : list){
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("id",comment.getId());
+			map.put("weTaoId", comment.getWetaoId());
+			map.put("createTime", DateUtil.timeDesc(comment.getCreateTime()));
+			map.put("comment", comment.getComment());
+			map.put("nickName", comment.getNickName());
+			map.put("avatar", comment.getAvatar());
+			map.put("userId", comment.getUserId());
+			if(userId!=null && comment.getUserId() == userId.intValue()){
+				map.put("isAdmin", true);
+			}
+			comments.add(map);
+		}
+		response.put("list", comments);
+		return response;
 	}
 	 
 }
