@@ -7,6 +7,7 @@ import java.util.Map;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import jws.Jws;
 import jws.Logger;
 import jws.dal.Dal;
 import jws.dal.sqlbuilder.Condition;
@@ -97,7 +98,7 @@ public class CheckTogetherValid implements Runnable{
 					String packagestr = parsms.get("package").getAsString();
 					String page="pages/shop/orderdetail?orderId="+order.getOrderId();
 					
-					API.sendWxMessage(parsms.get("appId").getAsString(), buyer.getOpenId(), "ZrLIenXBGOwCQMm3BdsT8fX6odlQKbm5WsBHUR7uzOo", page, packagestr.split("=")[1], dataMap);
+					API.sendWxMessage(parsms.get("appId").getAsString(), buyer.getOpenId(), Jws.configuration.getProperty("wx.msg.template.id.jspt"), page, packagestr.split("=")[1], dataMap);
 				}
 			}
 		}catch(Exception e){

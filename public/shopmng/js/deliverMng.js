@@ -26,7 +26,7 @@ var deliverMng = new Vue({
         },
         expressList:[],
         expressOrderCode:'',
-        expressSelected:'',
+        expressSelected:'DBL',
         deliverOrderId:'',
         deliverPrompt:false,
         mask:false,
@@ -171,7 +171,8 @@ var deliverMng = new Vue({
         })
         listSource(3,function(result){
             that.expressList = result
+            that.expressSelected='DBL'
         })
-        that.listOrder('','',1,1,pageSize,false)
+        that.listOrder('','',-1,1,pageSize,false)
     },
 })

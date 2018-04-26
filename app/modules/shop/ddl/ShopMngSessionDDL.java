@@ -9,7 +9,7 @@ import jws.dal.common.DbType;
 /**
  * 
  * @author auto
- * @createDate 2018-04-03 10:22:24
+ * @createDate 2018-04-26 14:51:46
  **/
 @Table(name="shop_mng_session")
 public class ShopMngSessionDDL{
@@ -51,6 +51,24 @@ public class ShopMngSessionDDL{
 		this.userName=userName;
 	}
 
+	@Column(name="shop_id", type=DbType.Varchar)
+	private String shopId;
+	public String getShopId() {
+		return shopId;
+	}
+	public void setShopId(String shopId){
+		this.shopId=shopId;
+	}
+
+	@Column(name="shop_qrcode_key", type=DbType.Varchar)
+	private String shopQrcodeKey;
+	public String getShopQrcodeKey() {
+		return shopQrcodeKey;
+	}
+	public void setShopQrcodeKey(String shopQrcodeKey){
+		this.shopQrcodeKey=shopQrcodeKey;
+	}
+
 	@Column(name="expire_time", type=DbType.DateTime)
 	private Long expireTime;
 	public Long getExpireTime() {
@@ -75,6 +93,8 @@ public class ShopMngSessionDDL{
 		object.setSession(null);
 		object.setUserId(null);
 		object.setUserName(null);
+		object.setShopId(null);
+		object.setShopQrcodeKey(null);
 		object.setExpireTime(null);
 		object.setCreateTime(null);
 		return object;

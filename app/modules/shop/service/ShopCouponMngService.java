@@ -52,59 +52,79 @@ public class ShopCouponMngService {
 	 * @param productId
 	 * @return
 	 */
-	public static List<ShopCouponMngDDL> selectCouponActivities(String productId,int sellerId,int count){
+	public static List<ShopCouponMngDDL> selectCouponActivities(String shopId,String productId,int sellerId,int count){
 		
 		List<ShopCouponMngDDL> result = new ArrayList<ShopCouponMngDDL>();
 		if(count<0){
 			return result;
 		}
 		
+		//优先根据店铺过滤符合条件的代金券
+		
+		
+		
 		//优先根据商品ID过滤符合条件的
-		if(!StringUtils.isEmpty(productId)){
+		if(!StringUtils.isEmpty(productId)){ 
+			count -= result.size();
+			if(count<=0){
+				return result;
+			}
+			
 			Condition cond = new Condition("ShopCouponMngDDL.startTime","<=",System.currentTimeMillis());
 			cond.add(new Condition("ShopCouponMngDDL.endTime",">",System.currentTimeMillis()), "and");
 			cond.add(new Condition("ShopCouponMngDDL.expireTime",">",System.currentTimeMillis()), "and");
 			Sort sort = new Sort("ShopCouponMngDDL.expireTime",false);
 			cond.add(new Condition("ShopCouponMngDDL.couponType","=",COUPON_NONE_PLATFROM), "and");
 			cond.add(new Condition("ShopCouponMngDDL.limitProductId","=",productId), "and");
+			
+			if(!StringUtils.isEmpty(shopId)){ 
+				cond.add(new Condition("ShopCouponMngDDL.shopId","=",shopId), "and"); 
+			}			
+			
+			
 			List<ShopCouponMngDDL> list = Dal.select("ShopCouponMngDDL.*", cond, sort, 0, count);
-			if(list!=null && list.size() >= count){
-				result.addAll(list);
-				return result;
+			if(list!=null && list.size() >= 0){
+				result.addAll(list);				
 			}
-			if(list != null){
-				result.addAll(list);
-			}
+			
 		}
 		
 		if(sellerId != 0){
+			
+			count -= result.size();
+			if(count<=0){
+				return result;
+			}
 			Condition cond = new Condition("ShopCouponMngDDL.startTime","<=",System.currentTimeMillis());
 			cond.add(new Condition("ShopCouponMngDDL.endTime",">",System.currentTimeMillis()), "and");
 			cond.add(new Condition("ShopCouponMngDDL.expireTime",">",System.currentTimeMillis()), "and");
 			Sort sort = new Sort("ShopCouponMngDDL.expireTime",false);
 			cond.add(new Condition("ShopCouponMngDDL.couponType","=",COUPON_NONE_PLATFROM), "and");
 			cond.add(new Condition("ShopCouponMngDDL.limitSellerId","=",sellerId), "and");
-			count -= result.size();
-			if(count<=0){
-				return result;
-			}
+			
+			if(!StringUtils.isEmpty(shopId)){ 
+				cond.add(new Condition("ShopCouponMngDDL.shopId","=",shopId), "and"); 
+			}	
+			
 			List<ShopCouponMngDDL> list = Dal.select("ShopCouponMngDDL.*", cond, sort, 0, count);
-			if(list!=null && list.size() >= count){
-				result.addAll(list);
-				return result;
-			}
-			if(list != null){
-				result.addAll(list);
-			}
+			if(list!=null && list.size() >= 0){
+				result.addAll(list); 
+			} 
 		} 
 		
 		 
+		count -= result.size();
 		if(count<=0){
 			return result;
-		} 
+		}
 		Condition cond = new Condition("ShopCouponMngDDL.startTime","<=",System.currentTimeMillis());
 		cond.add(new Condition("ShopCouponMngDDL.endTime",">",System.currentTimeMillis()), "and");
 		cond.add(new Condition("ShopCouponMngDDL.expireTime",">",System.currentTimeMillis()), "and");
+		
+		if(!StringUtils.isEmpty(shopId)){ 
+			cond.add(new Condition("ShopCouponMngDDL.shopId","=",shopId), "and"); 
+		}	
+		
 		Sort sort = new Sort("ShopCouponMngDDL.expireTime",false);
 		//cond.add(new Condition("ShopCouponMngDDL.couponType","=",COUPON_PLATFROM), "and");
 		List<ShopCouponMngDDL> list = Dal.select("ShopCouponMngDDL.*", cond, sort, 0, count);
@@ -115,8 +135,12 @@ public class ShopCouponMngService {
 	}
 	
 	
-	public static List<ShopCouponMngDDL> listCoupon(String couponId,String keyword,int page,int pageSize){
+	public static List<ShopCouponMngDDL> listCoupon(String shopId,String couponId,String keyword,int page,int pageSize){
 		Condition cond = new Condition("ShopCouponMngDDL.id",">",0);
+		if(!StringUtils.isEmpty(shopId)){
+			cond.add(new Condition("ShopCouponMngDDL.shopId","=",shopId), "and");
+		}
+		
 		if(!StringUtils.isEmpty(couponId)){
 			cond.add(new Condition("ShopCouponMngDDL.couponId","=",couponId), "and");
 		}
@@ -127,8 +151,12 @@ public class ShopCouponMngService {
 		return Dal.select("ShopCouponMngDDL.*", cond, sort, (page-1)*pageSize, pageSize);
 	}
 	
-	public static int countCoupon(String couponId,String keyword){
+	public static int countCoupon(String shopId,String couponId,String keyword){
 		Condition cond = new Condition("ShopCouponMngDDL.id",">",0);
+		if(!StringUtils.isEmpty(shopId)){
+			cond.add(new Condition("ShopCouponMngDDL.shopId","=",shopId), "and");
+		}
+		
 		if(!StringUtils.isEmpty(couponId)){
 			cond.add(new Condition("ShopCouponMngDDL.couponId","=",couponId), "and");
 		}
@@ -138,12 +166,13 @@ public class ShopCouponMngService {
 		return Dal.count(cond);
 	}
 	
-	public static void replace(String couponId,String couponName,int amount,String limitProductId,
+	public static void replace(String shopId,String couponId,String couponName,int amount,String limitProductId,
 			int limitSellerId,int limitPrice,int limitTimes,long expireTime,long startTime,long endTime){
 		ShopCouponMngDDL coupon = new ShopCouponMngDDL();
 		coupon.setCouponId(couponId);
+		coupon.setShopId(shopId);
 		if(!StringUtils.isEmpty(couponId)){
-			List<ShopCouponMngDDL>  olds = listCoupon(couponId,null,1,1);
+			List<ShopCouponMngDDL>  olds = listCoupon(shopId,couponId,null,1,1);
 			if(olds!=null && olds.size()>0){
 				coupon = olds.get(0);				 
 			}

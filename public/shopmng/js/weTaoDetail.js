@@ -10,6 +10,7 @@ var weTaoDetail = new Vue({
     data: {
         zan:0,
         isZan:false,
+        shopId:'',
         mask:false,
         maskText:'',
     },
@@ -17,6 +18,18 @@ var weTaoDetail = new Vue({
 
     },
     methods:{
+        viewComments:function(e){
+            var wetaoid = e.currentTarget.dataset.wetaoid
+            var url = '/pages/wetao/comment?wetaoid='+wetaoid
+            if(window.__wxjs_environment === 'miniprogram'){
+                wx.miniProgram.reLaunch({
+                    url: url
+                })
+            }else{
+                console.log(url)
+                toast(this,'请前往小程序操作')
+            }
+        },
         zanDetail:function(e){
             var id = e.currentTarget.dataset.id
             var that = this
@@ -40,12 +53,19 @@ var weTaoDetail = new Vue({
             })
         },
         goBackMinapp:function(){
-            window.history.back()
+            var url = '/pages/shop/webview?url='+encodeURIComponent(domain+'shopmng/app/weTao.html')
+            if(window.__wxjs_environment === 'miniprogram'){
+                wx.miniProgram.reLaunch({
+                    url: url
+                })
+            }else{
+                window.history.back()
+            }
         }
     },
     created:function(){
         var that = this
-        console.log(window.__wxjs_environment)
+        console.log('created')
         if(window.__wxjs_environment === 'miniprogram'){
 
         }else{
@@ -57,14 +77,44 @@ var weTaoDetail = new Vue({
         console.log('beforeMount')
     },
     mounted:function(){
+        console.log('mounted')
         window.addEventListener('scroll', this.handleScroll)
+
+        var that = this
+        var minapp = window.__wxjs_environment === 'miniprogram'
+
+        $("a").off('click').on('click',function(e){
+
+            var href =$(this).attr('href');
+            //带上商铺ID
+            if(href && href.indexOf('?')>0){
+                href = href+'&shopId='+that.shopId
+            }else{
+                href = href+'?shopId='+that.shopId
+            }
+            console.log('1111href',href)
+            if(!minapp &&  href.startsWith('minapp:')){
+                toast(that,'请使用小程序访问')
+                return false
+            }
+            if(minapp && href.startsWith('minapp:')){
+                var minAppUrl =  href.substr(7)
+                wx.miniProgram.reLaunch({
+                    url: minAppUrl
+                })
+                return false
+            }else if(!minapp &&  href.startsWith('http')){
+                window.location.href=href
+                return false
+            }
+            return false;
+        });
     },
     beforeUpdate:function(){
         console.log('beforeUpdate')
     },
     updated:function(){
         console.log('updated')
-
     }
     ,
     beforeDestroy:function(){

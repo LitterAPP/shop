@@ -52,9 +52,6 @@
             </div>
         </div>
     </div>
-
-
-
     <div class="top">
         <img @click="goBackMinapp" src="/public/shopmng/images/pull_down_icon.png" style="height:30px;width:30px;transform: rotate(90deg);">
         <span class="top-title">微淘</span>
@@ -65,5 +62,13 @@
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="/public/shopmng/js/config.js"></script>
 <script src="/public/shopmng/js/weTao.js"></script>
+<script>
+    $(document).ready(function(){
+        $("a").click(function(){
+            alert('test')
+            return false
+        });
+    });
+</script>
 </body>
 </html>

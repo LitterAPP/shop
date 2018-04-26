@@ -52,13 +52,13 @@ public class Upload extends Controller{
 					fileFix.equals(".jpeg") || 
 					fileFix.equals(".png")){
 				if(cos==1){
-					objectKey = API.uploadImageToTencent("hongjiu-1252785849", file, 400, 0.9f);
+					objectKey = API.uploadImageToTencent(file, 400, 0.9f);
 				}else{
-					objectKey = API.uploadImage("tasty", file, 400, 0.9f);
+					objectKey = API.uploadImage(file, 400, 0.9f);
 				}
 				
 			}else{
-				objectKey = API.uploadToAliOss("tasty", file);
+				objectKey = API.uploadToAliOss(file);
 			}
 			Cache.set(md5FileKey, objectKey, "28d");
 			renderJSON(RtnUtil.returnSuccess("OK",objectKey));
@@ -137,9 +137,9 @@ public class Upload extends Controller{
 			String objectKey = null;
 			//判断是否图片，图片进行压缩
 			if(cos==1){
-				objectKey = API.uploadImageToTencent("hongjiu-1252785849", file, 400, 0.9f);
+				objectKey = API.uploadImageToTencent(file, 400, 0.9f);
 			}else{
-				objectKey = API.uploadImage("tasty", file, 400, 0.9f);
+				objectKey = API.uploadImage(file, 400, 0.9f);
 			}
 			Cache.set(md5FileKey, objectKey, "28d");
 			renderJSON(RtnUtil.returnSuccess("OK",objectKey));

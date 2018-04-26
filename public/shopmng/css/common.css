@@ -7,7 +7,8 @@ input{
     outline:medium;
     height: 30px;
     padding: 5px;
-    border-radius: 3px;
+    border-radius: 5px;
+
 }
 select{
     border:none;
@@ -17,14 +18,16 @@ select{
     border-radius: 3px;
 }
 select:hover{
-    border: 1px solid #178FE5;
-    box-shadow: 0px 1px 8px #178FE5;
+    border: 1px solid #ffffff;
+    box-shadow: 0px 1px 8px #ffffff;
 }
 
 
 input:focus{
-    border:1px solid #178FE5;
-    box-shadow: 0px 1px 8px #178FE5;
+    border-bottom:1px solid #DC143C;
+    box-shadow: 0px 1px 8px #fff;
+    background: #fff;
+    border-radius: 0px;
 }
 
 
@@ -33,7 +36,7 @@ button {
     border: none;
     outline: none;
     color: white;
-    padding: 10px 32px;
+    padding: 5px 10px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -41,33 +44,56 @@ button {
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     cursor: pointer;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 .button1 {
-    background-color: white;
-    color: black;
-    border: 1px solid #178FE5;
+    background-color: #fff;
+    color: #451920;
+    border: 1px solid #810020;
+}
+
+.buttonLogin {
+    background-color: #00B2EE;
+    color: #fff;
+    border: 1px solid #810020;
+}
+.buttonLogin:hover {
+    background-color: #810020;
+    color: white;
+    box-shadow: 0px 1px 8px #FF4500;
 }
 
 .button-del{
     background-color: white;
     color: #000;
-    border: 1px solid #FF4500;
+    border: 1px solid #DC143C;
 }
 .button-del:hover{
-    background-color: #FF4500;
+    background-color: red;
+    color: white;
+    box-shadow: 0px 1px 8px red;
+}
+
+.button1:hover {
+    background-color: #810020;
     color: white;
     box-shadow: 0px 1px 8px #FF4500;
 }
 
-.button1:hover {
-    background-color: #178FE5;
+.buttonDisable{
+    background-color: #BBBBBB;
     color: white;
-    box-shadow: 0px 1px 8px #178FE5;
+    border: 1px solid #810020;
 }
-
-
+.buttonReg{
+    background: rgba(0,0,0,0);
+}
+.buttonReg:hover{
+    background-color: #810020;
+    color: white;
+    box-shadow: 0px 1px 8px #FF4500;
+}
 .card{
     background: #fff;
     margin-bottom:10px ;

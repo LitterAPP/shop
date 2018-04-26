@@ -5,12 +5,12 @@ var uploadImgURL='/upload/uploadImageOfBase64'
 var loginURL='/shopmng/loginMng'
 var checkSessionURL='/shopmng/checkSession'
 var quitLoginURL='/shopmng/quitLogin'
-var getShopIndexConfigURL='/shop/getShopIndexConfig'
+var getShopIndexConfigURL='/shopmng/getShopIndexConfig'
 var saveShopConfigURL='/shopmng/saveShopIndex'
 var listCategroyURL='/shopmng/categoryALL'
 var saveProductURL='/shopmng/saveProductInfo'
 var getOneProductURL='/shopmng/getOneProduct'
-var listProductURL='/shop/listProduct'
+var listProductURL='/shopmng/listProduct'
 var operatedProductURL='/shopmng/operatedProduct'
 var addPCategroyURL='/shopmng/addPCategory'
 var delPCategroyURL='/shopmng/delPCategory'
@@ -27,10 +27,14 @@ var addCouponURL = '/shopmng/addCoupon'
 var listWeTaoURL = '/shopmng/listWeTao'
 var listWeTaoForUserURL = '/shop/listWeTao'
 var addWeTaoUrl = '/shopmng/addWeTao'
+var offLineWeTaoUrl = '/shopmng/offLineWeTao'
+var onLineWeTaoUrl = '/shopmng/onLineWeTao'
 var getOneWeTaoUrl = '/shopmng/getOneWeTao'
 var weTaoDetailUrl='/shop/weTaoDetail'
 var zanOnDetailPageURL='/shop/zanOnDetailPage'
-
+var domain = 'http://192.168.0.184:9020/'
+var smsSendUrl='/Sms/sendCode'
+var regUrl='/shopmng/reg'
 var urlTools = {
     //获取RUL参数值
     getUrlParam: function(name) {               /*?videoId=identification  */
@@ -119,6 +123,12 @@ var common = {
     stringEmpty:function(str){
         str = str+''
         return !str || str.replace(/\s+/g, '').length==0
+    },
+    checkMobile:function(mobile){
+        if(/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/.test(mobile)){
+            return true
+        }
+        return false
     }
 }
 //alias
@@ -131,3 +141,4 @@ var showLoading = common.showLoading
 var hideLoading = common.hideLoading
 var stringEmpty = common.stringEmpty
 var listSource =common.listSource
+var checkMobile=common.checkMobile

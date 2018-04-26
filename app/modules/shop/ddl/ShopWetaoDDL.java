@@ -9,7 +9,7 @@ import jws.dal.common.DbType;
 /**
  * 
  * @author auto
- * @createDate 2018-04-19 10:29:34
+ * @createDate 2018-04-25 18:01:04
  **/
 @Table(name="shop_wetao")
 public class ShopWetaoDDL{
@@ -24,7 +24,16 @@ public class ShopWetaoDDL{
 		this.id=id;
 	}
 
-	@Column(name="content", type=DbType.Text)
+	@Column(name="shop_id", type=DbType.Varchar)
+	private String shopId;
+	public String getShopId() {
+		return shopId;
+	}
+	public void setShopId(String shopId){
+		this.shopId=shopId;
+	}
+
+	@Column(name="content", type=DbType.Varchar)
 	private String content;
 	public String getContent() {
 		return content;
@@ -33,7 +42,7 @@ public class ShopWetaoDDL{
 		this.content=content;
 	}
 
-	@Column(name="images", type=DbType.Text)
+	@Column(name="images", type=DbType.Varchar)
 	private String images;
 	public String getImages() {
 		return images;
@@ -96,7 +105,24 @@ public class ShopWetaoDDL{
 		this.comment=comment;
 	}
 
-	
+	@Column(name="shopping_guide", type=DbType.Varchar)
+	private String shoppingGuide;
+	public String getShoppingGuide() {
+		return shoppingGuide;
+	}
+	public void setShoppingGuide(String shoppingGuide){
+		this.shoppingGuide=shoppingGuide;
+	}
+
+	@Column(name="deleted", type=DbType.Int)
+	private Integer deleted;
+	public Integer getDeleted() {
+		return deleted;
+	}
+	public void setDeleted(Integer deleted){
+		this.deleted=deleted;
+	}
+
 	@Column(name="create_time", type=DbType.DateTime)
 	private Long createTime;
 	public Long getCreateTime() {
@@ -109,6 +135,7 @@ public class ShopWetaoDDL{
 	public static ShopWetaoDDL newExample(){
 		ShopWetaoDDL object=new ShopWetaoDDL();
 		object.setId(null);
+		object.setShopId(null);
 		object.setContent(null);
 		object.setImages(null);
 		object.setSeoTitle(null);
@@ -116,7 +143,9 @@ public class ShopWetaoDDL{
 		object.setSeoKey(null);
 		object.setView(null);
 		object.setZan(null);
-		object.setComment(null);		 
+		object.setComment(null);
+		object.setShoppingGuide(null);
+		object.setDeleted(null);
 		object.setCreateTime(null);
 		return object;
 	}

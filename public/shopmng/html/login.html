@@ -7,13 +7,16 @@
     <link type="text/css" rel="styleSheet"  href="../css/login.css" />
     <link type="text/css" rel="styleSheet"  href="../css/common.css" />
     <link type="text/css" rel="styleSheet"  href="../css/mask.css" />
+    <meta name="title" content="小程序电商后台">
+    <meta name="keywords" content="小程序商店,一键生成小程序商店,快速生成小程序商店,小程序微店,小程序店铺,小程序开店">
+    <meta name="description" content="快速注册，永久免费小程序商店" />
 </head>
 <body>
 
 <div id='loginMng'>
 
     <div  class="container">
-        <div class="login-title">登录</div>
+        <div class="login-title">商铺后台登录</div>
         <div>
             <span><input v-model="userName"  type="text" placeholder="用户名"></span>
         </div>
@@ -22,7 +25,11 @@
         </div>
 
         <div>
-            <button class="button1" @click="login">登录</button>
+            <button class="buttonLogin" @click="login"style="padding: 10px 32px;width: 220px;">登录</button>
+        </div>
+
+        <div>
+            <button class="buttonReg" @click="reg"style=" padding: 10px 32px;width: 220px;">我要注册</button>
         </div>
     </div>
 

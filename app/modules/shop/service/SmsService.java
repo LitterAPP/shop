@@ -3,6 +3,7 @@ package modules.shop.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import jws.Jws;
 import jws.Logger;
 import jws.dal.Dal;
 import jws.dal.sqlbuilder.Condition;
@@ -15,10 +16,14 @@ public class SmsService {
         int code=(int)((Math.random()*9+1)*1000);//为变量赋随机值1000-9999
 		List<String> params = new ArrayList<String>();
 		params.add(""+code);
-		params.add("15");
+		params.add("15");//15分钟有效
 		try {
 			//QQSMSUtil.sendWithParam("86",order.getSellerTelNumber(),70567,null,"青乐科技",null,null);
-			boolean result =QQSMSUtil.sendWithParam("86",mobile,70567,params,"青乐科技",null,null);
+			boolean result =QQSMSUtil.sendWithParam("86",mobile,
+					Integer.parseInt(String.valueOf(Jws.configuration.get("tencent.sms.tmp_authcode.id"))),
+					params,
+					String.valueOf(Jws.configuration.get("tencent.sms.tmp_signname")),
+					null,null);
 			if(!result){
 				return 0;
 			}

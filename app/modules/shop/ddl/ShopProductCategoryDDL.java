@@ -51,6 +51,16 @@ public class ShopProductCategoryDDL{
 	public void setOrderBy(Integer orderBy) {
 		this.orderBy = orderBy;
 	}
+	
+	
+	@Column(name="shop_id", type=DbType.Varchar)
+	private String shopId;
+	public String getShopId() {
+		return shopId;
+	}
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
+	}
 	public static ShopProductCategoryDDL newExample(){
 		ShopProductCategoryDDL object=new ShopProductCategoryDDL();
 		object.setId(null);

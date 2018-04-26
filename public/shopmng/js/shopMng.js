@@ -18,6 +18,7 @@ var flag,index
 var shopMng = new Vue({
     el: '#shopMng',
     data: {
+        shopQRCode:'',
         shopName:'',
         shopAvatar:"",
         shopAvatarKey:'',
@@ -92,6 +93,7 @@ var shopMng = new Vue({
                             that.thirdNavList = result.data.config.thirdNavList
                             that.fourthNavList = result.data.config.fourthNavList
                             that.fiveNavList = result.data.config.fiveNavList
+                            that.shopQRCode = result.data.shopQRCode
                         }else{
 
                         }

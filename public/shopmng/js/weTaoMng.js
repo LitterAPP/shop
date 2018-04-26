@@ -7,7 +7,7 @@
 /**
  * Created by fish on 2018/3/29.
  */
-var pageSize=15
+var pageSize=10
 var weTaoMng = new Vue({
     el: '#weTaoMng',
     data: {
@@ -31,6 +31,52 @@ var weTaoMng = new Vue({
 
     },
     methods:{
+        offLine:function(e){
+            var that = this
+            var id = e.target.dataset.id
+            var params = this.getCondition()
+            that.page=1
+            $.confirm({
+                title: '删除确认',
+                content: '确认删除这条微淘吗？删除后不可恢复。（快捷键：enter=立即伤处，esc=取消不删除）',
+                buttons: {
+                    ok: {
+                        text: "立即删除",
+                        keys: ['enter'],
+                        action: function(){
+                            showLoading(that,'请稍后...')
+                            $.ajax({
+                                url:offLineWeTaoUrl,
+                                type:'POST',
+                                dataType:'json',
+                                data:{
+                                    id:id
+                                },
+                                success:function(result){
+                                    if(result && result.code==1 ){
+                                        toast(that,'删除成功')
+                                        that.listWeTao(params.keyword,that.page,pageSize,false)
+                                    }else{
+                                        toast(that,'微淘删除失败')
+                                    }
+                                }
+                            })
+                        }
+                    },
+                    cancel: {
+                        text: "取消不删除",
+                        keys: ['esc'],
+                        action:function () {
+
+                        }
+                    }
+                }
+            });
+        },
+        onLine:function(e){
+            var id = e.target.dataset.id
+            //暂不实现重新发布
+        },
         goToEdit:function(e){
             var id = e.target.dataset.id
             console.log('get the id is ' , id)
@@ -79,6 +125,7 @@ var weTaoMng = new Vue({
                 dataType:'json',
                 data:{
                     keyword:keyword,
+                    deleted:0,
                     page:page,
                     pageSize:pageSize
                 },
@@ -120,4 +167,26 @@ var weTaoMng = new Vue({
         })
         that.listWeTao('',1,pageSize,false)
     },
+    updated:function(){
+        var that = this
+        var minapp = window.__wxjs_environment === 'miniprogram'
+        $("a").off('click').on('click',function(e){
+            var href =$(this).attr('href');
+            if(!minapp &&  href.startsWith('minapp:')){
+                toast(that,'请使用小程序访问')
+                return false
+            }
+            if(minapp && href.startsWith('minapp:')){
+                var minAppUrl =  href.substr(7)
+                wx.miniProgram.reLaunch({
+                    url: minAppUrl
+                })
+                return false
+            }else if(!minapp &&  href.startsWith('http')){
+                window.location.href=href
+                return false
+            }
+            return false;
+        });
+    }
 })

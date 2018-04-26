@@ -6,6 +6,7 @@
     <link type="text/css" rel="styleSheet"  href="../../css/addWeTao.css" />
     <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
     <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
 </head>
 <body>
 
@@ -13,8 +14,7 @@
     <div style="font-size:10px;color:#888;">微淘文本</div>
 </div>
 <div id="content">
-    <p>初始化的内容</p>
-    <p>初始化的内容</p>
+
 </div>
 <div id="addWeTao">
     <div class="card" style="display: block;margin: 0px;">
@@ -51,6 +51,7 @@
     <div  style="position: fixed;bottom: 10px;right:10px;">
         <div  style="display: block;text-align: center;">
             <button @click="saveWeTao" class="button1">发表</button>
+            <button v-if="id>0" @click="deleteWeTao" class="button-del">删除</button>
         </div>
     </div>
     <div style="position: fixed;bottom: 10px;left:10px;">
@@ -66,6 +67,7 @@
 </div>
 
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="https://unpkg.com/wangeditor@3.1.1/release/wangEditor.min.js"></script>
 <script src="../../js/config.js"></script>

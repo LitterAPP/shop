@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import jws.Jws;
 import jws.Logger;
 import jws.cache.Cache;
 import jws.dal.Dal;
@@ -112,7 +113,11 @@ public class ShopExpressService {
 		//发送短信给商家，提醒发货了
 		try {
 			ShopOrderDDL order = ShopOrderService.findByOrderId(orderId);
-			QQSMSUtil.sendWithParam("86",order.getSellerTelNumber(),70567,null,"青乐科技",null,null);
+			QQSMSUtil.sendWithParam("86",order.getSellerTelNumber(),
+					Integer.parseInt(String.valueOf(Jws.configuration.get("tencent.sms.tmp_notify.id"))),
+					null,
+					String.valueOf(Jws.configuration.get("tencent.sms.tmp_signname")),
+					null,null);
 		} catch (Exception e) {
 			Logger.info(e, e.getMessage());
 		}

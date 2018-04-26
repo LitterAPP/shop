@@ -17,10 +17,14 @@
             <div class="" style="font-weight: bold;font-size: 16px;">请输入发货信息</div>
             <div class="">订单号：{{deliverOrderId}}</div>
             <div class="">物流公司： <select v-model="expressSelected">
-                <option  value="-1">请选择</option>
-                <option v-for="option in expressList" v-bind:value="option.id" >
-                    {{ option.value }}
+                <template  v-for="option in expressList">
+                <option v-if="option.id===expressSelected" selected v-bind:value="option.id" >
+                    {{ option.value }} | {{ option.id }}
                 </option>
+                <option v-else v-bind:value="option.id" >
+                    {{ option.value }} | {{ option.id }}
+                </option>
+                </template>
             </select></div>
             <div class="">快递单号：<input type="text" v-bind:value="expressOrderCode" v-model="expressOrderCode" /></div>
             <div class="" style="float: right;">

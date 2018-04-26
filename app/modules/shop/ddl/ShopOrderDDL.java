@@ -9,7 +9,7 @@ import jws.dal.common.DbType;
 /**
  * 
  * @author auto
- * @createDate 2017-12-26 16:52:06
+ * @createDate 2018-04-25 17:51:31
  **/
 @Table(name="shop_order")
 public class ShopOrderDDL{
@@ -58,6 +58,15 @@ public class ShopOrderDDL{
 	}
 	public void setGroupImg(String groupImg){
 		this.groupImg=groupImg;
+	}
+
+	@Column(name="shop_id", type=DbType.Varchar)
+	private String shopId;
+	public String getShopId() {
+		return shopId;
+	}
+	public void setShopId(String shopId){
+		this.shopId=shopId;
 	}
 
 	@Column(name="product_id", type=DbType.Varchar)
@@ -346,6 +355,7 @@ public class ShopOrderDDL{
 		object.setGroupId(null);
 		object.setGroupName(null);
 		object.setGroupImg(null);
+		object.setShopId(null);
 		object.setProductId(null);
 		object.setProductName(null);
 		object.setBuyerUserId(null);

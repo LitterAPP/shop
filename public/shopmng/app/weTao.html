@@ -7,7 +7,7 @@
     <link type="text/css" rel="styleSheet"  href="../css/mask.css" />
     <link type="text/css" rel="styleSheet"  href="../css/weTao.css" />
 </head>
-<body style="background: #E0EEEE;margin: auto;">
+<body style="background: linear-gradient(#F0F0F0,#F2F2F2);margin: auto;">
 <div id="weTao">
     <div class="topPlaceHolder"></div>
     <div v-if="mask" class="mask">
@@ -19,7 +19,7 @@
         刷新中...
     </div>
     <div class="container" style="" v-for="item in list" >
-        <div style="cursor: pointer;z-index:99;" @click.stop="getDetail"  v-bind:data-id="item.id">
+        <div style="cursor: pointer;z-index:99;" @click="getDetail"  v-bind:data-id="item.id">
             <div class="title">
                 <span v-html="item.content"></span>
             </div>
@@ -51,10 +51,13 @@
             </div>
         </div>
     </div>
-
+    <div v-if="nomore" class="tips">
+        没有更多微淘了
+    </div>
     <div v-if="bottom" class="tips">
         加载中...
     </div>
+
 
     <div class="top">
         <img @click="goBackMinapp" src="../images/pull_down_icon.png" style="height:30px;width:30px;transform: rotate(90deg);">
@@ -66,5 +69,6 @@
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="../js/config.js"></script>
 <script src="../js/weTao.js"></script>
+
 </body>
 </html>

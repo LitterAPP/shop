@@ -11,6 +11,9 @@ var loginMg = new Vue({
         maskText:''
     },
     methods:{
+        reg:function(event){
+            window.location.href='../html/reg.html'
+        },
         login:function(event){
             var that = this
             if(stringEmpty(that.userName)){

@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import jws.Jws;
 import jws.Logger;
 import jws.dal.Dal;
 import jws.dal.sqlbuilder.Condition;
@@ -65,6 +66,7 @@ public class ShopOrderService {
 			}
 			
 		}		
+		order.setShopId(product.getShopId());
 		order.setSellerTelNumber(product.getSellerTelNumber());
 		order.setSellerWxNumber(product.getSellerWxNumber());
 		order.setGroupId(group.getGroupId());
@@ -207,7 +209,7 @@ public class ShopOrderService {
 			dataMap.put("keyword5", k5); 
 			
 			API.sendWxMessage(parsms.get("appId").getAsString(), 
-					buyer.getOpenId(), "JfplF8dSB21-42v5xLvoH7Arz5gO_IHAZqnRrsuw4GI", 
+					buyer.getOpenId(), Jws.configuration.getProperty("wx.msg.template.id.wczf"), 
 					page,packagestr.split("=")[1] , dataMap);
 		} 
 		
@@ -285,7 +287,7 @@ public class ShopOrderService {
 				API.sendWxMessage(
 						params.get("appId").getAsString(), 
 						user.getOpenId(), 
-						"KV1Eb33iTc8umBSOShZPqF5cRW_lF8XXlxLVeV4PoMk",
+						Jws.configuration.getProperty("wx.msg.template.id.wcpt"),
 						"pages/shop/orderdetail?orderId="+joner.getOrderId(),
 						packagestr.split("=")[1], dataMap);
 			}
@@ -335,12 +337,14 @@ public class ShopOrderService {
 		return  Dal.select("ShopOrderDDL.*", condition, sort, (page-1)*pageSize, pageSize);
 	}
 	
-	public static List<ShopOrderDDL> listMngOrder(String orderId,String keyword,int status,int page,int pageSize){
+	public static List<ShopOrderDDL> listMngOrder(String shopId,String orderId,String keyword,int status,int page,int pageSize){
 		Condition condition = new Condition("ShopOrderDDL.id",">",0);
 		if(!StringUtils.isEmpty(orderId)){
 			condition.add(new Condition("ShopOrderDDL.orderId","=",orderId), "and");			 
 		}
-		
+		if(!StringUtils.isEmpty(shopId)){
+			condition.add(new Condition("ShopOrderDDL.shopId","=",shopId), "and");			 
+		}
 		if(!StringUtils.isEmpty(keyword)){
 			condition.add(new Condition("ShopOrderDDL.productName","like","%"+keyword+"%"), "and");
 		}
@@ -354,10 +358,13 @@ public class ShopOrderService {
 		return  Dal.select("ShopOrderDDL.*", condition, sort, (page-1)*pageSize, pageSize);
 	}
 	
-	public static int countMngOrder(String orderId,String keyword,int status){
+	public static int countMngOrder(String shopId,String orderId,String keyword,int status){
 		Condition condition = new Condition("ShopOrderDDL.id",">",0);
 		if(!StringUtils.isEmpty(orderId)){
 			condition.add(new Condition("ShopOrderDDL.orderId","=",orderId), "and");			 
+		}
+		if(!StringUtils.isEmpty(shopId)){
+			condition.add(new Condition("ShopOrderDDL.shopId","=",shopId), "and");			 
 		}
 		
 		if(!StringUtils.isEmpty(keyword)){

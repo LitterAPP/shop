@@ -4,7 +4,7 @@
 /**
  * Created by fish on 2018/3/26.
  */
-var pageSize=10
+var pageSize=10,shopId=''
 var weTao = new Vue({
     el: '#weTao',
     data: {
@@ -17,7 +17,8 @@ var weTao = new Vue({
         pageTotal:0,
         page:1,
         top:false,
-        bottom:false
+        bottom:false,
+        nomore:false
     },
     computed: {
 
@@ -38,21 +39,35 @@ var weTao = new Vue({
             if(scrollTop==0 && !this.top){
                 console.log('到顶部了')
                 this.top = true
+                that.nomore = false
+                that.bottom = false
+                that.page=1
                 this.listWeTao(1,pageSize,false)
             }else if(scrollTop>=$(document).height()-$(window).height()){
-                console.log('到底部了')
-                that.page += parseInt(1)
-                if(that.page > that.pageTotal){
-                    that.page = that.pageTotal
+
+                console.log('到底部了-bottom',that.bottom)
+                if(that.bottom){
                     return
                 }
-                that.bottom=true
-                that.listWeTao(that.page,pageSize,true)
+                that.page += parseInt(1)
+                console.log('到底部了-->page',that.page)
+                if(that.page <= that.pageTotal){
+                    that.nomore = false
+                    that.bottom=true
+                    that.listWeTao(that.page,pageSize,true)
+                }else{
+                    that.page = that.pageTotal
+                    that.nomore = true
+                    that.bottom = false
+                }
+
             }
         },
         goBackMinapp:function(){
             if(window.__wxjs_environment === 'miniprogram'){
-                wx.miniProgram.navigateBack()
+                wx.miniProgram.reLaunch({
+                    url: '/pages/shop/shopIndex'
+                })
             }else{
                 window.history.back()
             }
@@ -67,7 +82,8 @@ var weTao = new Vue({
                 data:{
                     page:page,
                     pageSize:pageSize,
-                    id:id||0
+                    id:id||0,
+                    shopId:shopId
                 },
                 success:function(result){
                     console.log(result)
@@ -99,6 +115,7 @@ var weTao = new Vue({
     },
     created:function(){
         var that = this
+        shopId = urlTools.getUrlParam("shopId")
         console.log(window.__wxjs_environment)
         if(window.__wxjs_environment === 'miniprogram'){
 
@@ -112,12 +129,39 @@ var weTao = new Vue({
     },
     mounted:function(){
         window.addEventListener('scroll', this.handleScroll)
+        var that = this
+        var minapp = window.__wxjs_environment === 'miniprogram'
+        $("a").off('click').on('click',function(e){
+            var href =$(this).attr('href');
+
+            //带上商铺ID
+            if(href && href.indexOf('?')>0){
+                href = href+'&shopId='+shopId
+            }else{
+                href = href+'?shopId='+shopId
+            }
+            console.log('href',href)
+            if(!minapp &&  href.startsWith('minapp:')){
+                toast(that,'请使用小程序访问')
+                return false
+            }
+            if(minapp && href.startsWith('minapp:')){
+                var minAppUrl =  href.substr(7)
+                wx.miniProgram.reLaunch({
+                    url: minAppUrl
+                })
+                return false
+            }else if(!minapp &&  href.startsWith('http')){
+                window.location.href=href
+                return false
+            }
+            return false;
+        });
     },
     beforeUpdate:function(){
         console.log('beforeUpdate')
     },
     updated:function(){
-        console.log('updated')
 
     }
     ,

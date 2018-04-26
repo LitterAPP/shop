@@ -15,6 +15,18 @@
             {{maskText}}
         </div>
     </div>
+
+    <div id="shopQRCode" class="card">
+        <div style="display: block;">
+            <div class="setting-title" class="setting-title">您的专属小程序店铺二维码，微信扫描即可访问</div>
+        </div>
+        <div>
+            <img  v-if="shopQRCode"  v-bind:src="shopQRCode"/>
+        </div>
+    </div>
+
+
+
     <div id="shopHeader" class="card">
         <div style="display: block;">
             <div class="setting-title" class="setting-title">设置店铺名称及头像(100*100)</div>

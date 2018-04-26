@@ -17,13 +17,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import jws.Jws;
+
 
 public class QQSMSUtil {
 	
 	private static Gson gson = new Gson();
-	private static final String appkey="d0bf30c2db1a84f1d0e9ff06761294b8";
-	private static final int appid= 1400049575;
-	private static final String smsUrl = "https://yun.tim.qq.com/v5/tlssmssvr/sendsms";
+	private static final String appkey= String.valueOf(Jws.configuration.get("tencent.sms.key"));
+	private static final int appid= Integer.parseInt(String.valueOf(Jws.configuration.get("tencent.sms.appid")));
+	private static final String smsUrl = String.valueOf(Jws.configuration.get("tencent.sms.url"));
 
     protected static Random random = new Random();
 

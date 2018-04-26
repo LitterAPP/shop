@@ -9,7 +9,7 @@ import jws.dal.common.DbType;
 /**
  * 
  * @author auto
- * @createDate 2018-03-28 16:46:09
+ * @createDate 2018-04-25 17:23:25
  **/
 @Table(name="shop_product")
 public class ShopProductDDL{
@@ -22,6 +22,15 @@ public class ShopProductDDL{
 	}
 	public void setId(Integer id){
 		this.id=id;
+	}
+
+	@Column(name="shop_id", type=DbType.Varchar)
+	private String shopId;
+	public String getShopId() {
+		return shopId;
+	}
+	public void setShopId(String shopId){
+		this.shopId=shopId;
 	}
 
 	@Column(name="product_id", type=DbType.Varchar)
@@ -288,6 +297,7 @@ public class ShopProductDDL{
 	public static ShopProductDDL newExample(){
 		ShopProductDDL object=new ShopProductDDL();
 		object.setId(null);
+		object.setShopId(null);
 		object.setProductId(null);
 		object.setProductBanner(null);
 		object.setShowIndex(null);

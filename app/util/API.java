@@ -60,9 +60,11 @@ import util.baidu.Base64Util;
 
 public class API {
 	// 1 初始化用户身份信息(secretId, secretKey)
-	private static final COSCredentials cred = new BasicCOSCredentials("AKIDCQmDxrO1cRNB7mfZzNfD76KPLH2NBXKB", "W3nbOHA8CEc6etE8pbIB7uhWQM9lDNEz");
+	private static final COSCredentials cred = new BasicCOSCredentials(
+			Jws.configuration.getProperty("tencent.cos.accesskey"),
+			Jws.configuration.getProperty("tencent.cos.accesssecret"));
 	// 2 设置bucket的区域, COS地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
-	private static final ClientConfig clientConfig = new ClientConfig(new Region("ap-guangzhou"));
+	private static final ClientConfig clientConfig = new ClientConfig(new Region(Jws.configuration.getProperty("tencent.cos.region")));
 
 	
 	 
@@ -182,11 +184,14 @@ public class API {
 	
 	}
 	
-	public static String uploadToAliOss(String bucketName,File file) throws Exception{
-		OSSClient ossClient = new OSSClient("oss-cn-beijing.aliyuncs.com",
-				"HW77gOwWnQiwQIuB", 
-				"0N36kSmuIapg7352cX23fOGxUyXMoq");  
+	public static String uploadToAliOss(File file) throws Exception{
+		
+		OSSClient ossClient = new OSSClient(
+				Jws.configuration.getProperty("ali.oss.endpoint"),
+				Jws.configuration.getProperty("ali.oss.accessid"), 
+				Jws.configuration.getProperty("ali.oss.accesskey"));
 		try{ 
+			String bucketName  = Jws.configuration.getProperty("ali.bucket");
 			if (!ossClient.doesBucketExist(bucketName)) {
                 /*
                  * Create a new OSS bucket
@@ -224,7 +229,9 @@ public class API {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String uploadImageToTencent(String bucketName,File file,int width,float quality ) throws Exception{
+	public static String uploadImageToTencent(File file,int width,float quality ) throws Exception{
+		
+		String bucketName = Jws.configuration.getProperty("tencent.bucket");
 		
 		width = width==0?320:width;
 		quality = quality==0.0f?0.9f:quality;	
@@ -276,14 +283,17 @@ public class API {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String uploadImage(String bucketName,File file,int width,float quality ) throws Exception{
+	public static String uploadImage(File file,int width,float quality ) throws Exception{
 		
 		width = width==0?320:width;
 		quality = quality==0.0f?0.9f:quality;
 		
-		OSSClient ossClient = new OSSClient("oss-cn-beijing.aliyuncs.com",
-				"HW77gOwWnQiwQIuB", 
-				"0N36kSmuIapg7352cX23fOGxUyXMoq");
+		String bucketName = Jws.configuration.getProperty("ali.bucket");
+		
+		OSSClient ossClient = new OSSClient(
+				Jws.configuration.getProperty("ali.oss.endpoint"),
+				Jws.configuration.getProperty("ali.oss.accessid"), 
+				Jws.configuration.getProperty("ali.oss.accesskey"));
 		
 		InputStream input = new FileInputStream(file);
 		BufferedImage bufImg = ImageIO.read(input);// 把图片读入到内存中
@@ -331,9 +341,9 @@ public class API {
 		}
 		
 		if(objectKey.startsWith("COS_")){//腾讯云COS新增后，兼容代码
-			return getTencentCosAccessUrl("hongjiu-1252785849",objectKey,0);
+			return getTencentCosAccessUrl(objectKey,0);
 		}else{
-			return getObjectAccessUrl("tasty",objectKey,0);
+			return getObjectAccessUrl(objectKey,0);
 		}
 	}
 	
@@ -345,7 +355,7 @@ public class API {
 	 * @return
 	 * @throws Exception
 	 */
-	private static String getObjectAccessUrl(String bucketName,String objectKey,int expiresInSecond) throws Exception{
+	private static String getObjectAccessUrl(String objectKey,int expiresInSecond) throws Exception{
 		if(StringUtils.isEmpty(objectKey)) return null;
 		
 		Object urlFromCache = Cache.get(objectKey);
@@ -354,19 +364,25 @@ public class API {
 		}
 		
 		if(objectKey.startsWith("COS_")){//腾讯云COS新增后，兼容代码
-			return getTencentCosAccessUrl(bucketName,objectKey,expiresInSecond);
+			return getTencentCosAccessUrl(objectKey,expiresInSecond);
 		}
+		
+		String bucketName = Jws.configuration.getProperty("ali.bucket");
 		OSSClient ossClient = null;
 		try{
+			ossClient = new OSSClient(
+					Jws.configuration.getProperty("ali.oss.endpoint"),
+					Jws.configuration.getProperty("ali.oss.accessid"), 
+					Jws.configuration.getProperty("ali.oss.accesskey"));
 			
-			ossClient = new OSSClient("oss-cn-beijing.aliyuncs.com",
-					"HW77gOwWnQiwQIuB", 
-					"0N36kSmuIapg7352cX23fOGxUyXMoq");
 			expiresInSecond = 1*60*60+5*60;
 			Date expiration = new Date(new Date().getTime() + expiresInSecond * 1000);
 			URL url = ossClient.generatePresignedUrl(bucketName, objectKey, expiration);
 			String urlStr = url.toString();
-			urlStr = urlStr.replace("http://tasty.oss-cn-beijing.aliyuncs.com/", "https://91loving.cn/shoposs/");
+			urlStr = urlStr.replace(
+					"http://"+bucketName+"."+Jws.configuration.getProperty("ali.oss.endpoint")+"/", 
+					Jws.configuration.getProperty("ali.proxy")
+				);
 			Logger.info("根据阿里object key %s 获取URL：%s", objectKey,urlStr);
 			Cache.set(objectKey, urlStr, "1h");
 			return urlStr;
@@ -378,8 +394,9 @@ public class API {
 		} 
 	}
 	
-	private static String getTencentCosAccessUrl(String bucketName,String objectKey,int expiresInSecond) throws Exception{
+	private static String getTencentCosAccessUrl(String objectKey,int expiresInSecond) throws Exception{
 		COSClient cosclient = null;
+		String bucketName = Jws.configuration.getProperty("tencent.bucket");
 		try{
 			cosclient = new COSClient(cred, clientConfig);
 			com.qcloud.cos.model.GeneratePresignedUrlRequest  req =
@@ -399,8 +416,11 @@ public class API {
 	        req.setExpiration(expirationDate);
 	        String url = cosclient.generatePresignedUrl(req).toString();
 	        
-	        //	https://hongjiu-1252785849.cos.ap-guangzhou.myqcloud.com/
-	        url = url.replace("http://hongjiu-1252785849.cos.ap-guangzhou.myqcloud.com/", "https://weixunshi.com/shopcos/");
+	        //https://hongjiu-1252785849.cos.ap-guangzhou.myqcloud.com/
+	        url = url.replace(
+	        		"http://"+Jws.configuration.getProperty("tencent.bucket")+".cos."+Jws.configuration.getProperty("tencent.cos.region")+".myqcloud.com/",
+	        		Jws.configuration.getProperty("tencent.proxy")
+	        	);
 
 	        Cache.set(objectKey, url, "1h");
 	        return url;
@@ -522,7 +542,10 @@ public class API {
 		System.out.println("提交微信统一下单接口数据：");
 		System.out.println(requestBody); 
 		
-		HttpResponse response = HttpUtils.doPost("https://api.mch.weixin.qq.com/", "pay/unifiedorder",  null, null, requestBody, "utf-8");
+		HttpResponse response = HttpUtils.doPost(
+				Jws.configuration.getProperty("wx.pay.url"), 
+				Jws.configuration.getProperty("wx.pay.path"),
+				null, null, requestBody, "utf-8");
 	
 		if(response==null || response.getStatusLine()==null || response.getStatusLine().getStatusCode() != 200){
 			throw new Exception("微信统一下单接口异常"+ new Gson().toJson(response));

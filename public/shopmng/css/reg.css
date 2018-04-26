@@ -4,16 +4,17 @@ body{
 
 }
 .container{
-    height: 260px;
+    height: 450px;
     width: 400px;
     background: #FF6347;
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -130px;
+    margin-top: -225px;
     margin-left: -200px;
     border-radius: 5px;
     background: linear-gradient(#451920,#810020);
+    text-align: left;
 }
 .login-title{
     margin-top: 10px;
@@ -22,22 +23,22 @@ body{
     text-align: center;
     line-height: 35px;
     height: 35px;
+    width: 100%;
     color: #fff;
 }
 .container div{
     text-align: center;
     height: 50px;
     line-height: 50px;
+    float: left;
+    margin-left: 40px;
 }
 [v-cloak] {
     display: none;
 }
 
 input{
-    width: 220px;
+    width: 305px;
     font-size:15px;
     color: #333333;
-}
-button{
-    margin-top: 25px;
 }

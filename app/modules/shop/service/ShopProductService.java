@@ -261,10 +261,11 @@ public class ShopProductService {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String saveProductInfo(ProductInfoDto product) throws Exception{
+	public static String saveProductInfo(ProductInfoDto product,String shopId) throws Exception{
 		try{
 			ShopProductDDL p = new ShopProductDDL();
 			
+			p.setShopId(shopId);
 			p.setStore(product.store);
 			p.setProductType(product.productType);
 			p.setSellerUserId(0);
@@ -456,13 +457,17 @@ public class ShopProductService {
 	}
 	
 	//orderBy 1=时间降序 2=销量降序 3=价格降序 4=价格升序 5=综合排序
-	public static  List<ShopProductDDL> listProduct(String productId,String keyword,String pCategoryId,String subCategoryId,int sale,int hot,int status,int orderBy,int page,int pageSize){
+	public static  List<ShopProductDDL> listProduct(String shopId,String productId,String keyword,String pCategoryId,String subCategoryId,int sale,int hot,int status,int orderBy,int page,int pageSize){
 		page = page <=0 ?1 : page;
 		pageSize = (pageSize > 30 || pageSize <=0 ) ?10 : pageSize;
 		
 		
-		
 		Condition condition = new Condition("ShopProductDDL.id",">",0);
+		
+		if(!StringUtils.isEmpty(shopId)){
+			condition.add(new Condition("ShopProductDDL.shopId","=",shopId), "and");
+		}
+		
 		if(!StringUtils.isEmpty(productId)){
 			condition.add(new Condition("ShopProductDDL.productId","=",productId), "and");
 		}
@@ -512,8 +517,12 @@ public class ShopProductService {
 		return Dal.select("ShopProductDDL.*", condition, sort, (page-1)*pageSize, pageSize);
 	}
 	
-	public static  int countProduct(String productId,String keyword,String pCategoryId,String subCategoryId,int sale,int hot,int status){
+	public static  int countProduct(String shopId,String productId,String keyword,String pCategoryId,String subCategoryId,int sale,int hot,int status){
 		Condition condition = new Condition("ShopProductDDL.id",">",0);
+		
+		if(!StringUtils.isEmpty(shopId)){
+			condition.add(new Condition("ShopProductDDL.shopId","=",shopId), "and");
+		}
 		
 		if(!StringUtils.isEmpty(productId)){
 			condition.add(new Condition("ShopProductDDL.productId","=",productId), "and");

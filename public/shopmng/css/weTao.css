@@ -23,15 +23,15 @@
 
 @keyframes mySecond
 {
-    from {background: #FF6347;color: #fff;}
-    to {background: #fff;color:#FF6347;}
+    from {background: #810020;color: #fff;}
+    to {background: #fff;color:#fff;}
 }
 
 .top-title {
     font-family:Microsoft Yahei,"Times New Roman",Georgia,Serif;
-    font-size:16px;
+    font-size:14px;
     font-weight:bold;
-    color:#2c2c2c;
+    color:#ffffff;
 }
 
 .top{
@@ -46,8 +46,7 @@
     justify-content: flex-start;
     height: 65px;
     padding-top: 10px;
-    padding-left: 10px;
-    background: rgba(255, 255, 255, 1);
+    background: linear-gradient(#451920,#810020);
 }
 .container{
     padding: 10px 10px;
@@ -60,8 +59,9 @@
     display:-webkit-box;
     -webkit-box-orient:vertical;
     -webkit-line-clamp:4;
-    font-size: 18px;
+    font-size: 15px;
     color: #333333;
+    word-break: break-all;
 }
 .images{
     margin-top:10px ;

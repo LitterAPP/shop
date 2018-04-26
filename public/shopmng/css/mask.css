@@ -5,7 +5,6 @@
     top: 0px;
     left: 0px;
     background: rgba(0,0,0,0.9);
-
     animation:myfirst 3s;
 }
 
@@ -29,11 +28,11 @@
 @keyframes myfirst
 {
     from {background: rgba(0,0,0,0.9);}
-    to {background: rgba(0,0,0,0);}
+    to {background: rgba(0,0,0,0.5);}
 }
 
 @keyframes mySecond
 {
-    from {background: #FF6347;color: #fff;}
-    to {background: #fff;color:#FF6347;}
+    from {background: #FF6347;color: #000;}
+    to {background: #fff;color:#000;}
 }

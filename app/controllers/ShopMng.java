@@ -21,6 +21,7 @@ import controllers.dto.ProductInfoDto.TextDetail;
 import controllers.dto.ProductInfoDto.TogetherInfo;
 import controllers.dto.SelectSourceDto;
 import dto.shop.ShopIndexDto;
+import dto.shop.ShopNavDto;
 import jws.Logger;
 import jws.dal.Dal;
 import jws.dal.sqlbuilder.Condition;
@@ -30,7 +31,9 @@ import modules.shop.ddl.ShopApplyInfoDDL;
 import modules.shop.ddl.ShopCouponMngDDL;
 import modules.shop.ddl.ShopExpressCodeDDL;
 import modules.shop.ddl.ShopExpressDDL;
+import modules.shop.ddl.ShopIndexDDL;
 import modules.shop.ddl.ShopMngSessionDDL;
+import modules.shop.ddl.ShopMngUserDDL;
 import modules.shop.ddl.ShopOrderDDL;
 import modules.shop.ddl.ShopProductAttrDDL;
 import modules.shop.ddl.ShopProductAttrRelDDL;
@@ -40,6 +43,7 @@ import modules.shop.ddl.ShopProductCategoryRelDDL;
 import modules.shop.ddl.ShopProductDDL;
 import modules.shop.ddl.ShopProductGroupDDL;
 import modules.shop.ddl.ShopProductImagesDDL;
+import modules.shop.ddl.ShopTogetherDDL;
 import modules.shop.ddl.ShopWetaoDDL;
 import modules.shop.ddl.UsersDDL;
 import modules.shop.service.ApplyService;
@@ -53,6 +57,7 @@ import modules.shop.service.ShopProductAttrService;
 import modules.shop.service.ShopProductGroupService;
 import modules.shop.service.ShopProductImageService;
 import modules.shop.service.ShopProductService;
+import modules.shop.service.ShopTogetherService;
 import modules.shop.service.ShopWeTaoService;
 import modules.shop.service.SmsService;
 import modules.shop.service.UserService;
@@ -85,7 +90,7 @@ public class ShopMng extends Controller{
 		}
 	}
 	
-	public static void categoryFirSource(String keyword){
+	/*public static void categoryFirSource(String keyword){
 		try{ 
 			List<ShopProductCategoryDDL> list = ShopCategoryService.searchByPCategoryName(keyword);
 			List<Object> sources = new ArrayList<Object>();
@@ -105,7 +110,76 @@ public class ShopMng extends Controller{
 			Logger.error(e, e.getMessage());
 			renderJSON(null);
 		}
-	}
+	}*/
+	
+	/**
+	 * 查询店铺首页配置
+	 * @param shopId
+	 */
+	public static void getShopIndexConfig(){
+		try{
+			
+			if(request.cookies==null || !request.cookies.containsKey("shop_sid")){
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}			
+			String sessionStr = request.cookies.get("shop_sid").value;
+			ShopMngSessionDDL session = ShopMngService.checkSession(sessionStr);
+			if(session==null){				 
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}
+			
+			ShopIndexDDL shopIndex = ShopIndexService.getByShopId(session.getShopId());
+			 
+			if(shopIndex==null || StringUtils.isEmpty(shopIndex.getConfig())){
+				renderJSON(RtnUtil.returnSuccess());
+			}
+			ShopIndexDto shopIndexConfig = gson.fromJson(shopIndex.getConfig(), ShopIndexDto.class);
+			//处理图片URL
+			shopIndexConfig.shopAvatar = API.getObjectAccessUrlSimple(shopIndexConfig.shopAvatarKey);
+			shopIndexConfig.shopBanner = API.getObjectAccessUrlSimple(shopIndexConfig.shopBannerKey);			
+			shopIndexConfig.activityBg = API.getObjectAccessUrlSimple(shopIndexConfig.activityBgKey);
+			
+			 
+			for(ShopNavDto dto : shopIndexConfig.firstNavList){
+				if(dto.linkType == 2){
+					dto.img = API.getObjectAccessUrlSimple(dto.imgkey);
+				}
+			}
+			for(ShopNavDto dto : shopIndexConfig.secondNavList){
+				if(dto.linkType == 2){
+					dto.img = API.getObjectAccessUrlSimple(dto.imgkey);
+				}
+			}
+			for(ShopNavDto dto : shopIndexConfig.swiperList){
+				if(dto.linkType == 2){
+					dto.img = API.getObjectAccessUrlSimple(dto.imgkey);
+				}
+			}
+			for(ShopNavDto dto : shopIndexConfig.thirdNavList){
+				if(dto.linkType == 2){
+					dto.img = API.getObjectAccessUrlSimple(dto.imgkey);
+				}
+			}
+			for(ShopNavDto dto : shopIndexConfig.fourthNavList){
+				if(dto.linkType == 2){
+					dto.img = API.getObjectAccessUrlSimple(dto.imgkey);
+				}
+			}
+			for(ShopNavDto dto : shopIndexConfig.fiveNavList){
+				if(dto.linkType == 2){
+					dto.img = API.getObjectAccessUrlSimple(dto.imgkey);
+				}
+			}
+			
+			Map<String,Object> result = new HashMap<String,Object>();
+			result.put("config", shopIndexConfig); 
+			result.put("shopQRCode", API.getObjectAccessUrlSimple(session.getShopQrcodeKey()));
+			renderJSON(RtnUtil.returnSuccess("OK",result));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail(e.getMessage()));
+		}
+	} 
 	
 	public static void categorySecSource(String keyword){
 		try{ 
@@ -504,7 +578,16 @@ public class ShopMng extends Controller{
 	
 	public static void categoryALL(boolean force){
 		try{ 
-			SelectSourceDto selectSource =  ShopCategoryService.reflushCategoryALL(force);
+			if(request.cookies==null || !request.cookies.containsKey("shop_sid")){
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}
+			
+			String sessionStr = request.cookies.get("shop_sid").value;
+			ShopMngSessionDDL session = ShopMngService.checkSession(sessionStr);
+			if(session==null){				 
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}
+			SelectSourceDto selectSource =  ShopCategoryService.reflushCategoryALL(session.getShopId(),force);
 			renderJSON(RtnUtil.returnSuccess("OK", selectSource));
 		}catch(Exception e){
 			Logger.error(e, e.getMessage());
@@ -529,6 +612,114 @@ public class ShopMng extends Controller{
 			renderJSON(RtnUtil.returnFail("服务器异常"));
 		}
 	}
+	
+	public static void reg(String userName,String password,String repassword,String mobile,String code){
+		try{
+			if(StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)){
+				renderJSON(RtnUtil.returnFail("用户或密码不正确"));
+			}
+			
+			if(!password.equals(repassword)){
+				renderJSON(RtnUtil.returnFail("两次输入的密码不一致"));
+			}
+			ShopMngUserDDL user = ShopMngService.getByUserName(userName);
+			if(user!=null){
+				renderJSON(RtnUtil.returnFail("用户名已经存在"));
+			}
+			
+			boolean validateSms = SmsService.validateSmsCode(mobile, Integer.parseInt(code));
+			if(!validateSms){
+				renderJSON(RtnUtil.returnFail("短信验证码错误"));
+			}
+			boolean created = ShopMngService.createUser(userName, mobile, password);
+			 
+			if(created){				 
+				response.setCookie("shop_sid", "", null, null,6*60*60, false, true);
+				renderJSON(RtnUtil.returnSuccess("OK"));
+			}else{
+				renderJSON(RtnUtil.returnFail("注册失败"));
+			}
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	/**
+	 * 
+	 * @param pcategoryId
+	 * @param subCategoryId
+	 * @param sale
+	 * @param hot
+	 * @param orderBy 1=时间降序 2=销量降序 3=价格降序 4=价格升序 5=综合排序
+	 */
+	public static void listProduct(String productId,String keyword,String pCategoryId,String subCategoryId,boolean isSale,boolean isHot,int status,int orderBy,int page,int pageSize){
+		try{
+			List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
+			Map<String,Object> response = new HashMap<String,Object>();
+			
+			if(request.cookies==null || !request.cookies.containsKey("shop_sid")){
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}
+			
+			String sessionStr = request.cookies.get("shop_sid").value;
+			ShopMngSessionDDL session = ShopMngService.checkSession(sessionStr);
+			if(session==null){				 
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}
+			
+			int total = ShopProductService.countProduct(session.getShopId(),productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status);
+			response.put("total", total);
+			response.put("pageTotal", Math.ceil(total/(double)pageSize));
+			 
+			if(total == 0){
+				response.put("list", mapList);
+				renderJSON(RtnUtil.returnSuccess("OK",response));
+			}			
+			List<ShopProductDDL> list = ShopProductService.listProduct(session.getShopId(),productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status,orderBy, page<=0?1:page, pageSize<=0?10:pageSize);
+			
+			
+			for(ShopProductDDL p : list){
+				Map<String,Object> result = new HashMap<String,Object>();
+				result.put("productId", p.getProductId());
+				result.put("productName", p.getProductName());
+				result.put("productBanner", API.getObjectAccessUrlSimple( p.getProductBanner()));
+				result.put("productOriginPrice",AmountUtil.f2y(p.getProductOriginAmount()));
+				result.put("productNowPrice",AmountUtil.f2y(p.getProductNowAmount()));
+				if(p.getJoinTogether()==1){
+					result.put("productTogetherPrice",AmountUtil.f2y(p.getProductTogetherAmount()));
+					result.put("togetherSales",String.format("%.1f", p.getTogetherSales()/10000f));
+				}else{
+					result.put("productTogetherPrice","0.0");
+					result.put("togetherSales","0");
+				}
+				result.put("joinTogether", p.getJoinTogether());
+				result.put("platformChecked", p.getPlatformChecked());
+				
+				result.put("sotre", p.getStore());
+				result.put("status", p.getStatus());
+				result.put("createTime", DateUtil.format(p.getCreateTime()));
+				result.put("pv", p.getPv());
+				result.put("deal", p.getDeal());
+				result.put("isHot", p.getIsHot()==1);
+				result.put("isSale", p.getIsSale()==1);
+				
+				List<ShopTogetherDDL> togethers = ShopTogetherService.listByProductId(p.getProductId(), 1, 2);
+				if( togethers != null && togethers.size() == 2){
+					String[] together = new String[]{togethers.get(0).getMasterAvatar(),togethers.get(1).getMasterAvatar()};
+					result.put("togethers", together);
+				}	
+				mapList.add(result);				
+			}
+			
+			response.put("list", mapList);
+			renderJSON(RtnUtil.returnSuccess("OK", response));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail(e.getMessage()));
+		}
+	}
+	
 	
 	public static void checkSession(){
 		try{
@@ -576,7 +767,28 @@ public class ShopMng extends Controller{
 
 			Logger.info("解析店铺配置，%s", decodeBodyStr);
 			ShopIndexDto index = gson.fromJson(decodeBodyStr, ShopIndexDto.class);
-			if(ShopIndexService.update(index.shopId, index.shopName, index.shopAvatarKey,decodeBodyStr)){
+			
+			//处理链接，带上自己店铺的ID
+			for(ShopNavDto dto : index.firstNavList){
+				dto.url = appendShopId(dto.url,session.getShopId());
+			}
+			for(ShopNavDto dto : index.secondNavList){
+				dto.url = appendShopId(dto.url,session.getShopId());
+			}
+			for(ShopNavDto dto : index.thirdNavList){
+				dto.url = appendShopId(dto.url,session.getShopId());
+			}
+			for(ShopNavDto dto : index.fourthNavList){
+				dto.url = appendShopId(dto.url,session.getShopId());
+			}
+			for(ShopNavDto dto : index.fiveNavList){
+				dto.url = appendShopId(dto.url,session.getShopId());
+			}
+			for(ShopNavDto dto : index.swiperList){
+				dto.url = appendShopId(dto.url,session.getShopId());
+			}
+			boolean createShop = ShopIndexService.update(session.getShopId(), index.shopName, index.shopAvatarKey,gson.toJson(index));
+			if(createShop){
 				renderJSON(RtnUtil.returnSuccess("OK"));
 			}
 			Logger.info("解析店铺配置完成，%s", decodeBodyStr);
@@ -585,6 +797,21 @@ public class ShopMng extends Controller{
 			Logger.error(e, e.getMessage());
 			renderJSON(RtnUtil.returnFail("服务器异常"));
 		}
+	}
+	
+	private static String appendShopId(String url,String shopId){
+		if(StringUtils.isEmpty(url)) return "";
+		if(StringUtils.isEmpty(shopId)) return url;
+		if(url.contains("?") && !url.endsWith("&")){		
+			url = url + "&";
+		}else{
+			url = url + "?";
+		}
+		
+		if(!url.contains("shopId=")){
+			url = url+ "shopId="+shopId;
+		}
+		return url;
 	}
 	
 	/**
@@ -606,7 +833,7 @@ public class ShopMng extends Controller{
 			Logger.info("解析商品数据，%s", decodeBodyStr);
 			ProductInfoDto product = gson.fromJson(decodeBodyStr, ProductInfoDto.class);
 			
-			String productId = ShopProductService.saveProductInfo(product);
+			String productId = ShopProductService.saveProductInfo(product,session.getShopId());
 			Map<String,Object> result = new HashMap<String,Object>();
 			result.put("productId",productId);
 			Logger.info("解析商品数据完成，%s", decodeBodyStr);
@@ -918,7 +1145,7 @@ public class ShopMng extends Controller{
 				renderJSON(RtnUtil.returnFail("分类父ID为空"));
 			}
 			
-			ShopProductCategoryChildDDL sub = ShopCategoryService.createChildCategory(text, pCategoryId);
+			ShopProductCategoryChildDDL sub = ShopCategoryService.createChildCategory(session.getShopId(),text, pCategoryId);
 			if(sub!=null)
 				renderJSON(RtnUtil.returnSuccess("OK"));
 			else
@@ -944,7 +1171,7 @@ public class ShopMng extends Controller{
 				renderJSON(RtnUtil.returnFail("分类为空"));
 			}
 			
-			 ShopCategoryService.delSubCategory(subId);
+			 ShopCategoryService.delSubCategory(session.getShopId(),subId);
 			 
 			 renderJSON(RtnUtil.returnSuccess("OK"));
 		}catch(Exception e){
@@ -992,7 +1219,7 @@ public class ShopMng extends Controller{
 			List<Map<String,Object>> orders = new ArrayList<Map<String,Object>>();
 			Map<String,Object> response = new HashMap<String,Object>();
 			
-			int total = ShopOrderService.countMngOrder(orderId, keyword, status);
+			int total = ShopOrderService.countMngOrder(session.getShopId(),orderId, keyword, status);
 			response.put("total", total);
 			response.put("pageTotal", Math.ceil(total/(double)pageSize));
 			 
@@ -1005,7 +1232,7 @@ public class ShopMng extends Controller{
 			page = page==0?1:page;
 			pageSize = pageSize==0?10:pageSize;
 			
-			List<ShopOrderDDL> list = ShopOrderService.listMngOrder(orderId, keyword, status, page, pageSize);
+			List<ShopOrderDDL> list = ShopOrderService.listMngOrder(session.getShopId(),orderId, keyword, status, page, pageSize);
 			
 			for(ShopOrderDDL order : list){
 				Map<String,Object> map = new HashMap<String,Object>();
@@ -1062,7 +1289,7 @@ public class ShopMng extends Controller{
 			List<Map<String,Object>> coupons = new ArrayList<Map<String,Object>>();
 			Map<String,Object> response = new HashMap<String,Object>();
 			
-			int total = ShopCouponMngService.countCoupon(couponId, keyword);
+			int total = ShopCouponMngService.countCoupon(session.getShopId(),couponId, keyword);
 			response.put("total", total);
 			response.put("pageTotal", Math.ceil(total/(double)pageSize));
 			 
@@ -1076,7 +1303,7 @@ public class ShopMng extends Controller{
 			pageSize = pageSize==0?10:pageSize;
 			
 			
-			List<ShopCouponMngDDL>  list = ShopCouponMngService.listCoupon(couponId, keyword, page, pageSize);
+			List<ShopCouponMngDDL>  list = ShopCouponMngService.listCoupon(session.getShopId(),couponId, keyword, page, pageSize);
 			
  			
 			for(ShopCouponMngDDL coupon : list){
@@ -1117,7 +1344,7 @@ public class ShopMng extends Controller{
 				renderJSON(RtnUtil.returnFail("未登录"));
 			}
 			
-			ShopCouponMngService.replace(couponId, couponName,AmountUtil.y2f(amount) ,
+			ShopCouponMngService.replace(session.getShopId(),couponId, couponName,AmountUtil.y2f(amount) ,
 					limitProductId, 0, AmountUtil.y2f(limitPrice), limitTimes, 
 					DateUtil.getTime(expireTime), DateUtil.getTime(startTime), DateUtil.getTime(endTime));
 			renderJSON(RtnUtil.returnSuccess("OK"));
@@ -1171,7 +1398,7 @@ public class ShopMng extends Controller{
 	}
 	
 	
-	public static void listWeTao(String keyword,int page,int pageSize){
+	public static void listWeTao(String keyword,int deleted,int page,int pageSize){
 		try{
 			if(request.cookies==null || !request.cookies.containsKey("shop_sid")){
 				renderJSON(RtnUtil.returnFail("未登录"));
@@ -1185,7 +1412,7 @@ public class ShopMng extends Controller{
 			List<Map<String,Object>> weTaos = new ArrayList<Map<String,Object>>();
 			Map<String,Object> response = new HashMap<String,Object>();
 			
-			int total = ShopWeTaoService.countWeTao(keyword);
+			int total = ShopWeTaoService.countWeTao(session.getShopId(),keyword,deleted);
 			response.put("total", total);
 			response.put("pageTotal", Math.ceil(total/(double)pageSize));
 			 
@@ -1199,13 +1426,14 @@ public class ShopMng extends Controller{
 			pageSize = pageSize==0?10:pageSize;
 			
 			
-			List<ShopWetaoDDL>  list = ShopWeTaoService.listWeTao(keyword, page, pageSize);
+			List<ShopWetaoDDL>  list = ShopWeTaoService.listWeTao(session.getShopId(),keyword,deleted, page, pageSize);
 			
  			
 			for(ShopWetaoDDL weTao : list){
 				Map<String,Object> map = new HashMap<String,Object>();
 				map.put("id",weTao.getId());
 				map.put("content", weTao.getContent());
+				map.put("deleted", weTao.getDeleted());
 				map.put("createTime", DateUtil.timeDesc(weTao.getCreateTime()));
 				map.put("comment", weTao.getComment());
 				
@@ -1244,7 +1472,43 @@ public class ShopMng extends Controller{
 			if(session==null){				 
 				renderJSON(RtnUtil.returnFail("未登录"));
 			}
-			ShopWeTaoService.replace(id, content, images, seoTitle, seoKey, seoDesc);
+			ShopWeTaoService.replace(id, session.getShopId(),content, images, seoTitle, seoKey, seoDesc);
+			renderJSON(RtnUtil.returnSuccess("OK"));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	public static void offLineWeTao(int id){
+		try{
+			if(request.cookies==null || !request.cookies.containsKey("shop_sid")){
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}			
+			String sessionStr = request.cookies.get("shop_sid").value;
+			ShopMngSessionDDL session = ShopMngService.checkSession(sessionStr);
+			if(session==null){				 
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}
+			ShopWeTaoService.offLineWeTao(id);
+			renderJSON(RtnUtil.returnSuccess("OK"));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	public static void onLineWeTao(int id){
+		try{
+			if(request.cookies==null || !request.cookies.containsKey("shop_sid")){
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}			
+			String sessionStr = request.cookies.get("shop_sid").value;
+			ShopMngSessionDDL session = ShopMngService.checkSession(sessionStr);
+			if(session==null){				 
+				renderJSON(RtnUtil.returnFail("未登录"));
+			}
+			ShopWeTaoService.onLineWeTao(id);
 			renderJSON(RtnUtil.returnSuccess("OK"));
 		}catch(Exception e){
 			Logger.error(e, e.getMessage());
@@ -1271,7 +1535,8 @@ public class ShopMng extends Controller{
 			map.put("id",weTao.getId());
 			map.put("content", weTao.getContent());
 			//map.put("createTime", weTao.getCreateTimeDesc());
-			//map.put("comment", weTao.getComment());		
+			//map.put("comment", weTao.getComment());	
+			map.put("shopId", weTao.getShopId());
 			map.put("seoDesc", weTao.getSeoDesc());
 			map.put("seoTitle", weTao.getSeoTitle());
 			map.put("seoKey", weTao.getSeoKey());

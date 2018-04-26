@@ -25,6 +25,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import controllers.dto.SelectSourceDto;
 import dto.shop.ShopIndexDto;
 import dto.shop.ShopNavDto;
 import jws.Jws;
@@ -47,6 +48,7 @@ import modules.shop.ddl.ShopTogetherJoinerDDL;
 import modules.shop.ddl.ShopWetaoCommentDDL;
 import modules.shop.ddl.ShopWetaoDDL;
 import modules.shop.ddl.UserAccountDDL;
+import modules.shop.service.ShopCategoryService;
 import modules.shop.service.ShopCommunityService;
 import modules.shop.service.ShopCouponMngService;
 import modules.shop.service.ShopExpressService;
@@ -397,12 +399,12 @@ public class Shop extends Controller{
 	 * @param hot
 	 * @param orderBy 1=时间降序 2=销量降序 3=价格降序 4=价格升序 5=综合排序
 	 */
-	public static void listProduct(String productId,String keyword,String pCategoryId,String subCategoryId,boolean isSale,boolean isHot,int status,int orderBy,int page,int pageSize){
+	public static void listProduct(String shopId,String productId,String keyword,String pCategoryId,String subCategoryId,boolean isSale,boolean isHot,int status,int orderBy,int page,int pageSize){
 		try{
 			List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
 			Map<String,Object> response = new HashMap<String,Object>();
 			
-			int total = ShopProductService.countProduct(productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status);
+			int total = ShopProductService.countProduct(shopId,productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status);
 			response.put("total", total);
 			response.put("pageTotal", Math.ceil(total/(double)pageSize));
 			 
@@ -410,7 +412,7 @@ public class Shop extends Controller{
 				response.put("list", mapList);
 				renderJSON(RtnUtil.returnSuccess("OK",response));
 			}			
-			List<ShopProductDDL> list = ShopProductService.listProduct(productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status,orderBy, page<=0?1:page, pageSize<=0?10:pageSize);
+			List<ShopProductDDL> list = ShopProductService.listProduct(shopId,productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status,orderBy, page<=0?1:page, pageSize<=0?10:pageSize);
 			
 			
 			for(ShopProductDDL p : list){
@@ -578,7 +580,7 @@ public class Shop extends Controller{
 			} 
 			
 			//是否有优惠券领取
-			List<ShopCouponMngDDL> couponList = ShopCouponMngService.selectCouponActivities(productId, p.getSellerUserId(), 3);
+			List<ShopCouponMngDDL> couponList = ShopCouponMngService.selectCouponActivities(null,productId, p.getSellerUserId(), 3);
 			if(couponList!=null && couponList.size()>0){
 				List<Map<String,Object>> coupons = new ArrayList<Map<String,Object>>(); 
 				for( ShopCouponMngDDL c : couponList ){
@@ -932,7 +934,7 @@ public class Shop extends Controller{
 			Map<String,Object> result = new HashMap<String,Object>();
 			boolean get = ShopCouponMngService.getCoupon(couponId, user.getId().intValue());
 			result.put("get",get);
-			List<ShopCouponMngDDL> couponList = ShopCouponMngService.selectCouponActivities(productId, 0, 3);
+			List<ShopCouponMngDDL> couponList = ShopCouponMngService.selectCouponActivities(null,productId, 0, 3);
  			if(couponList!=null && couponList.size()>0){
 				List<Map<String,Object>> coupons = new ArrayList<Map<String,Object>>(); 
 				for( ShopCouponMngDDL c : couponList ){
@@ -981,9 +983,13 @@ public class Shop extends Controller{
 	 * 查询店铺首页配置
 	 * @param shopId
 	 */
-	public static void getShopIndexConfig(int shopId){
-		try{
-			ShopIndexDDL shopIndex = ShopIndexService.get(shopId);
+	public static void getShopIndexConfig(String shopId){
+		try{			
+			if(StringUtils.isEmpty(shopId)){
+				shopId = String.valueOf(Jws.configuration.get("shop.index.default"));
+			}
+			ShopIndexDDL shopIndex = ShopIndexService.getByShopId(shopId);
+			
 			if(shopIndex==null){
 				renderJSON(RtnUtil.returnFail("店铺不存在"));
 			}
@@ -1037,7 +1043,7 @@ public class Shop extends Controller{
 			result.put("follow", shopIndex.getFollow());			
 			
 			//获取可领取的代金券
-			List<ShopCouponMngDDL> couponList = ShopCouponMngService.selectCouponActivities(null,0, 10);
+			List<ShopCouponMngDDL> couponList = ShopCouponMngService.selectCouponActivities(shopId,null,0, 10);
  			if(couponList!=null && couponList.size()>0){
 				List<Map<String,Object>> coupons = new ArrayList<Map<String,Object>>(); 
 				for( ShopCouponMngDDL c : couponList ){
@@ -1052,7 +1058,7 @@ public class Shop extends Controller{
 					coupons.add(map); 
 				}
 				result.put("coupons", coupons);
-			}
+			} 
 			renderJSON(RtnUtil.returnSuccess("OK",result));
 		}catch(Exception e){
 			Logger.error(e, e.getMessage());
@@ -1061,13 +1067,13 @@ public class Shop extends Controller{
 	} 
 	
 	
-	public static void listWeTao(int page,int pageSize,int id){
+	public static void listWeTao(int page,int pageSize,int id,String shopId){
 		try{
 			 
 			List<Map<String,Object>> weTaos = new ArrayList<Map<String,Object>>();
 			Map<String,Object> response = new HashMap<String,Object>();
 			
-			int total = ShopWeTaoService.countWeTao("");
+			int total = ShopWeTaoService.countWeTao(shopId,"",0);
 			response.put("total", total);
 			response.put("pageTotal", Math.ceil(total/(double)pageSize));
 			 
@@ -1092,7 +1098,7 @@ public class Shop extends Controller{
 			pageSize = pageSize==0?10:pageSize;
 			
 			
-			List<ShopWetaoDDL>  list = ShopWeTaoService.listWeTao("", page, pageSize);			
+			List<ShopWetaoDDL>  list = ShopWeTaoService.listWeTao(shopId,"",0, page, pageSize);			
  			
 			for(ShopWetaoDDL weTao : list){
 				Map<String,Object> map = new HashMap<String,Object>();
@@ -1168,6 +1174,7 @@ public class Shop extends Controller{
 			detail.put("seoDesc", weTao.getSeoDesc());
 			detail.put("content", weTao.getContent());
 			detail.put("zan", weTao.getZan());
+			detail.put("shopId", weTao.getShopId());
 			detail.put("comment", weTao.getComment());			
 			 
 			
@@ -1282,6 +1289,16 @@ public class Shop extends Controller{
 		}
 		response.put("list", comments);
 		return response;
+	}
+	
+	public static void categoryALL(String shopId){
+		try{ 
+			SelectSourceDto selectSource =  ShopCategoryService.reflushCategoryALL(shopId,false);
+			renderJSON(RtnUtil.returnSuccess("OK", selectSource));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
 	}
 	 
 }

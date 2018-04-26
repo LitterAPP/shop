@@ -15,9 +15,51 @@ var addWeTao = new Vue({
         seoTitle:'',
         seoKey:'',
         seoDesc:'',
+        shopId:'',
         mask:false
     },
     methods:{
+        deleteWeTao:function(){
+            var that = this
+            var id = that.id
+            var that = this
+            $.confirm({
+                title: '删除确认',
+                content: '确认删除这条微淘吗？删除后不可恢复。（快捷键：enter=立即伤处，esc=取消不删除）',
+                buttons: {
+                    ok: {
+                        text: "立即删除",
+                        keys: ['enter'],
+                        action: function(){
+                            showLoading(that,'请稍后...')
+                            $.ajax({
+                                url:offLineWeTaoUrl,
+                                type:'POST',
+                                dataType:'json',
+                                data:{
+                                    id:id
+                                },
+                                success:function(result){
+                                    if(result && result.code==1 ){
+                                        that.id=0
+                                        toast(that,'删除成功')
+                                    }else{
+                                        toast(that,'微淘删除失败')
+                                    }
+                                }
+                            })
+                        }
+                    },
+                    cancel: {
+                        text: "取消不删除",
+                        keys: ['esc'],
+                        action:function () {
+
+                        }
+                    }
+                }
+            });
+        },
         setHtml:function(html){
             editor.txt.html(html)
         },
@@ -26,6 +68,9 @@ var addWeTao = new Vue({
         },
         addImages:function(){
             var obj = {}
+            if(!this.images || this.images.length==0){
+                this.images=[]
+            }
             this.images.push(obj)
         },
         delImages:function(event){
@@ -96,6 +141,7 @@ var addWeTao = new Vue({
                             that.seoTitle = result.data.seoTitle
                             that.seoKey = result.data.seoKey
                             that.images = result.data.images
+                            that.shopId = result.data.shopId
                         }else{
                             toast(that,'加载微淘失败')
                         }
@@ -176,7 +222,7 @@ var addWeTao = new Vue({
         E = window.wangEditor
         editor = new E('#content')
         editor.create()
-        this.setHtml('<p>用 JS 设置的内容111</p>')
+        this.setHtml('')
     },
 
 })

@@ -118,7 +118,7 @@ public class ShopCategoryService {
 		 
 	}
 	
-	public static void delSubCategory(String subCategoryId){
+	public static void delSubCategory(final String shopId,String subCategoryId){
 		
 		//再删除关联分类的商品
 		Condition productRelDelCond = new Condition("ShopProductCategoryRelDDL.subCategoryId","=",subCategoryId);
@@ -130,12 +130,12 @@ public class ShopCategoryService {
 		ThreadUtil.sumbit(new Runnable(){
 			@Override
 			public void run() {
-				reflushCategoryALL(true);
+				reflushCategoryALL(shopId,true);
 			}
 		});
 	}
 	
-	public static ShopProductCategoryChildDDL createChildCategory(String subCategoryName,String pid){
+	public static ShopProductCategoryChildDDL createChildCategory(final String shopId,String subCategoryName,String pid){
 		ShopProductCategoryChildDDL sub = new ShopProductCategoryChildDDL();
 		sub.setPCagegoryId(pid);
 		sub.setCategoryId(IDUtil.gen("CAT_SUB"));
@@ -145,7 +145,7 @@ public class ShopCategoryService {
 		ThreadUtil.sumbit(new Runnable(){
 			@Override
 			public void run() {
-				reflushCategoryALL(true);
+				reflushCategoryALL(shopId,true);
 			}
 		});
 		return sub;
@@ -174,14 +174,18 @@ public class ShopCategoryService {
 		}
 	}
 	
-	public static List<ShopProductCategoryDDL> searchByPCategoryName(String pCategoryName){
+	public static List<ShopProductCategoryDDL> searchByPCategoryName(String shopId,String pCategoryName){
 		Sort sort = new Sort("ShopProductCategoryDDL.orderBy",true);
+		
+		Condition condition = new Condition("ShopProductCategoryDDL.id",">",0);
+		if(!StringUtils.isEmpty(shopId)){
+			condition.add(new Condition("ShopProductCategoryDDL.shopId","=",shopId),"and");
+ 		}		
+		
 		if(!StringUtils.isEmpty(pCategoryName)){
-			Condition condition = new Condition("ShopProductCategoryDDL.categoryName","like","'%"+pCategoryName+"%'");
-			List<ShopProductCategoryDDL> list = Dal.select("ShopProductCategoryDDL.*", condition, sort, 0, -1);
-			return list;
+ 			condition.add(new Condition("ShopProductCategoryDDL.categoryName","like","'%"+pCategoryName+"%'"),"and");
 		}
-		return  Dal.select("ShopProductCategoryDDL.*", null, sort, 0, -1);
+		return  Dal.select("ShopProductCategoryDDL.*", condition, sort, 0, -1);
 	}
 	
 	public static ShopProductCategoryChildDDL getBySubCategoryName(String subCategoryName){
@@ -232,10 +236,10 @@ public class ShopCategoryService {
 	 * @param force
 	 * @return
 	 */
-	public static SelectSourceDto reflushCategoryALL(boolean force){
+	public static SelectSourceDto reflushCategoryALL(String shopId,boolean force){
 		
 		//加个缓存	
-		SelectSourceDto selectSourceFromCache = Cache.get(GlobalConstants.CacheKey.CATEGORY_ALL, SelectSourceDto.class);
+		SelectSourceDto selectSourceFromCache = Cache.get(GlobalConstants.CacheKey.CATEGORY_ALL+"_"+shopId, SelectSourceDto.class);
 		if(selectSourceFromCache!=null && !force){
 			Logger.info("loading category from cache", "");
 			return selectSourceFromCache;
@@ -243,7 +247,7 @@ public class ShopCategoryService {
 		Logger.info("loading category from db", "");
 		SelectSourceDto selectSource = new SelectSourceDto();
 		selectSource.selected="";
-		List<ShopProductCategoryDDL> pList = ShopCategoryService.searchByPCategoryName(null);
+		List<ShopProductCategoryDDL> pList = ShopCategoryService.searchByPCategoryName(shopId,null);
 		if(pList!=null && pList.size()>0){
 			for(ShopProductCategoryDDL pcat : pList){
 				
@@ -266,7 +270,7 @@ public class ShopCategoryService {
 				selectSource.options.add(source);
 			}
 		}
-		Cache.set(GlobalConstants.CacheKey.CATEGORY_ALL, selectSource, "20d");
+		Cache.set(GlobalConstants.CacheKey.CATEGORY_ALL+"_"+shopId, selectSource, "20d");
 		return selectSource;
 	}
 	
