@@ -35,6 +35,7 @@ var zanOnDetailPageURL='/shop/zanOnDetailPage'
 var domain = 'http://192.168.0.184:9020/'
 var smsSendUrl='/Sms/sendCode'
 var regUrl='/shopmng/reg'
+var dataOverViewUrl='/shopmng/dataOverView'
 var urlTools = {
     //获取RUL参数值
     getUrlParam: function(name) {               /*?videoId=identification  */

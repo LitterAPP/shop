@@ -11,6 +11,7 @@ var nav = new Vue({
            {title:'商品',url:'../html/func/productMng.html',activite:false},
            {title:'订单',url:'../html/func/orderMng.html',activite:false},
            {title:'发货',url:'../html/func/deliverMng.html',activite:false},
+           {title:'数据',url:'../html/datas/overview.html',activite:false},
            {title:'优惠券',url:'../html/func/couponMng.html',activite:false},
        ],
         userName:''

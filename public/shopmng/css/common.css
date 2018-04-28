@@ -24,10 +24,11 @@ select:hover{
 
 
 input:focus{
-    border-bottom:1px solid #DC143C;
+    border-bottom:1px solid #bbbbbb;
     box-shadow: 0px 1px 8px #fff;
     background: #fff;
     border-radius: 0px;
+    border-radius: 5px;
 }
 
 

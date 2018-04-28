@@ -103,7 +103,8 @@ var weTaoDetail = new Vue({
                     url: minAppUrl
                 })
                 return false
-            }else if(!minapp &&  href.startsWith('http')){
+            }
+            if(href.startsWith('http')){
                 window.location.href=href
                 return false
             }

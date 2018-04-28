@@ -130,39 +130,18 @@ var weTao = new Vue({
     mounted:function(){
         window.addEventListener('scroll', this.handleScroll)
         var that = this
-        var minapp = window.__wxjs_environment === 'miniprogram'
-        $("a").off('click').on('click',function(e){
-            var href =$(this).attr('href');
 
-            //带上商铺ID
-            if(href && href.indexOf('?')>0){
-                href = href+'&shopId='+shopId
-            }else{
-                href = href+'?shopId='+shopId
-            }
-            console.log('href',href)
-            if(!minapp &&  href.startsWith('minapp:')){
-                toast(that,'请使用小程序访问')
-                return false
-            }
-            if(minapp && href.startsWith('minapp:')){
-                var minAppUrl =  href.substr(7)
-                wx.miniProgram.reLaunch({
-                    url: minAppUrl
-                })
-                return false
-            }else if(!minapp &&  href.startsWith('http')){
-                window.location.href=href
-                return false
-            }
-            return false;
-        });
+
     },
     beforeUpdate:function(){
         console.log('beforeUpdate')
+
+
     },
     updated:function(){
-
+        $("a").off('click').on('click',function(e){
+            return false;
+        });
     }
     ,
     beforeDestroy:function(){
