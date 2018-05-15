@@ -13,6 +13,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.KeyStore;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,9 +23,18 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+import javax.net.ssl.SSLContext;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -59,14 +69,7 @@ import util.baidu.BaiduHttpUtil;
 import util.baidu.Base64Util;
 
 public class API {
-	// 1 初始化用户身份信息(secretId, secretKey)
-	private static final COSCredentials cred = new BasicCOSCredentials(
-			Jws.configuration.getProperty("tencent.cos.accesskey"),
-			Jws.configuration.getProperty("tencent.cos.accesssecret"));
-	// 2 设置bucket的区域, COS地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
-	private static final ClientConfig clientConfig = new ClientConfig(new Region(Jws.configuration.getProperty("tencent.cos.region")));
 
-	
 	 
 	public static <T> T aliAPI(String host,String path,String method, Map<String, String> querys,Type type,String appcode){
 		
@@ -231,20 +234,29 @@ public class API {
 	 */
 	public static String uploadImageToTencent(File file,int width,float quality ) throws Exception{
 		
+		// 1 初始化用户身份信息(secretId, secretKey)
+		final COSCredentials cred = new BasicCOSCredentials(
+				Jws.configuration.getProperty("tencent.cos.accesskey"),
+				Jws.configuration.getProperty("tencent.cos.accesssecret"));
+		// 2 设置bucket的区域, COS地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
+		final ClientConfig clientConfig = new ClientConfig(new Region(Jws.configuration.getProperty("tencent.cos.region")));
+
+		
+		
 		String bucketName = Jws.configuration.getProperty("tencent.bucket");
 		
-		width = width==0?320:width;
-		quality = quality==0.0f?0.9f:quality;	
+		//width = width==0?320:width;
+		//quality = quality==0.0f?0.9f:quality;	
 		 
 		COSClient cosclient = null;
 		InputStream input = new FileInputStream(file);
-		BufferedImage bufImg = ImageIO.read(input);// 把图片读入到内存中
+		//BufferedImage bufImg = ImageIO.read(input);// 把图片读入到内存中
 		try{
 			//压缩图片
-			bufImg = Thumbnails.of(bufImg).width(width).keepAspectRatio(true).outputQuality(quality).asBufferedImage();
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();// 存储图片文件byte数组
-			ImageIO.write(bufImg, "png", bos); // 图片写入到 ImageOutputStream
-			input = new ByteArrayInputStream(bos.toByteArray());
+			//bufImg = Thumbnails.of(bufImg).width(width).keepAspectRatio(true).outputQuality(quality).asBufferedImage();
+			//ByteArrayOutputStream bos = new ByteArrayOutputStream();// 存储图片文件byte数组
+			//ImageIO.write(bufImg, "png", bos); // 图片写入到 ImageOutputStream
+			//input = new ByteArrayInputStream(bos.toByteArray());
 			
 			cosclient = new COSClient(cred, clientConfig);
 			// bucket的命名规则为{name}-{appid} ，此处填写的存储桶名称必须为此格式
@@ -257,7 +269,9 @@ public class API {
 			String myObjectKey = "COS_"+UUID.randomUUID().toString().replace("-", "");
 			com.qcloud.cos.model.ObjectMetadata  objectMetadata = new com.qcloud.cos.model.ObjectMetadata ();
 			objectMetadata.setContentLength(input.available());
-			objectMetadata.setContentType("image/png");
+			String fileFix = file.getName().substring(file.getName().lastIndexOf(".")+1).toLowerCase();
+			
+			objectMetadata.setContentType("image/"+fileFix);
 			com.qcloud.cos.model.PutObjectRequest  putObjectRequest =
 	                new com.qcloud.cos.model.PutObjectRequest(bucketName, myObjectKey, input, objectMetadata);
 			
@@ -397,6 +411,13 @@ public class API {
 	private static String getTencentCosAccessUrl(String objectKey,int expiresInSecond) throws Exception{
 		COSClient cosclient = null;
 		String bucketName = Jws.configuration.getProperty("tencent.bucket");
+		// 1 初始化用户身份信息(secretId, secretKey)
+		final COSCredentials cred = new BasicCOSCredentials(
+						Jws.configuration.getProperty("tencent.cos.accesskey"),
+						Jws.configuration.getProperty("tencent.cos.accesssecret"));
+		// 2 设置bucket的区域, COS地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
+		final ClientConfig clientConfig = new ClientConfig(new Region(Jws.configuration.getProperty("tencent.cos.region")));
+
 		try{
 			cosclient = new COSClient(cred, clientConfig);
 			com.qcloud.cos.model.GeneratePresignedUrlRequest  req =
@@ -598,6 +619,144 @@ public class API {
 		
 	}
 	
+	public static Map<String,String>  refund_wx(String appid,String mch_id,File p12File,
+			String out_trade_no,int total_fee,int refund_fee,
+			String notify_url,String key,
+			Map<String,Object> ext
+			) throws Exception{
+		 KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+	     FileInputStream instream = new FileInputStream(p12File);
+	     try {
+	    	// String chId = Jws.configuration.getProperty(appId+".mch_id");
+	    	 keyStore.load(instream, mch_id.toCharArray());
+	     } finally {
+	    	 instream.close();
+	     }
+	     
+	     // Trust own CA and all self-signed certs
+	     SSLContext sslcontext = SSLContexts.custom()
+	                .loadKeyMaterial(keyStore, mch_id.toCharArray())
+	                .build();
+	        // Allow TLSv1 protocol only
+	     SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+	                sslcontext,
+	                new String[] { "TLSv1" },
+	                null,
+	                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+	      CloseableHttpClient httpclient = HttpClients.custom()
+	                .setSSLSocketFactory(sslsf)
+	                .build();
+	      
+	      try {
+	    	  Map<String,String> treeMap = new TreeMap<String,String>();
+		  		treeMap.put("appid", appid);
+		  		treeMap.put("mch_id", mch_id); 
+		  		StringBuffer noceStr = new StringBuffer();
+		  		for(int i=0;i<32;i++){
+		  			int random = new Random().nextInt(noceStrs.length);
+		  			noceStr.append(noceStrs[random]);
+		  		}
+		  		treeMap.put("nonce_str", noceStr.toString());
+		  		treeMap.put("out_trade_no", out_trade_no);
+		  		
+		  		String out_refund_no = IDUtil.gen("RF");
+		  		treeMap.put("out_refund_no", out_refund_no);
+		  		
+		  		treeMap.put("total_fee", String.valueOf(total_fee));
+		  		treeMap.put("refund_fee", String.valueOf(refund_fee));
+		  		 
+		  		treeMap.put("notify_url", notify_url); 
+		  		
+		  		
+		  		//非必须字段
+		  		if(ext!=null && ext.size()>0){
+		  			Iterator<Map.Entry<String, Object>> it = ext.entrySet().iterator();
+		  			while(it.hasNext()){
+		  				Map.Entry<String, Object> entry = it.next();
+		  				Object value = entry.getValue();
+		  				if(value == null ||  StringUtils.isEmpty(String.valueOf(value))){
+		  					continue;
+		  				}
+		  				treeMap.put(entry.getKey(), String.valueOf(value)); 
+		  			}
+		  		}
+		  		
+		  		Document document = DocumentHelper.createDocument();  
+		  		Element xmlElement = document.addElement("xml");
+		  		
+		  		StringBuffer params = new StringBuffer();
+		  		Iterator<Map.Entry<String, String>> paramIt = treeMap.entrySet().iterator();
+		  		while(paramIt.hasNext()){
+		  			Map.Entry<String, String> entry = paramIt.next(); 
+		  			String theKey = entry.getKey();
+		  			String value = entry.getValue();
+		  			params.append(theKey).append("=").append(value).append("&");
+		  			Element theKeyElement = xmlElement.addElement(theKey);
+		  			theKeyElement.addCDATA(value);  
+		  		}
+		  		params.append("key=").append(key);
+		  		String StringA = params.toString();
+		  		String sign = MD5Util.md5(StringA);
+		  		treeMap.put("sign",sign);
+		  		
+		  		Element theKeyElement = xmlElement.addElement("sign");
+		  		theKeyElement.addCDATA(sign);  
+		  		
+		  		OutputFormat format = OutputFormat.createPrettyPrint();  
+		  		format.setEncoding("UTF-8");  
+		  		
+		  		StringWriter sw = new StringWriter();
+		  		XMLWriter writer = new XMLWriter(sw, format);
+		  		writer.write(document);
+		  		writer.flush();
+		  		writer.close(); 
+		  		String requestBody = sw.toString();
+		  		
+		  		System.out.println("提交微信退款接口数据：");
+		  		System.out.println(requestBody); 
+
+		    	 
+		  		
+		  		
+	            HttpPost request = new HttpPost("https://api.mch.weixin.qq.com/secapi/pay/refund");
+	            request.setEntity(new StringEntity(requestBody,"utf-8"));
+	            
+	            System.out.println("executing request" + request.getRequestLine());
+
+	            CloseableHttpResponse response = httpclient.execute(request);
+	            try {
+	            	
+	            	HttpEntity entity = response.getEntity();
+	            	String respXml = EntityUtils.toString(entity, "utf-8");
+	        		
+	        		System.out.println("提交微信退款接口响应数据：");
+	        		System.out.println(respXml); 
+	        		 
+	        		Map<String,String> respTreeMap = new TreeMap<String,String>();
+	        		Document reader = DocumentHelper.parseText(respXml);  
+	        		Iterator<Element> childIt = reader.getRootElement().elementIterator();
+	        		String respSign = "";
+	        		while(childIt.hasNext()){
+	        			Element child = childIt.next();
+	        			String name = child.getName();
+	        			String value = child.getText();
+	        			if(name.equals("sign")){
+	        				respSign = value;
+	        				continue;
+	        			}
+	        			respTreeMap.put(name, value);
+	        		}
+	        		System.out.println(respTreeMap); 
+	                
+	                EntityUtils.consume(entity);
+	                return respTreeMap;
+	            } finally {
+	                response.close();
+	            }
+	        } finally {
+	            httpclient.close();
+	        }
+	}
 	
 	public static Map<String,String> getLitterAppPayParams(String appid,String prepay_id,String key,String nonce_str){
 		if(StringUtils.isEmpty(appid) || StringUtils.isEmpty(prepay_id)  ){
@@ -655,7 +814,8 @@ public class API {
 			return null;
 		} 
 	}
-	public static void sendWxMessage(String appId,String touserOpenid,String template_id,String page,String form_id,Map<String,Map> dataMap){
+	
+	public static void sendWxMessage(String appId,String touserOpenid,String template_id,String page,String form_id,Map<String,Map> dataMap,String emphasis_keyword){
 		try{
 			if(Jws.configuration.getProperty("application.mode").equals("dev")){
 				Logger.info("dev mode , do not send wx message.");
@@ -675,7 +835,9 @@ public class API {
 			params.put("page", page);
 			params.put("form_id",form_id);
 			params.put("data", dataMap); 
-			
+			if(!StringUtils.isEmpty(emphasis_keyword)){
+				params.put("emphasis_keyword", emphasis_keyword); 
+			}
 			String bodyStr = gson.toJson(params);
 			
 			Logger.info("请求微信发送模板消息body=%s", bodyStr);
@@ -691,8 +853,17 @@ public class API {
 		}
 	}
 	
+	public static void sendWxMessage(String appId,String touserOpenid,String template_id,String page,String form_id,Map<String,Map> dataMap){
+		sendWxMessage(appId,touserOpenid,template_id,page,form_id,dataMap,null);
+	}
+	
 	public static void main(String[] args) throws Exception{
-		System.out.println(System.currentTimeMillis()/1000);
+		
+		refund_wx("wx9ecd278ad19f6328","1503353991",new File("C:/Users/fish/Desktop/微醺时刻/apiclient_cert.p12"),
+				"QL-20180514145447-1372",
+				1,1,"https://weixunshi.com/shop/wxRefundnotify","CYQZS5KG2CI3DX5N201FAUD9EXU0P1YL",null);
+		
+		//System.out.println(System.currentTimeMillis()/1000);
 		/*System.setProperty("file.encoding", "GBK"); 
 		System.out.println(System.getProperty("file.encoding"));*/
 		//getBaiDuAccessToken("Gt6CSNg5vnBTGK5oPIRO6l4M","HA97b4Q2KjxfUC9p6La7DrSCGe1OvCoN");

@@ -21,7 +21,7 @@
 
     <div class="container" style="" v-for="item in list" >
         <div style="cursor: pointer;z-index:99;" @click.stop="getDetail"  v-bind:data-id="item.id">
-            <div class="title">
+            <div class="">
                 <span v-html="item.content"></span>
             </div>
             <div class="image-container">

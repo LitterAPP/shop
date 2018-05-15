@@ -274,11 +274,12 @@ public class ShopProductService {
 			p.setProductName(product.title);
 			p.setProductCategory(""); 
 			p.setPv(0);
-			p.setDeal(0);
+			p.setDeal(product.dealNum);
 			p.setIsHot(product.isHot?1:0);
 			p.setIsSale(product.isSale?1:0);
 			p.setProductOriginAmount(AmountUtil.y2f(product.price[0]));
 			p.setProductNowAmount(AmountUtil.y2f(product.price[1]));
+			p.setUpdateTime(System.currentTimeMillis()); 
 			//拼团
 			p.setJoinTogether(product.join_together?1:0);
 			if(product.join_together){
@@ -292,10 +293,11 @@ public class ShopProductService {
 			if(old==null){
 				product.productId = IDUtil.gen("PRO");
 				p.setCreateTime(System.currentTimeMillis());
+				
 			}else{
 				p.setPv(old.getPv());
-				p.setCreateTime(old.getCreateTime());
-				p.setDeal(old.getDeal());
+				p.setCreateTime(old.getCreateTime());				
+				p.setDeal(product.dealNum>0?product.dealNum:old.getDeal());
 				p.setIsHot(old.getIsHot());
 				p.setIsSale(old.getIsSale());
 				//未上架商品，直接编辑
@@ -433,7 +435,7 @@ public class ShopProductService {
 			if(!StringUtils.isEmpty(product.contact_wx)){
 				p.setSellerWxNumber(product.contact_wx);
 			} 
-			p.setUpdateTime(System.currentTimeMillis()); 
+			
 			Dal.replace(p); 
 			
 			return product.productId;

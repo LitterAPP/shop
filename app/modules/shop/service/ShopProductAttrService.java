@@ -1,5 +1,6 @@
 package modules.shop.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -9,7 +10,7 @@ import jws.dal.sqlbuilder.Condition;
 import jws.dal.sqlbuilder.Sort;
 import modules.shop.ddl.ShopProductAttrDDL;
 import modules.shop.ddl.ShopProductAttrRelDDL;
-import modules.shop.ddl.ShopProductCommunityDDL;
+import modules.shop.service.dto.AutoCompleteDto;
 import util.IDUtil;
 
 public class ShopProductAttrService {
@@ -71,5 +72,19 @@ public class ShopProductAttrService {
 	
 	public static boolean delAttrRelByProductId(String productId){
 		return Dal.delete(new Condition("ShopProductAttrRelDDL.productId","=",productId))>0;
+	}
+	
+	public static List<AutoCompleteDto> listAttrs(){
+		List<AutoCompleteDto> result = new ArrayList<AutoCompleteDto>();
+		List<ShopProductAttrDDL> list = Dal.select("ShopProductAttrDDL.*", null, null,0,-1);
+		if(list!=null && list.size()>0){
+			for(ShopProductAttrDDL attr : list){
+				AutoCompleteDto one = new AutoCompleteDto();
+				one.data = attr.getAttrId();
+				one.value =  attr.getAttrName();
+				result.add(one);
+			}
+		}
+		return result;
 	}
 }

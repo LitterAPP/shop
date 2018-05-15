@@ -111,3 +111,47 @@ button {
     color: #666666;
     font-size: 10px;
 }
+
+.autocomplete-suggestions{
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #E0EEEE;
+    overflow: auto;
+}
+.autocomplete-suggestion{
+    height: 35px;
+    line-height: 35px;
+    padding: 5px;
+    border-bottom:1px solid #E0EEEE;
+}
+.autocomplete-suggestion:hover{
+    background: #E0EEEE;
+}
+
+.prompt{
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background: rgba(0,0,0,0.8);
+}
+
+.prompt-1{
+    height: 400px;
+    width: 400px;
+    background: #E0EEEE;
+    color: #000;
+    position: absolute;
+    top:50%;
+    left: 50%;
+    margin-left: -200px;
+    margin-top: -200px;
+    font-size: 15px;
+    line-height: 30px;
+    text-align: left;
+    border-radius: 6px;
+}
+.prompt-1 div{
+    margin: 10px;
+}

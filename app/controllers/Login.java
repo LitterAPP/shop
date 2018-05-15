@@ -15,7 +15,7 @@ import jws.mvc.Controller;
 import modules.shop.ddl.UsersDDL;
 import modules.shop.service.UserAccountService;
 import modules.shop.service.UserService;
-import util.AES;
+import util.EncryptUtil;
 import util.RtnUtil;
 import util.WXDecriptUtil;
 
@@ -51,8 +51,8 @@ public class Login extends Controller{
 			byte[] encryptedDataBase64Decoder = Base64.decodeBase64(encryptedData);
 			byte[] sessionKeyBase64Decoder = Base64.decodeBase64(sessionKey);
 			byte[] ivBase64Decoder = Base64.decodeBase64(iv);
-			AES aes = new AES();
-			byte[] aseBytes = aes.decrypt(encryptedDataBase64Decoder, sessionKeyBase64Decoder, ivBase64Decoder);
+			EncryptUtil aes = new EncryptUtil();
+			byte[] aseBytes = aes.decryptCBC(encryptedDataBase64Decoder, sessionKeyBase64Decoder, ivBase64Decoder);
 			String decryptedData = new String(WXDecriptUtil.decode(aseBytes));
 			Logger.info("after ecrypt4Base64 %s",decryptedData);
 			JsonObject userDataJson = new JsonParser().parse(decryptedData).getAsJsonObject();

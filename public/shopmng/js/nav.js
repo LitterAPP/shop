@@ -5,12 +5,15 @@ var nav = new Vue({
     el: '#nav',
     data: {
        list:[
+           {title:'欢迎您',url:'../html/wellcome.html',activite:true},
            {title:'店铺',url:'../html/func/shopMng.html',activite:false},
            {title:'微淘',url:'../html/func/weTaoMng.html',activite:false},
            {title:'分类',url:'../html/func/categoryMng.html',activite:false},
            {title:'商品',url:'../html/func/productMng.html',activite:false},
            {title:'订单',url:'../html/func/orderMng.html',activite:false},
            {title:'发货',url:'../html/func/deliverMng.html',activite:false},
+           {title:'退款审核',url:'../html/func/refundOrderMng.html',activite:false},
+           {title:'退款查询',url:'../html/func/wxRefundorderMng.html',activite:false},
            {title:'数据',url:'../html/datas/overview.html',activite:false},
            {title:'优惠券',url:'../html/func/couponMng.html',activite:false},
        ],

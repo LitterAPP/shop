@@ -28,54 +28,38 @@
 
     </div>
 
-    <div class="table">
-        <div class="table-column-group">
-            <div class="table-column"></div>
-            <div class="table-column"></div>
-            <div class="table-column"></div>
-        </div>
-        <div class="table-header-group">
-            <ul class="table-row">
-                <li class="table-cell">代金券ID</li>
-                <li class="table-cell">代金券名称</li>
-                <li class="table-cell">面额</li>
-                <li class="table-cell">限商品ID</li>
-                <li class="table-cell">限支付额度</li>
-                <li class="table-cell">限领取次数</li>
-                <li class="table-cell">开始领取时间</li>
-                <li class="table-cell">结束领取时间</li>
-                <li class="table-cell">过期时间</li>
-                <li class="table-cell">创建时间</li>
-                <li class="table-cell">操作</li>
-            </ul>
-        </div>
-        <!--
-        <div class="table-footer-group">
-            <ul class="table-row">
-                <li class="table-cell"></li>
-                <li class="table-cell"></li>
-                <li class="table-cell"></li>
-                <li class="table-cell"></li>
-            </ul>
-        </div>-->
-        <div class="table-row-group">
-            <ul class="table-row" v-for="item in list">
-                <li class="table-cell">{{item.couponId}}</li>
-                <li class="table-cell">{{item.couponName}}</li>
-                <li class="table-cell">{{item.amount}}</li>
-                <li class="table-cell">{{item.limitProductId?item.limitProductId:'不限'}}</li>
-                <li class="table-cell">{{item.limitPrice?item.limitPrice:'不限'}}</li>
-                <li class="table-cell">{{item.limitTimes}}</li>
-                <li class="table-cell">{{item.startTime}}</li>
-                <li class="table-cell">{{item.endTime}}</li>
-                <li class="table-cell">{{item.expireTime}}</li>
-                <li class="table-cell">{{item.createTime}}</li>
-                <li class="table-cell">
-                    <button class="button1" @click="edit" v-bind:data-couponid="item.couponId">编辑</button>
-                </li>
-            </ul>
-        </div>
-    </div>
+
+    <table width="100%" border="1" class="t1">
+        <thead>
+            <th width="10%">代金券ID</th>
+            <th width="10%">代金券名称</th>
+            <th width="10%">面额</th>
+            <th width="10%">限商品ID</th>
+            <th width="10%">限支付额度</th>
+            <th width="10%">限领取次数</th>
+            <th width="10%">开始领取时间</th>
+            <th width="10%">结束领取时间</th>
+            <th width="10%">过期时间</th>
+            <th width="10%">创建时间</th>
+            <th width="10%">操作</th>
+        </thead>
+        <tr  v-for="item in list">
+            <td>{{item.couponId}}</td>
+            <td>{{item.couponName}}</td>
+            <td>{{item.amount}}</td>
+            <td>{{item.limitProductId?item.limitProductId:'不限'}}</td>
+            <td>{{item.limitPrice?item.limitPrice:'不限'}}</td>
+            <td>{{item.limitTimes}}</td>
+            <td>{{item.startTime}}</td>
+            <td>{{item.endTime}}</td>
+            <td>{{item.expireTime}}</td>
+            <td>{{item.createTime}}</td>
+            <td>
+                <button class="button1" @click="edit" v-bind:data-couponid="item.couponId">编辑</button>
+            </td>
+        </tr>
+    </table>
+
 
     <div v-cloak class="pageInfo">
         <div v-cloak data-flag="-1" @click="more">&lt;&lt;上一页</div>
@@ -88,5 +72,18 @@
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="../../js/config.js"></script>
 <script src="../../js/couponMng.js"></script>
+<script>
+    var flag = true
+    $(document).ready(function(){
+        $("table").bind("dblclick",function(){
+            if(flag){
+                $(this).attr('width',2000)
+            }else{
+                $(this).attr('width','100%')
+            }
+            flag = !flag;
+        })
+    });
+</script>
 </body>
 </html>

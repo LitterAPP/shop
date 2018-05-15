@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -32,11 +33,9 @@ import jws.Jws;
 import jws.Logger;
 import jws.cache.Cache;
 import jws.mvc.Controller;
-import modules.shop.ddl.UsersDDL;
 import modules.shop.ddl.ShopCouponMngDDL;
 import modules.shop.ddl.ShopExpressDDL;
 import modules.shop.ddl.ShopIndexDDL;
-import modules.shop.ddl.ShopMngSessionDDL;
 import modules.shop.ddl.ShopOrderDDL;
 import modules.shop.ddl.ShopProductAttrRelDDL;
 import modules.shop.ddl.ShopProductCommunityRelDDL;
@@ -48,12 +47,12 @@ import modules.shop.ddl.ShopTogetherJoinerDDL;
 import modules.shop.ddl.ShopWetaoCommentDDL;
 import modules.shop.ddl.ShopWetaoDDL;
 import modules.shop.ddl.UserAccountDDL;
+import modules.shop.ddl.UsersDDL;
 import modules.shop.service.ShopCategoryService;
 import modules.shop.service.ShopCommunityService;
 import modules.shop.service.ShopCouponMngService;
 import modules.shop.service.ShopExpressService;
 import modules.shop.service.ShopIndexService;
-import modules.shop.service.ShopMngService;
 import modules.shop.service.ShopOrderService;
 import modules.shop.service.ShopProductAttrService;
 import modules.shop.service.ShopProductGroupService;
@@ -66,7 +65,9 @@ import modules.shop.service.UserAccountService;
 import modules.shop.service.UserService;
 import util.API;
 import util.AmountUtil;
+import util.Base64Util;
 import util.DateUtil;
+import util.EncryptUtil;
 import util.IDUtil;
 import util.MD5Util;
 import util.RtnUtil;
@@ -234,10 +235,31 @@ public class Shop extends Controller{
 		}
 	}
 	
+	public static void refundApply(String session ,String orderId,String memo){
+		try{ 
+			UsersDDL user = UserService.findBySession(session);
+			if(user==null){
+				renderJSON(RtnUtil.returnLoginFail());
+			}
+			ShopOrderDDL order = ShopOrderService.findByOrderId(orderId);
+			
+			if(order==null){
+				renderJSON(RtnUtil.returnFail("订单不存在"));
+			}
+			
+			ShopOrderService.refund_applay(order, memo);
+			
+			renderJSON(RtnUtil.returnSuccess());
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail(e.getMessage()));
+		}
+	}
+	
 	public static void wxPaynotify(){
 		try{
 			String notifyBody = params.get("body");
-			Logger.info("微信回调，body=%s", notifyBody);
+			Logger.info("支付：微信回调，body=%s", notifyBody);
 			
 			Map<String,String> notifyTreeMap = new TreeMap<String,String>();
 			Document reader = DocumentHelper.parseText(notifyBody);  
@@ -254,10 +276,10 @@ public class Shop extends Controller{
 				notifyTreeMap.put(name, value);
 			} 
 			if(!notifyTreeMap.containsKey("appid")){
-				throw new Exception("微信回调时，没有appid参数,requestBody="+notifyBody);
+				throw new Exception("支付：微信回调时，没有appid参数,requestBody="+notifyBody);
 			}
 			if(!notifyTreeMap.get("return_code").equals("SUCCESS")){
-				throw new Exception("微信回调时return_code!=SUCCESS,requestBody="+notifyBody);
+				throw new Exception("支付：微信回调时return_code!=SUCCESS,requestBody="+notifyBody);
 			}
 			//验证相应签名是否正确
 			StringBuffer notifyParams = new StringBuffer();
@@ -275,7 +297,7 @@ public class Shop extends Controller{
 			String notifyStringA = notifyParams.toString();
 			String mySign = MD5Util.md5(notifyStringA);
 			if(!mySign.equals(notifySign)){
-				throw new Exception("微信回调时，签名不正确，mySign="+mySign+",mySingString="+notifyStringA);
+				throw new Exception("支付：微信回调时，签名不正确，mySign="+mySign+",mySingString="+notifyStringA);
 			}
 			
 			String out_trade_no = String.valueOf(notifyTreeMap.get("out_trade_no"));
@@ -284,7 +306,7 @@ public class Shop extends Controller{
 			
 			ShopOrderDDL order = ShopOrderService.findByOrderId(out_trade_no);
 			if(order == null){
-				Logger.error("微信回调时,找不到订单out_trade_no=%s", out_trade_no);
+				Logger.error("支付：微信回调时,找不到订单out_trade_no=%s", out_trade_no);
 			}else{
 				order.setTransactionId(transaction_id);
 				order.setNotifyBody(notifyBody);
@@ -295,6 +317,129 @@ public class Shop extends Controller{
 				}
 				
 			} 
+			Document document = DocumentHelper.createDocument();  
+			Element xmlElement = document.addElement("xml");
+			Element return_code = xmlElement.addElement("return_code");
+			return_code.addCDATA("SUCCESS");
+			Element return_msg = xmlElement.addElement("return_msg");
+			return_msg.addCDATA("OK");
+			OutputFormat format = OutputFormat.createPrettyPrint();  
+			format.setEncoding("UTF-8");  
+			
+			StringWriter sw = new StringWriter();
+			XMLWriter writer = new XMLWriter(sw, format);
+			try {
+				writer.write(document);
+				writer.flush();
+				writer.close(); 
+			} catch (IOException e1) {
+				Logger.error(e1, e1.getMessage());
+			} 
+			String rsp = sw.toString();			
+			renderText(rsp); 
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			Document document = DocumentHelper.createDocument();  
+			Element xmlElement = document.addElement("xml");
+			Element return_code = xmlElement.addElement("return_code");
+			return_code.addCDATA("FAIL");
+			Element return_msg = xmlElement.addElement("return_msg");
+			return_msg.addCDATA(e.getMessage());
+			OutputFormat format = OutputFormat.createPrettyPrint();  
+			format.setEncoding("UTF-8");  
+			
+			StringWriter sw = new StringWriter();
+			XMLWriter writer = new XMLWriter(sw, format);
+			try {
+				writer.write(document);
+				writer.flush();
+				writer.close(); 
+			} catch (IOException e1) {
+				Logger.error(e1, e1.getMessage());
+			} 
+			String rsp = sw.toString();			
+			renderText(rsp);
+		}
+		
+	}
+	
+	public static void main(String[] args) throws Exception{
+		String body = "<xml><return_code>SUCCESS</return_code><appid><![CDATA[wx9ecd278ad19f6328]]></appid><mch_id><![CDATA[1503353991]]></mch_id><nonce_str><![CDATA[d2f8a97ebfc044af218f072f9668fb8f]]></nonce_str><req_info><![CDATA[hVb/LMzZtthMeo73OgNse7cZfM8wDs5qJ5tNairW0tibraJGdhh8T0RiMscBFn6KZeHxKReOYtt0UH7qx0hsG2R9FW6JytKr2Y1lxN7PMXkTaKBTWx4NQ1sDov5C727J/NXq4g++PK/aMMltrngFj3nYZppR4fjtB9nFtWoQ3Zk1HFxfbOB+aDRbY4bjCULZrk5+YMymvkGCfWWq147xRLPGr9jc20aNoK1BuoX1wQgAcmTHmIoh6u4a/f2ma5bmGOf0TOyy8hbWqwf4MAywARqO6DRe4PQaMwJOtCP55UZsGWRaUb0auOzlNK4fBHIdFxzmYLXZNZ1tshIsXOKvCnFu304YkXT/HORUc5eDn5AhQfVJrvP8yXKalBQx85gDm+wcQLhSB+gZbEXvOjuXv3taSvk44xUI5aUwq23yQVWPunenATXxynv0b4UO2x56FANyh8GTmJ51/fjB8VY5Pn3Hx3993Ly+LR7jDhalas4Ad850YPr9BJbIDpuQoix51vtX8IFLPdMcH+d1zx0D/4bq6BCOQdXSPffKMtCIEyV4jzBHtS13c5NhxQYix5aDiGmqdv5iCGU2i76tuM3uTE5PNGHQA7UN15TFXd5nO5zyS5gvNFt7Mw6dBpf1kmmwtp8TKbRcKiXBlRl0whpRtUs9kKaQfUqTkLMhbgpzHcu1uWWZzERirOn/JGDw63s5wroF1WUmn92F5BMDeXPcn2wkIu0mKNayc1KrtBwauYL6Co2u6mRB5dLIL1s91iK7fQA2FsyIl0pSfhXtw9VKHdpystMd6JP6QIiMZcDyPnV9zNs6d5m6j/4Kbm2jI1cw5hypuIEi2col5Rt4JFxW4DcTmMQSPrU8V0xUcOrTzHLEIvFHp6oYmxciAQXDR1dDDQVsz6y449xCiNqkX9E2y2UxxAGAow/+LOzw1JWeLUKGHynK77C/gkN5ErTQ0MdOM7EtgGSF2ABFOiuXetCLiqmAFo76oL+F/fu24VuXUQlTENgGjDxiNL9slmJjm1eSuJtG+F1Lb/oMzwzRafz12BDRMHsyJBoQHenPCA+dAUODu+ek6zr631TCms3jTRE9]]></req_info></xml>";
+		Map<String,String> notifyTreeMap = new TreeMap<String,String>();
+		Document reader = DocumentHelper.parseText(body);  
+		Iterator<Element> childIt = reader.getRootElement().elementIterator();
+		while(childIt.hasNext()){
+			Element child = childIt.next();
+			String name = child.getName();
+			String value = child.getText();
+			notifyTreeMap.put(name, value);
+		} 	
+		System.out.println(notifyTreeMap);
+		System.out.println("Base64解码前字符串："+notifyTreeMap.get("req_info"));
+		//解密 
+		byte[] reqInfoEncode =  Base64.decodeBase64(notifyTreeMap.get("req_info"));
+		
+		System.out.println("Base64解码后字符串:"+ new String(reqInfoEncode));
+		
+		String key = "CYQZS5KG2CI3DX5N201FAUD9EXU0P1YL";
+		String key1 = MD5Util.md5(key).toLowerCase();
+		System.out.println("key1="+key1);
+		
+		String reqInfoDecode = EncryptUtil.Aes256Decode(reqInfoEncode, key1.getBytes("UTF-8"));
+		System.out.println("AES解密后:"+reqInfoDecode );
+	}
+	
+	public static void wxRefundnotify(){
+		try{
+			String notifyBody = params.get("body");
+			Logger.info("退款：微信回调，body=%s", notifyBody);
+			
+			Map<String,String> notifyTreeMap = new TreeMap<String,String>();
+			Document reader = DocumentHelper.parseText(notifyBody);  
+			Iterator<Element> childIt = reader.getRootElement().elementIterator();
+			while(childIt.hasNext()){
+				Element child = childIt.next();
+				String name = child.getName();
+				String value = child.getText();
+				notifyTreeMap.put(name, value);
+			} 			
+			if(!notifyTreeMap.get("return_code").equals("SUCCESS")){
+				throw new Exception("退款：微信回调时return_code!=SUCCESS,requestBody="+notifyBody);
+			}
+			
+			if(!notifyTreeMap.containsKey("req_info")){
+				throw new Exception("退款：微信回调时req_info不存在,requestBody="+notifyBody);
+			}
+			
+			//解密 
+			byte[] reqInfoEncode =  Base64.decodeBase64(notifyTreeMap.get("req_info"));
+			String key = Jws.configuration.getProperty(Jws.configuration.getProperty("shop.appId")+".pay.key");
+			String key1 = MD5Util.md5(key).toLowerCase();
+			Logger.info("退款：微信回调req_iinfo解密前%s",new String(reqInfoEncode));
+			String reqInfoDecode = EncryptUtil.Aes256Decode(reqInfoEncode, key1.getBytes("UTF-8"));
+			Logger.info("退款：微信回调req_iinfo解密后%s", reqInfoDecode);
+			
+			Map<String,String> reqInfoMap = new HashMap<String,String>();
+			Document reqInfoReader = DocumentHelper.parseText(reqInfoDecode);  
+			Iterator<Element> reqInfoIt = reqInfoReader.getRootElement().elementIterator();
+			while(reqInfoIt.hasNext()){
+				Element child = reqInfoIt.next();
+				String name = child.getName();
+				String value = child.getText();
+				reqInfoMap.put(name, value);
+			} 	
+			
+			Logger.info("退款：微信回调req_iinfo解密后to Map->%s", reqInfoDecode);
+			
+			String out_trade_no = String.valueOf(reqInfoMap.get("out_trade_no"));
+			ShopOrderDDL order = ShopOrderService.findByOrderId(out_trade_no);
+			
+			if(order == null){
+				Logger.error("微信回调时,找不到订单out_trade_no=%s", out_trade_no);
+			}else{
+				 ShopOrderService.refund_nofity(order, reqInfoMap);
+			}  
+			//
 			Document document = DocumentHelper.createDocument();  
 			Element xmlElement = document.addElement("xml");
 			Element return_code = xmlElement.addElement("return_code");
@@ -778,6 +923,8 @@ public class Shop extends Controller{
 			map.put("sellerTelNumber", order.getSellerTelNumber());
 			map.put("sellerWxNumber", order.getSellerWxNumber());
 			
+			//订单是否可以退款
+			map.put("canRefund", ShopOrderService.canRefund(order));
 			map.put("shareImage",API.getObjectAccessUrlSimple( "4d638917b143496a95bb83d3d935c7c1"));
 			
 			if(order.getGroupTogetherPrice() != null){
@@ -793,7 +940,11 @@ public class Shop extends Controller{
 				map.put("balancePay", AmountUtil.f2y(order.getUseUserAmount()));
 			}
 			map.put("orderTime", DateUtil.format(order.getOrderTime()));
-			
+			 
+			if(!StringUtils.isEmpty(order.getMemo())){
+				String[] memos = order.getMemo().split("</br>");
+				map.put("memos", memos);
+			}
 			//解析地址信息
 			JsonObject addressJson = new JsonParser().parse(order.getAddress()).getAsJsonObject();
 			String userName = addressJson.get("userName").getAsString();
@@ -836,11 +987,11 @@ public class Shop extends Controller{
 				}
 				Map<String,Object> togetherMap = new HashMap<String,Object>();
 				togetherMap.put("joiner", togetherList);
-				togetherMap.put("status", together.getStatus());
-				togetherMap.put("totalNumber",together.getTogetherNumber());
-				togetherMap.put("residueNumber",together.getTogetherNumberResidue());
-				togetherMap.put("createTime", DateUtil.format(together.getCreateTime()));
-				togetherMap.put("expireTime", DateUtil.format(together.getExpireTime()));
+				togetherMap.put("status", together==null?-1:together.getStatus());
+				togetherMap.put("totalNumber",together==null?-1:together.getTogetherNumber());
+				togetherMap.put("residueNumber",together==null?-1:together.getTogetherNumberResidue());
+				togetherMap.put("createTime", together==null?"":DateUtil.format(together.getCreateTime()));
+				togetherMap.put("expireTime", together==null?"":DateUtil.format(together.getExpireTime()));
 				map.put("together", togetherMap);
 			}
 			renderJSON(RtnUtil.returnSuccess("OK",map));

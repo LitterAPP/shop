@@ -57,72 +57,57 @@
         </div>
     </div>
 
-    <div class="table">
-        <div class="table-column-group">
-            <div class="table-column"></div>
-            <div class="table-column"></div>
-            <div class="table-column"></div>
-        </div>
-        <div class="table-header-group">
-            <ul class="table-row">
-                <li class="table-cell">选择</li>
-                <li class="table-cell">商品ID</li>
-                <li class="table-cell">商品名称</li>
-                <li class="table-cell">商品原价</li>
-                <li class="table-cell">商品现价</li>
-                <li class="table-cell">是否参团</li>
-                <li class="table-cell">团购价</li>
-                <li class="table-cell">库存</li>
-                <li class="table-cell">状态</li>
-                <li class="table-cell">PV</li>
-                <li class="table-cell">交易量</li>
-                <li class="table-cell">是否热门</li>
-                <li class="table-cell">是否打折</li>
-                <li class="table-cell">创建时间</li>
-                <li class="table-cell">编辑</li>
-            </ul>
-        </div>
-        <!--
-        <div class="table-footer-group">
-            <ul class="table-row">
-                <li class="table-cell"></li>
-                <li class="table-cell"></li>
-                <li class="table-cell"></li>
-                <li class="table-cell"></li>
-            </ul>
-        </div>-->
-        <div class="table-row-group">
-            <ul class="table-row" v-for="item in list">
-                <li class="table-cell">
-                    <input style="height: 15px;width: 15px;" v-bind:id="item.productId" v-bind:value="item.productId" type="checkbox" v-model="productIdChecked" />
-                </li>
-                <li class="table-cell">{{item.productId}}</li>
-                <li class="table-cell">{{item.productName}}</li>
-                <li class="table-cell">{{item.productOriginPrice}}</li>
-                <li class="table-cell">{{item.productNowPrice}}</li>
-                <li v-if="item.joinTogether==1" class="table-cell">是</li>
-                <li v-else class="table-cell">否</li>
 
-                <li class="table-cell">{{item.productTogetherPrice}}</li>
-                <li class="table-cell">{{item.sotre}}</li>
+    <table width="100%" border="1" class="t1">
+        <thead>
+            <th width="8%">选择</th>
+            <th width="10%">商品ID</th>
+            <th width="18%">商品名称</th>
+            <th width="8%">商品原价</th>
+            <th width="8%">商品现价</th>
+            <th width="8%">是否参团</th>
+            <th width="8%">团购价</th>
+            <th width="8%">库存</th>
+            <th width="8%">状态</th>
+            <th width="8%">PV</th>
+            <th width="8%">交易量</th>
+            <th width="8%">是否热门</th>
+            <th width="8%">是否打折</th>
+            <th width="8%">创建时间</th>
+            <th width="8%">修改时间</th>
+            <th width="8%">编辑</th>
+        </thead>
+        <tr  v-for="item in list">
+            <td>
+                <input style="height: 15px;width: 15px;" v-bind:id="item.productId" v-bind:value="item.productId" type="checkbox" v-model="productIdChecked" />
+            </td>
+            <td>{{item.productId}}</td>
+            <td>{{item.productName}}</td>
+            <td>{{item.productOriginPrice}}元</td>
+            <td>{{item.productNowPrice}}元</td>
+            <td v-if="item.joinTogether==1" class="table-cell">是</td>
+            <td v-else class="table-cell">否</td>
 
-                <li v-if="item.status==1" class="table-cell">上架</li>
-                <li v-else  class="table-cell">下架</li>
+            <td>{{item.productTogetherPrice}}元</td>
+            <td>{{item.sotre}}</td>
 
-                <li class="table-cell">{{item.pv}}</li>
-                <li class="table-cell">{{item.deal}}</li>
+            <td v-if="item.status==1" class="table-cell">上架</td>
+            <td v-else  class="table-cell">下架</td>
 
-                <li v-if="item.isHot" class="table-cell">是</li>
-                <li v-else  class="table-cell">否</li>
+            <td>{{item.pv}}</td>
+            <td>{{item.deal}}</td>
 
-                <li v-if="item.isSale" class="table-cell">是</li>
-                <li v-else  class="table-cell">否</li>
-                <li class="table-cell">{{item.createTime}}</li>
+            <td v-if="item.isHot" class="table-cell">是</td>
+            <td v-else  class="table-cell">否</td>
 
-                <li class="table-cell"> <button  class="button1"  v-bind:data-productid="item.productId"  @click="edit">编辑</button></li>
-            </ul>
-        </div>
-    </div>
+            <td v-if="item.isSale" class="table-cell">是</td>
+            <td v-else  class="table-cell">否</td>
+            <td>{{item.createTime}}</td>
+            <td>{{item.updateTime}}</td>
+
+            <td> <button  class="button1"  v-bind:data-productid="item.productId"  @click="edit">编辑</button></td>
+        </tr>
+    </table>
 
     <div v-cloak class="pageInfo">
         <div v-cloak data-flag="-1" @click="more">&lt;&lt;上一页</div>
@@ -135,6 +120,18 @@
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="../../js/config.js"></script>
 <script src="../../js/productMng.js"></script>
-
+<script>
+    var flag = true
+    $(document).ready(function(){
+        $("table").bind("dblclick",function(){
+            if(flag){
+                $(this).attr('width',2000)
+            }else{
+                $(this).attr('width','100%')
+            }
+            flag = !flag;
+        })
+    });
+</script>
 </body>
 </html>

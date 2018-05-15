@@ -7,7 +7,7 @@ public class IDUtil {
 	
 	public static String gen(String prefix){
 		String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-		int random = new Random().nextInt(100000)+100000;
+		int random = new Random().nextInt(1000)+1000;
 		return prefix+"-"+date+"-"+random;
 	}
 	

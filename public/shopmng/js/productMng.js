@@ -42,7 +42,7 @@ var productMng = new Vue({
             productId:'',
             productName:'',
             status:{
-                selected:'-1',
+                selected:'1',
                 options:[
                     {text:'待上架',value:'0'},{text:'上架中',value:'1'},  {text:'下架中',value:'2'},  {text:'禁止',value:'3'}
                 ]
@@ -238,7 +238,7 @@ var productMng = new Vue({
         console.log('created')
         //检测登录态
         var that = this
-        that.listProduct('','','','',false,false,-1,0,1,pageSize,false)
+        that.listProduct('','','','',false,false,1,0,1,pageSize,false)
         common.listCategroy(this,function(result){
             that.condition.pCategory = result.data
         })

@@ -5,39 +5,18 @@
  * Created by fish on 2018/3/29.
  */
 var pageSize=15
-var pCategoryId='',subCategoryId=''
-var orderMng = new Vue({
-    el: '#orderMng',
+var wxRefundorderMng = new Vue({
+    el: '#wxRefundorderMng',
     data: {
         list:[
 
         ],
         condition:{
-            orderId:'',
-            keyword:'',
-            status:{
-                selected:'-1',
-                options:[
-                    {text:'全部',value:'-1'},
-                    {text:'支付中',value:'0'},
-                    {text:'支付成功:待发货',value:'1'},
-                    {text:'支付取消',value:'2'},
-                    {text:'支付失败',value:'3'},
-                    {text:'支付完成:拼团中',value:'4'},
-                    {text:'退款成功',value:'5'},
-                    {text:'退款处理失败',value:'55555'},
-                    {text:'退款未审核通过',value:'5555'},
-                    {text:'退款审核中',value:'555'},
-                    {text:'退款中',value:'55'},
-                    {text:'拼团成功:待发货',value:'6'},
-                    {text:'已投递:已揽件',value:'7'},
-                    {text:'已签收',value:'8'},
-                    {text:'已确认收货',value:'9'}
-                ]
-            }
+            transaction_id:'',
+            refund_id:'',
+            out_refund_no:'',
+            out_trade_no:''
         },
-        currentMemo:'',
-        showMemo:false,
         mask:false,
         mastText:'',
         total:0,
@@ -51,22 +30,19 @@ var orderMng = new Vue({
 
     },
     methods:{
-        closeMemo:function(){
-            var that = this
-            that.showMemo = false
-        },
         getCondition:function(){
             var params = {}
-            params.orderId = this.condition.orderId || ''
-            params.keyword = this.condition.keyword || ''
-            params.status = this.condition.status.selected||''
+            params.transaction_id = this.condition.transaction_id || ''
+            params.refund_id = this.condition.refund_id || ''
+            params.out_refund_no = this.condition.out_refund_no||''
+            params.out_trade_no = this.condition.out_trade_no||''
             return params
         },
         search:function() {
             var that = this
             var params = this.getCondition()
             that.page=1
-            that.listOrder(params.orderId,params.keyword,params.status,that.page,pageSize,false)
+            that.listOrder(params,that.page,pageSize,false)
         },
         more:function(event){
             var that = this
@@ -85,19 +61,20 @@ var orderMng = new Vue({
                 }
             }
             var params = this.getCondition()
-            this.listOrder(params.orderId,params.keyword,params.status,that.page,pageSize,false)
+            this.listOrder(params,that.page,pageSize,false)
 },
-        listOrder: function (orderId,keyword,status,page,pageSize,append) {
+        listOrder: function (params,page,pageSize,append) {
             var that = this
             showLoading(that,'请稍后,正在加载订单列表...')
             $.ajax({
-                url:listOrderURL,
+                url:listRefundOrderURL,
                 type:'POST',
                 dataType:'json',
                 data:{
-                    orderId:orderId,
-                    keyword:keyword,
-                    status:status,
+                    transactionId:params.transaction_id||'',
+                    outTradeNo:params.out_trade_no||'',
+                    refundId:params.refund_id||'',
+                    outRefundNo:params.outRefundNo||'',
                     page:page,
                     pageSize:pageSize
                 },
@@ -118,7 +95,7 @@ var orderMng = new Vue({
                             that.list  = result.data.list
                         }
                     }else{
-                        toast(that,'加载订单列表失败')
+                        toast(that,'加载退款订单列表失败')
                     }
 
 
@@ -137,17 +114,6 @@ var orderMng = new Vue({
                 window.parent.location.href='../../html/login.html'
             }
         })
-        that.listOrder('','',that.condition.status.selected,1,pageSize,false)
+        that.listOrder({},that.page,pageSize,false)
     },
-    updated: function () {
-        var that = this
-        $(".memo").bind('click',function(){
-            if(that.showMemo){
-                that.showMemo=false
-                return
-            }
-            that.showMemo=true
-            that.currentMemo=$(this).data('memo')
-        })
-    }
 })

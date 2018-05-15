@@ -38,7 +38,7 @@ public class ShopMngService {
 		user.setUserName(userName);
 		String md5Pwd = MD5Util.md5(password);		
 		user.setPassword(md5Pwd);
-		user.setShopId(IDUtil.gen("SHOP"));		
+		user.setShopId(IDUtil.gen("SP"));		
 		return Dal.insert(user)>0;
 	}
 	

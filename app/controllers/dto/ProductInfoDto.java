@@ -7,6 +7,7 @@ public class ProductInfoDto {
 
 	public int productType;
 	public int store;
+	public int dealNum;
 	public String productId;
 	public String title;
 	public String p_category_id;

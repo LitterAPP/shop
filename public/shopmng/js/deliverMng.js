@@ -16,9 +16,9 @@ var deliverMng = new Vue({
             orderId:'',
             productName:'',
             status:{
-                selected:'1',
+                selected:'-2',
                 options:[
-                    {text:'不选择',value:'-1'},
+                    {text:'全部待发货',value:'-2'},
                     {text:'支付成功:待发货',value:'1'},
                     {text:'拼团成功:待发货',value:'6'}
                 ]
@@ -28,6 +28,11 @@ var deliverMng = new Vue({
         expressOrderCode:'',
         expressSelected:'DBL',
         deliverOrderId:'',
+        deliverOrder:{
+
+        },
+        currentMemo:'',
+        showMemo:false,
         deliverPrompt:false,
         mask:false,
         mastText:'',
@@ -42,10 +47,15 @@ var deliverMng = new Vue({
 
     },
     methods:{
+        closeMemo:function(){
+            var that = this
+            that.showMemo = false
+        },
         deliverCancel:function(){
             var that = this
             that.deliverPrompt=false
             that.deliverOrderId = ''
+
         },
         deliverOK:function(){
             var that = this
@@ -84,8 +94,9 @@ var deliverMng = new Vue({
         deliver:function(e){
             var that = this
             that.deliverOrderId = e.target.dataset.orderid
+            that.deliverOrder = that.list[e.target.dataset.idx]
+            console.log('selected order',that.deliverOrder)
             that.deliverPrompt=true
-
         },
         getCondition:function(){
             var params = {}
@@ -99,6 +110,12 @@ var deliverMng = new Vue({
             var params = this.getCondition()
             that.page=1
             that.listOrder(params.orderId,params.keyword,params.status,that.page,pageSize,false)
+        },
+        exportData:function(){
+            var that = this
+            var params = this.getCondition()
+           window.location.href=exportOrderURL+'?orderId='+params.orderId+'&keyword='+params.keyword+'&startTime='+$("#startTimePicker").val()+'&endTime='+$("#endTimePicker").val()+'&status='+params.status
+
         },
         more:function(event){
             var that = this
@@ -130,6 +147,8 @@ var deliverMng = new Vue({
                     orderId:orderId,
                     keyword:keyword,
                     status:status,
+                    startTime:$("#startTimePicker").val(),
+                    endTime:$("#endTimePicker").val(),
                     page:page,
                     pageSize:pageSize
                 },
@@ -173,6 +192,17 @@ var deliverMng = new Vue({
             that.expressList = result
             that.expressSelected='DBL'
         })
-        that.listOrder('','',-1,1,pageSize,false)
+        that.listOrder('','',that.condition.status.selected,1,pageSize,false)
     },
+    updated: function () {
+        var that = this
+        $(".memo").bind('click',function(){
+            if(that.showMemo){
+                that.showMemo=false
+                return
+            }
+            that.showMemo=true
+            that.currentMemo=$(this).data('memo')
+        })
+    }
 })

@@ -8,6 +8,7 @@ var addProduct = new Vue({
         title:'',
         productType:0,
         store:0,
+        dealNum:0,
         contact_mobile:'',
         contact_wx:'',
         price:[],
@@ -56,7 +57,8 @@ var addProduct = new Vue({
         join_together:false,
         isSale:false,
         isHot:false,
-        mask:false
+        mask:false,
+        tags:[]
     },
     methods:{
         listCategroy: function () {
@@ -115,6 +117,7 @@ var addProduct = new Vue({
                 contact_wx:this.contact_wx,
                 contact_mobile:this.contact_mobile,
                 price:this.price,
+                dealNum:this.dealNum,
                 banner_pic:this.banner_pic,
                 play_pics:this.play_pics,
                 selectedCategoryParams:this.selectedCategoryParams,
@@ -313,7 +316,9 @@ var addProduct = new Vue({
             console.log(this.selectedAttrs)
         },
         addAttr:function(event){
+            var that = this
             this.selectedAttrs.push('')
+            console.log('当前attrs属性',this.selectedAttrs)
         },
         delPlayPic:function(event){
             var index = event.target.dataset.idx
@@ -565,6 +570,7 @@ var addProduct = new Vue({
                         that.productType=0
                         that.store=result.data.store
                         that.price=result.data.price
+                        that.dealNum=result.data.dealNum
                         that.banner_pic=result.data.banner_pic
                         that.play_pics=result.data.play_pics
                         that.selectedCategoryParams=result.data.selectedCategoryParams
@@ -618,6 +624,44 @@ var addProduct = new Vue({
             }
         })
         this.getOneProductInfo()
+        var that = this
+        $.ajax({
+            type:"POST",
+            url:listTagsURL,
+            success:function(result){
+                that.tags=result
+                common.bindAutoComplete(that.tags,$('.autoTagsComplete'),function(){
+                    var tmp = []
+
+                    $(".autoTagsComplete").each(function(i){
+                        var text = $(this).val();
+                        tmp.push(text)
+                        that.selectedAttrs=tmp
+                    });
+                })
+            }
+        });
 
     },
+    updated:function(){
+        var that = this
+        console.log('updated')
+        common.bindAutoComplete(that.tags,$('.autoTagsComplete'),function(){
+            var tmp = []
+            $(".autoTagsComplete").each(function(i){
+                var text = $(this).val();
+                tmp.push(text)
+                that.selectedAttrs=tmp
+            });
+        })
+        $('.autoTagsComplete').on("blur", function () {
+            var tmp = []
+            $(".autoTagsComplete").each(function(i){
+                var text = $(this).val();
+                tmp.push(text)
+                that.selectedAttrs=tmp
+            });
+        })
+    }
+
 })

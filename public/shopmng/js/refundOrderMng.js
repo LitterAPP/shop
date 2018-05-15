@@ -6,38 +6,40 @@
  */
 var pageSize=15
 var pCategoryId='',subCategoryId=''
-var orderMng = new Vue({
-    el: '#orderMng',
+var refundOrderMng = new Vue({
+    el: '#refundOrderMng',
     data: {
         list:[
 
         ],
         condition:{
             orderId:'',
-            keyword:'',
+            productName:'',
             status:{
-                selected:'-1',
+                selected:'-5',
                 options:[
-                    {text:'全部',value:'-1'},
-                    {text:'支付中',value:'0'},
-                    {text:'支付成功:待发货',value:'1'},
-                    {text:'支付取消',value:'2'},
-                    {text:'支付失败',value:'3'},
-                    {text:'支付完成:拼团中',value:'4'},
+                    {text:'全部退款订单',value:'-5'},
                     {text:'退款成功',value:'5'},
                     {text:'退款处理失败',value:'55555'},
                     {text:'退款未审核通过',value:'5555'},
                     {text:'退款审核中',value:'555'},
                     {text:'退款中',value:'55'},
-                    {text:'拼团成功:待发货',value:'6'},
-                    {text:'已投递:已揽件',value:'7'},
-                    {text:'已签收',value:'8'},
-                    {text:'已确认收货',value:'9'}
                 ]
             }
         },
+        auditStatus:[
+            {text:'审核通过',value:'55'},
+            {text:'拒绝退款',value:'5555'}
+        ],
+        auditStatusSelected:'55',
+        refundFee:'0.00',
+        auditMemo:'',
+        refundOrder:{
+
+        },
         currentMemo:'',
         showMemo:false,
+        refundPrompt:false,
         mask:false,
         mastText:'',
         total:0,
@@ -55,6 +57,61 @@ var orderMng = new Vue({
             var that = this
             that.showMemo = false
         },
+        refundCancel:function(){
+            var that = this
+            that.refundPrompt=false
+            that.refundOrder={}
+        },
+        refundOK:function(){
+            var that = this
+
+            if(stringEmpty(that.refundFee)){
+                toast(that,'请输入退款金额')
+                return ;
+            }
+
+            if(stringEmpty(that.auditMemo)){
+                toast(that,'请输入审核备注信息')
+                return ;
+            }
+
+
+
+            if( parseFloat(that.refundFee) > parseFloat(that.refundOrder.totapPay)){
+                toast(that,'退款额度不能大于订单总金额')
+                return ;
+            }
+            showLoading(that,'审核提交中,请稍后...')
+            $.ajax({
+                url:refundAuditURL,
+                type:'POST',
+                dataType:'json',
+                data:{
+                    orderId:that.refundOrder.orderId,
+                    refundFee:that.refundFee,
+                    memo:that.auditMemo,
+                    auditStatus:that.auditStatusSelected
+                },
+                success:function(result){
+                    console.log('refund',result)
+                    if(result && result.code==1){
+                        that.refundPrompt=false
+                        that.search()
+                        hideLoading(that)
+                    }else{
+                        toast(that,'审核操作失败')
+                    }
+                }
+            })
+
+        },
+        refund:function(e){
+            var that = this
+            that.refundOrder = that.list[e.target.dataset.idx]
+            that.refundFee =  that.refundOrder.totalPay
+            console.log('selected order',that.refundOrder)
+            that.refundPrompt=true
+        },
         getCondition:function(){
             var params = {}
             params.orderId = this.condition.orderId || ''
@@ -67,6 +124,12 @@ var orderMng = new Vue({
             var params = this.getCondition()
             that.page=1
             that.listOrder(params.orderId,params.keyword,params.status,that.page,pageSize,false)
+        },
+        exportData:function(){
+            var that = this
+            var params = this.getCondition()
+           window.location.href=exportOrderURL+'?orderId='+params.orderId+'&keyword='+params.keyword+'&startTime='+$("#startTimePicker").val()+'&endTime='+$("#endTimePicker").val()+'&status='+params.status
+
         },
         more:function(event){
             var that = this
@@ -86,7 +149,7 @@ var orderMng = new Vue({
             }
             var params = this.getCondition()
             this.listOrder(params.orderId,params.keyword,params.status,that.page,pageSize,false)
-},
+        },
         listOrder: function (orderId,keyword,status,page,pageSize,append) {
             var that = this
             showLoading(that,'请稍后,正在加载订单列表...')
@@ -98,6 +161,8 @@ var orderMng = new Vue({
                     orderId:orderId,
                     keyword:keyword,
                     status:status,
+                    startTime:$("#startTimePicker").val(),
+                    endTime:$("#endTimePicker").val(),
                     page:page,
                     pageSize:pageSize
                 },

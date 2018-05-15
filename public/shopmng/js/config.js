@@ -32,10 +32,14 @@ var onLineWeTaoUrl = '/shopmng/onLineWeTao'
 var getOneWeTaoUrl = '/shopmng/getOneWeTao'
 var weTaoDetailUrl='/shop/weTaoDetail'
 var zanOnDetailPageURL='/shop/zanOnDetailPage'
-var domain = 'http://192.168.0.184:9020/'
+var domain = 'https://weixunshi.com/'
 var smsSendUrl='/Sms/sendCode'
 var regUrl='/shopmng/reg'
 var dataOverViewUrl='/shopmng/dataOverView'
+var exportOrderURL='/exportData/shopmng/exoprtOrderData'
+var listTagsURL='/shopmng/listAttrs'
+var refundAuditURL='/shopmng/refundAudit'
+var listRefundOrderURL='/shopmng/listRefundOrder'
 var urlTools = {
     //获取RUL参数值
     getUrlParam: function(name) {               /*?videoId=identification  */
@@ -76,6 +80,7 @@ var common = {
                     if(result && result.code==1){
                         hideLoading(handler)
                         handler.pCategory = result.data
+                       // console.log('category-->',result.data)
                     }else{
                         toast(handler,'商品分类加载中失败:'+result.msg)
                     }
@@ -130,7 +135,22 @@ var common = {
             return true
         }
         return false
-    }
+    },
+    bindAutoComplete: function (tags,obj,callback) {
+        $(obj).autocomplete({
+            lookup: tags,
+            minChars:0,
+            width: 150,
+            scroll: true,
+            scrollHeight: 300,
+            multiple: false,
+            matchContains: true,
+            maxHeight: 300,
+            onSelect: function (s) {
+                callback()
+            }
+        });
+    },
 }
 //alias
 var toast = common.toast
@@ -143,3 +163,4 @@ var hideLoading = common.hideLoading
 var stringEmpty = common.stringEmpty
 var listSource =common.listSource
 var checkMobile=common.checkMobile
+

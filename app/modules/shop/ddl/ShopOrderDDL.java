@@ -347,7 +347,16 @@ public class ShopOrderDDL{
 	public void setProductType(Integer productType){
 		this.productType=productType;
 	}
-
+	
+	
+	@Column(name="memo", type=DbType.Varchar)
+	private String memo;
+	public String getMemo() {
+		return memo;
+	}
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
 	public static ShopOrderDDL newExample(){
 		ShopOrderDDL object=new ShopOrderDDL();
 		object.setId(null);

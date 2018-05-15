@@ -3,7 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link type="text/css" rel="styleSheet"  href="../../css/deliverMng.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/refundOrderMng.css" />
     <link type="text/css" rel="styleSheet"  href="../../css/table.css" />
     <link type="text/css" rel="styleSheet"  href="../../css/search.css" />
     <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
@@ -12,29 +12,34 @@
     <link type="text/css" rel="styleSheet"  href="../../css/jquery.datetimepicker.css" />
 </head>
 <body>
-<div id="deliverMng" style="margin-bottom: 50px;">
-    <div v-if="deliverPrompt" class="prompt">
-        <div class="prompt-1">
-            <div class="" style="font-weight: bold;font-size: 16px;">请输入发货信息</div>
-            <div class="">订单号：{{deliverOrder.orderId}}</div>
-            <div class="">收货人：{{deliverOrder.address.userName}}（{{deliverOrder.address.telNumber}}）</div>
-            <div class="">省份：{{deliverOrder.address.provinceName}}</div>
-            <div class="">地市：{{deliverOrder.address.cityName}}{{deliverOrder.address.countyName}}</div>
-            <div class="">地址详情：{{deliverOrder.address.detailInfo}}</div>
-            <div class="">物流公司： <select v-model="expressSelected">
-                <template  v-for="option in expressList">
-                <option v-if="option.id===expressSelected" selected v-bind:value="option.id" >
-                    {{ option.value }} | {{ option.id }}
-                </option>
-                <option v-else v-bind:value="option.id" >
-                    {{ option.value }} | {{ option.id }}
-                </option>
+<div id="refundOrderMng" style="margin-bottom: 50px;">
+    <div v-if="refundPrompt" class="prompt">
+        <div class="prompt-1" style="height:500px;margin-top:-250px;overflow-y: scroll;">
+            <div class="" style="font-weight: bold;font-size: 16px;">退款审核</div>
+            <div class="">订单号：{{refundOrder.orderId}}</div>
+            <div class="">支付额度：{{refundOrder.totalPay}}</div>
+            <div class="">收货人：{{refundOrder.address.userName}}（{{refundOrder.address.telNumber}}）</div>
+            <div class="">备注：<span v-html="refundOrder.memo"></span></div>
+
+            <div class="">状态： <select v-model="auditStatusSelected">
+                <template  v-for="option in auditStatus">
+                    <option   v-bind:value="option.value" >
+                        {{ option.text }}
+                    </option>
                 </template>
             </select></div>
-            <div class="">快递单号：<input type="text" v-bind:value="expressOrderCode" v-model="expressOrderCode" /></div>
+
+            <div class="" v-if="auditStatusSelected==55">退款额度：
+                <input  style="width: 80px;" placeholder="金额小于订单额度" v-model="refundFee"/>元  (默认全款退单)
+            </div>
+
+            <div class="" >审核备注：
+                <input  style="width: 200px;" placeholder="请输入审核备注" v-model="auditMemo"/>
+            </div>
+
             <div class="" style="float: right;">
-                <button class="button1"  @click="deliverOK">发货</button>
-                <button class="button1" @click="deliverCancel">取消</button>
+                <button class="button1"  @click="refundOK">确认</button>
+                <button class="button1" @click="refundCancel">取消</button>
             </div>
         </div>
     </div>
@@ -42,7 +47,7 @@
     <div v-if="showMemo" class="prompt">
         <div class="prompt-1" style="height:500px;margin-top:-250px;overflow-y: scroll;">
             <div class="">
-                <span v-html="currentMemo"></span>
+               <span v-html="currentMemo"></span>
             </div>
             <div class="" style="float: right;">
                 <button class="button1" @click="closeMemo">关闭</button>
@@ -81,28 +86,28 @@
 
     <table width="100%" border="1" class="t1">
         <thead>
-            <th width="8%">发货</th>
+            <th width="7%">退款审核</th>
             <th width="10%">订单ID</th>
-            <th width="10%">状态</th>
-            <th width="6%">是否团购</th>
-            <th width="6%">团购ID</th>
-            <th width="6%">团购价</th>
-            <th width="20%">商品ICON</th>
-            <th width="16%">商品组名称</th>
-            <th width="16%">商品名称</th>
-            <th width="6%">购买数量</th>
-            <th width="6%">商品组价格</th>
-            <th width="6%">应付总额</th>
-            <th width="6%">余额支付</th>
-            <th width="6%">现金支付</th>
-            <th width="6%">代金券支付</th>
-            <th width="16%">下单时间</th>
-            <th width="16%">支付时间</th>
-            <th width="6%">备注</th>
+            <th width="5%">状态</th>
+            <th width="5%">是否团购</th>
+            <th width="10%">团购ID</th>
+            <th width="5%">团购价</th>
+            <th width="15%">商品ICON</th>
+            <th width="10%">商品组名称</th>
+            <th width="10%">商品名称</th>
+            <th width="5%">购买数量</th>
+            <th width="5%">商品组价格</th>
+            <th width="5%">应付总额</th>
+            <th width="5%">余额支付</th>
+            <th width="5%">现金支付</th>
+            <th width="5%">代金券支付</th>
+            <th width="15%">1下单时间</th>
+            <th width="15%">1支付时间</th>
+            <th width="5%">备注</th>
         </thead>
-        <tr v-for="(item,index) in list">
+        <tr  v-for="(item,index) in list">
             <td>
-                <button  class="button1" v-bind:data-orderid="item.orderId" v-bind:data-idx="index" @click="deliver">发货</button>
+                <button  v-if="item.orderStatus==555"  class="button1" v-bind:data-orderid="item.orderId" v-bind:data-idx="index" @click="refund">审核</button>
             </td>
             <td>{{item.orderId}}</td>
             <td  v-if="item.orderStatus==0" class="table-cell">支付中</td>
@@ -139,10 +144,9 @@
             <td>{{item.couponPay}}元</td>
             <td>{{item.orderTime}}</td>
             <td>{{item.payTime}}</td>
-            <td  class="memo" v-bind:data-memo="item.memo" style="cursor:pointer;" >
-                查看
+            <td class="memo" v-bind:data-memo="item.memo" style="cursor:pointer;" >
+               查看
             </td>
-
         </tr>
     </table>
 
@@ -156,7 +160,7 @@
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="../../js/config.js"></script>
-<script src="../../js/deliverMng.js"></script>
+<script src="../../js/refundOrderMng.js"></script>
 <script src="../../js/jquery.datetimepicker.js"></script>
 <script>
     $('#startTimePicker').datetimepicker(
@@ -171,7 +175,9 @@
                 format:"Y-m-d H:i:00"
             }
     );
+
 </script>
+
 <script>
     var flag = true
     $(document).ready(function(){

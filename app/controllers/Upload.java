@@ -52,9 +52,9 @@ public class Upload extends Controller{
 					fileFix.equals(".jpeg") || 
 					fileFix.equals(".png")){
 				if(cos==1){
-					objectKey = API.uploadImageToTencent(file, 400, 0.9f);
+					objectKey = API.uploadImageToTencent(file, 400, 1f);
 				}else{
-					objectKey = API.uploadImage(file, 400, 0.9f);
+					objectKey = API.uploadImage(file, 400, 1f);
 				}
 				
 			}else{

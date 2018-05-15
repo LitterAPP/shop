@@ -27,6 +27,7 @@
 
             <button v-bind:data-id="parent.value" v-bind:data-text="parent.text" @click="savePCategory"class="button1">保存</button>
             <button  v-bind:data-id="parent.value"  @click="deletePCategory" class="button-del">删除</button>
+            <span style="color:#8a8a8a;font-size: 12px;">分类ID：{{parent.value}}</span>
             <div style="float: right;">
                 <button  v-if="index!=0" v-bind:data-idx="index" @click="up" class="button1">上移</button>
                 <button  v-if="index!=pCategory.options.length-1"  v-bind:data-idx="index" @click="down" class="button1">下移</button>
@@ -37,6 +38,7 @@
                 <div><input v-bind:value="sub.text" v-model="sub.text"/></div>
                 <button v-bind:data-id="sub.value" v-bind:data-text="sub.text" @click="saveSubCategory"  class="button1">保存</button>
                 <button  v-bind:data-id="sub.value" @click="deleteSubCategory"  class="button-del">删除</button>
+                <span style="color:#8a8a8a;font-size: 12px;">分类ID：{{sub.value}}</span>
             </div>
             <div class="add" style="padding: 10px 20px;">
                 <div>

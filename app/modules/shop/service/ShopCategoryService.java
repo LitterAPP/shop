@@ -46,11 +46,11 @@ public class ShopCategoryService {
 		}
 	}
 	
-	public static ShopProductCategoryDDL createPCategory(String pCategoryName){
+	public static ShopProductCategoryDDL createPCategory(String shopId,String pCategoryName){
 		ShopProductCategoryDDL p = new ShopProductCategoryDDL();
 		p.setCategoryId(IDUtil.gen("CAT"));
 		p.setCategoryName(pCategoryName);
-		
+		p.setShopId(shopId);
 		ShopProductCategoryDDL maxSortP = getMaxSortPCategory();
 		p.setOrderBy(maxSortP==null?0:(maxSortP.getOrderBy()+1));
 		int id = (int)Dal.insertSelectLastId(p);

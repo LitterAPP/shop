@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+    <link type="text/css" rel="styleSheet"  href="../../css/wxRefundOrderMng.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/table.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/search.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/page.css" />
+    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+</head>
+<body>
+<div id="wxRefundorderMng" style="margin-bottom: 50px;">
+    <div v-if="mask" class="mask">
+        <div v-cloak>
+            {{maskText}}
+        </div>
+    </div>
+    <div class="search">
+
+        <div>微信订单号：<input  v-model="condition.transaction_id" type="text" placeholder=" 微信订单号"/></div>
+        <div>商户订单号：<input  v-model="condition.out_trade_no" type="text" placeholder=" 商户订单号"/></div>
+        <div>微信退款单号：<input  v-model="condition.refund_id" type="text" placeholder=" 微信退款单号"/></div>
+        <div>商户退款单号：<input  v-model="condition.out_refund_no" type="text" placeholder=" 商户退款单号"/></div>
+
+        <div>
+            <button class="button1" @click="search">查询</button>
+        </div>
+
+    </div>
+
+    <table width="100%"  border="1" class="t1">
+        <thead>
+        <th width="8%">微信订单号</th>
+        <th width="8%">商户订单号</th>
+        <th width="8%">微信退款单号</th>
+        <th width="8%">商户退款单号</th>
+        <th width="8%">订单金额</th>
+        <th width="8%">申请退款金额</th>
+        <th width="8%">退款金额</th>
+        <th width="8%">退款状态</th>
+        <th width="8%">退款成功时间</th>
+        <th width="8%">退款入账账户</th>
+        <th width="8%">退款资金来源</th>
+        <th width="8%">退款发起来源</th>
+        </thead>
+        <tr  v-for="item in list">
+            <td>{{item.transactionId}}</td>
+            <td>{{item.outTradeNo}}</td>
+            <td>{{item.refundId}}</td>
+            <td>{{item.outRefundNo}}</td>
+            <td>{{item.totalFee}}元</td>
+            <td>{{item.refundFee}}元</td>
+            <td>{{item.settlementRefundFee}}元</td>
+
+            <td  v-if="item.refundStatus=='SUCCESS'" class="table-cell">退款成功</td>
+            <td  v-else-if="item.refundStatus=='CHANGE'" class="table-cell">退款异常</td>
+            <td  v-else-if="item.refundStatus=='REFUNDCLOSE'" class="table-cell">退款关闭</td>
+
+            <td>{{item.successTime}}</td>
+            <td>{{item.refundRecvAccount}}</td>
+            <td  v-if="item.refundAccount=='REFUND_SOURCE_RECHARGE_FUNDS'" class="table-cell">可用余额退款/基本账户</td>
+            <td  v-else-if="item.refundAccount=='REFUND_SOURCE_UNSETTLED_FUNDS'" class="table-cell">未结算资金退款</td>
+            <td>{{item.refundRequestSource}}</td>
+        </tr>
+    </table>
+<!--
+    <div class="table">
+        <div class="table-column-group">
+            <div class="table-column"></div>
+            <div class="table-column"></div>
+            <div class="table-column"></div>
+        </div>
+        <div class="table-header-group">
+            <ul class="table-row">
+                <li class="table-cell">微信订单号</li>
+                <li class="table-cell">商户订单号</li>
+                <li class="table-cell">微信退款单号</li>
+                <li class="table-cell">商户退款单号</li>
+                <li class="table-cell">订单金额</li>
+                <li class="table-cell">申请退款金额</li>
+                <li class="table-cell">退款金额</li>
+                <li class="table-cell">退款状态</li>
+                <li class="table-cell">退款成功时间 </li>
+                <li class="table-cell">退款入账账户</li>
+                <li class="table-cell">退款资金来源</li>
+                <li class="table-cell">退款发起来源</li>
+            </ul>
+        </div>
+        <!--
+        <div class="table-footer-group">
+            <ul class="table-row">
+                <li class="table-cell"></li>
+                <li class="table-cell"></li>
+                <li class="table-cell"></li>
+                <li class="table-cell"></li>
+            </ul>
+        </div>-->
+    <!--
+        <div class="table-row-group">
+            <ul class="table-row" v-for="item in list">
+                <li class="table-cell">{{item.transactionId}}</li>
+                <li class="table-cell">{{item.outTradeNo}}</li>
+                <li class="table-cell">{{item.refundId}}</li>
+                <li class="table-cell">{{item.outRefundNo}}</li>
+                <li class="table-cell">{{item.totalFee}}</li>
+                <li class="table-cell">{{item.refundFee}}</li>
+                <li class="table-cell">{{item.settlementRefundFee}}</li>
+
+
+                <li  v-if="item.refundStatus=='SUCCESS'" class="table-cell">退款成功</li>
+                <li  v-else-if="item.refundStatus=='CHANGE'" class="table-cell">退款异常</li>
+                <li  v-else-if="item.refundStatus=='REFUNDCLOSE'" class="table-cell">退款关闭</li>
+
+                <li class="table-cell">{{item.successTime}}</li>
+
+                <li class="table-cell">{{item.refundRecvAccount}}</li>
+
+
+                <li  v-if="item.refundAccount=='REFUND_SOURCE_RECHARGE_FUNDS'" class="table-cell">可用余额退款/基本账户</li>
+                <li  v-else-if="item.refundAccount=='REFUND_SOURCE_UNSETTLED_FUNDS'" class="table-cell">未结算资金退款</li>
+
+                <li class="table-cell">{{item.refundRequestSource}}</li>
+            </ul>
+        </div>
+    </div>
+-->
+    <div v-cloak class="pageInfo">
+        <div v-cloak data-flag="-1" @click="more">&lt;&lt;上一页</div>
+        {{page}}/{{pageTotal}}
+        <div v-cloak  data-flag="1" @click="more">下一页&gt;&gt;</div>
+    </div>
+
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/wxRefundorderMng.js"></script>
+<script>
+    var flag = true
+    $(document).ready(function(){
+        $("table").bind("dblclick",function(){
+            if(flag){
+                $(this).attr('width',2000)
+            }else{
+                $(this).attr('width','100%')
+            }
+            flag = !flag;
+        })
+    });
+</script>
+</body>
+</html>

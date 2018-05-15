@@ -20,6 +20,9 @@
             商品库存: <input style="width: 80px;" v-model="store" value="{{store}}"  placeholder="商品库存"/>
         </div>
         <div>
+            商品成交量: <input style="width: 80px;" v-model="dealNum" value="{{dealNum}}"  placeholder="成交量"/>
+        </div>
+        <div>
             <input type="checkbox" id="sale" value="是否打折" v-model="isSale">
             <label for="sale">是否打折</label>
         </div>
@@ -90,7 +93,7 @@
         <div class="">
             <div style="display: inline-block;border:1px solid #fff;" v-for="(item,index) in selectedAttrs">
                 <div> 标签：
-                    <input type="text" style="width: 80px;" placeholder="请输入标签" value="{{item}}" v-model="selectedAttrs[index]" />
+                    <input class='autoTagsComplete' type="text" style="width: 100px;" placeholder="请输入标签" v-bind:value="item"  />
                 </div>
                 <div @click="delAttr"  v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
             </div>
@@ -153,7 +156,7 @@
 
     <div class="card">
         <div style="display: block;">
-            <div style="font-size:10px;color:#888;">商品详情截图(320*320)</div>
+            <div style="font-size:10px;color:#888;">商品详情截图(宽度为750像素图片，图片大小不超过1.5MB)</div>
         </div>
         <div class="">
             <div style="border:1px solid #fff;" v-for="(item,index) in pic_details">
@@ -229,5 +232,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="../../js/config.js"></script>
 <script src="../../js/addProduct.js"></script>
+<script src="../../js/jquery.autocomplete.min.js"></script>
+
 </body>
 </html>

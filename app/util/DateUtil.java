@@ -18,8 +18,13 @@ public class DateUtil {
 		return defaultDf.format(new Date(time));
 	}
 	
+	 
+	
 	public static long getTime(String timeStr){
 		try {
+			if(timeStr.length()==10){
+				timeStr = timeStr.trim()+ " 00:00:00";
+			}
 			return defaultDf.parse(timeStr).getTime();
 		} catch (ParseException e) {
 			Logger.error(e, e.getMessage());
