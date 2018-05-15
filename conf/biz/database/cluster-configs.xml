@@ -51,14 +51,13 @@
             </range>
         </config>
         -->  
- 
   <config shard-type="none" source="mysql" class="modules.shop.ddl.UsersDDL" comment=""> 
     <map client="shop_db"/> 
   </config>  
   <config shard-type="none" source="mysql" class="modules.shop.ddl.WxAccessTokenDDL" comment=""> 
     <map client="shop_db"/> 
   </config>  
-    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductDDL" comment=""> 
+  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductDDL" comment=""> 
     <map client="shop_db"/> 
   </config>  
   <config shard-type="none" source="mysql" class="modules.shop.ddl.SmsCodeHistoryDDL" comment=""> 
@@ -117,7 +116,7 @@
   </config>  
   <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopApplyInfoDDL" comment=""> 
     <map client="shop_db"/> 
-  </config>   
+  </config>  
   <config shard-type="none" source="mysql" class="modules.common.ddl.FormIdsDDL" comment=""> 
     <map client="shop_db"/> 
   </config>  
@@ -128,6 +127,15 @@
     <map client="shop_db"/> 
   </config>  
   <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopMngSessionDDL"> 
+    <map client="shop_db"/> 
+  </config>  
+  <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopWetaoDDL"> 
+    <map client="shop_db"/> 
+  </config>  
+  <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopWetaoCommentDDL"> 
+    <map client="shop_db"/> 
+  </config>  
+  <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopRefundOrderDDL"> 
     <map client="shop_db"/> 
   </config> 
 </configs>

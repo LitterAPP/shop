@@ -42,6 +42,6 @@ public class MD5Util {
 	}
 	
 	public static void main(String[] args){
-		System.out.println(MD5Util.md5("wenxy"));
+		System.out.println(MD5Util.md5("1qaz2wsx"));
 	}
 }

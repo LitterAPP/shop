@@ -30,7 +30,7 @@ public class ExportData {
 //			LinkedHashMap<Integer, String> fieldIdxNameMap = new LinkedHashMap<Integer, String>(); 
 			fieldNames = new String[]{
 					"订单ID","订单状态","是否团购","团购价","非团购价","商品组名称","商品名称","购买数量",
-					"应付总额","余额支付","现金支付","代金券支付","下单时间","支付时间"
+					"应付总额","余额支付","现金支付","代金券支付","下单时间","支付时间","来源场景","来源APPID","来源渠道"
 			};
 			
 			HSSFWorkbook wb = ExcelUtil.createExcel("订单列表", fieldNames);
@@ -80,7 +80,11 @@ public class ExportData {
 					}
 					 
 					row.createCell(12).setCellValue(DateUtil.format(one.getOrderTime()));
-					row.createCell(13).setCellValue(DateUtil.format(one.getPayTime())); 
+					row.createCell(13).setCellValue(one.getPayTime()==null?"":DateUtil.format(one.getPayTime())); 
+					
+					row.createCell(14).setCellValue(one.getReferScene()); 
+					row.createCell(15).setCellValue(one.getReferAppid()); 
+					row.createCell(16).setCellValue(one.getReferChannel()); 
 				} 
 			}	
 			ByteArrayOutputStream stream = null;

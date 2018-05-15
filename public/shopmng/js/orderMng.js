@@ -68,6 +68,12 @@ var orderMng = new Vue({
             that.page=1
             that.listOrder(params.orderId,params.keyword,params.status,that.page,pageSize,false)
         },
+        exportData:function(){
+            var that = this
+            var params = this.getCondition()
+            window.location.href=exportOrderURL+'?orderId='+params.orderId+'&keyword='+params.keyword+'&startTime='+$("#startTimePicker").val()+'&endTime='+$("#endTimePicker").val()+'&status='+params.status
+
+        },
         more:function(event){
             var that = this
             var flag = parseInt(event.target.dataset.flag)
@@ -98,6 +104,8 @@ var orderMng = new Vue({
                     orderId:orderId,
                     keyword:keyword,
                     status:status,
+                    startTime:$("#startTimePicker").val(),
+                    endTime:$("#endTimePicker").val(),
                     page:page,
                     pageSize:pageSize
                 },

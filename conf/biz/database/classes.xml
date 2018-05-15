@@ -6,9 +6,9 @@
             <class name="Demo" comment="测试" />
         </package>
         -->  
-  <package name="modules.shop.ddl">    
+  <package name="modules.shop.ddl"> 
     <class name="WxAccessTokenDDL" comment=""/>  
-    <class name="SmsCodeHistoryDDL" comment=""/>     
+    <class name="SmsCodeHistoryDDL" comment=""/>  
     <class name="ShopOrderDDL" comment=""/>  
     <class name="ShopProductAttrDDL" comment=""/>  
     <class name="ShopProductAttrRelDDL" comment=""/>  
@@ -30,9 +30,12 @@
     <class name="ShopApplyInfoDDL" comment=""/>  
     <class name="ShopIndexDDL" comment=""/>  
     <class name="ShopMngUserDDL" comment=""/>  
-    <class name="ShopMngSessionDDL" comment=""/> 
-    <class name="ShopProductDDL" comment=""/> 
-  </package>   
+    <class name="ShopMngSessionDDL" comment=""/>  
+    <class name="ShopProductDDL" comment=""/>  
+    <class name="ShopWetaoDDL" comment=""/>  
+    <class name="ShopWetaoCommentDDL" comment=""/>  
+    <class name="ShopRefundOrderDDL" comment=""/> 
+  </package>  
   <package name="modules.common.ddl"> 
     <class name="FormIdsDDL" comment=""/> 
   </package> 

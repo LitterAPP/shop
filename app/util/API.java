@@ -135,7 +135,7 @@ public class API {
 	    try {
 	    	HttpResponse response =  HttpUtils.doGet("https://aip.baidubce.com", "/oauth/2.0/token", null, headers, querys);
 			String jsonStr =inputStreamToString(response.getEntity().getContent());
-			System.out.println(jsonStr);
+			Logger.info(jsonStr);
 			return new JsonParser().parse(jsonStr).getAsJsonObject();
 	    } catch (Exception e) {
 			 Logger.error(e, e.getMessage());
@@ -560,8 +560,8 @@ public class API {
 		writer.close(); 
 		String requestBody = sw.toString();
 		
-		System.out.println("提交微信统一下单接口数据：");
-		System.out.println(requestBody); 
+		Logger.info("提交微信统一下单接口数据：");
+		Logger.info(requestBody); 
 		
 		HttpResponse response = HttpUtils.doPost(
 				Jws.configuration.getProperty("wx.pay.url"), 
@@ -573,8 +573,8 @@ public class API {
 		} 
 		String respXml = EntityUtils.toString(response.getEntity(), "utf-8");
 		
-		System.out.println("提交微信统一下单接口响应数据：");
-		System.out.println(respXml); 
+		Logger.info("提交微信统一下单接口响应数据：");
+		Logger.info(respXml); 
 		 
 		Map<String,String> respTreeMap = new TreeMap<String,String>();
 		Document reader = DocumentHelper.parseText(respXml);  
@@ -712,8 +712,8 @@ public class API {
 		  		writer.close(); 
 		  		String requestBody = sw.toString();
 		  		
-		  		System.out.println("提交微信退款接口数据：");
-		  		System.out.println(requestBody); 
+		  		Logger.info("提交微信退款接口数据：");
+		  		Logger.info(requestBody); 
 
 		    	 
 		  		
@@ -721,7 +721,7 @@ public class API {
 	            HttpPost request = new HttpPost("https://api.mch.weixin.qq.com/secapi/pay/refund");
 	            request.setEntity(new StringEntity(requestBody,"utf-8"));
 	            
-	            System.out.println("executing request" + request.getRequestLine());
+	            Logger.info("executing request" + request.getRequestLine());
 
 	            CloseableHttpResponse response = httpclient.execute(request);
 	            try {
@@ -729,8 +729,8 @@ public class API {
 	            	HttpEntity entity = response.getEntity();
 	            	String respXml = EntityUtils.toString(entity, "utf-8");
 	        		
-	        		System.out.println("提交微信退款接口响应数据：");
-	        		System.out.println(respXml); 
+	        		Logger.info("提交微信退款接口响应数据：");
+	        		Logger.info(respXml); 
 	        		 
 	        		Map<String,String> respTreeMap = new TreeMap<String,String>();
 	        		Document reader = DocumentHelper.parseText(respXml);  
@@ -746,7 +746,7 @@ public class API {
 	        			}
 	        			respTreeMap.put(name, value);
 	        		}
-	        		System.out.println(respTreeMap); 
+	        		Logger.info(respTreeMap.toString()); 
 	                
 	                EntityUtils.consume(entity);
 	                return respTreeMap;
@@ -863,29 +863,29 @@ public class API {
 				"QL-20180514145447-1372",
 				1,1,"https://weixunshi.com/shop/wxRefundnotify","CYQZS5KG2CI3DX5N201FAUD9EXU0P1YL",null);
 		
-		//System.out.println(System.currentTimeMillis()/1000);
+		//Logger.info(System.currentTimeMillis()/1000);
 		/*System.setProperty("file.encoding", "GBK"); 
-		System.out.println(System.getProperty("file.encoding"));*/
+		Logger.info(System.getProperty("file.encoding"));*/
 		//getBaiDuAccessToken("Gt6CSNg5vnBTGK5oPIRO6l4M","HA97b4Q2KjxfUC9p6La7DrSCGe1OvCoN");
 	//	 nlpBaiDuLexer("24.a19ba76f051dce74c10a24d9ca8b8db4.2592000.1513134124.282335-10354281","我想吃番茄炒蛋");
 		/*for(int i=1;i<=5;i++){
 			String key = uploadToAliOss("tasty",new File("C:\\Users\\fish\\Desktop\\我是烹饪大师\\商城\\红枣\\s"+i+".jpg"));
-			System.out.println(key);
+			Logger.info(key);
 		}*/		
 
 		/*for(int i=1;i<=4;i++){
 			String path = "C:\\Users\\fish\\Desktop\\青蛙读本\\元宵节\\png\\yuanxiaojie"+i+".png";
 			String key = uploadToAliOss("tasty",new File(path));
-			System.out.println(key);
+			Logger.info(key);
 		}*/
 		
 		//String path = "C:\\Users\\fish\\Desktop\\青蛙读本\\logo.png";
 		//uploadImage("tasty",new File(path),0,0);
 		//uploadImageToTencent(null,new File(path),0,0);
-		//System.out.println(getObjectAccessUrl("tasty","0290abbbbcb94b048d8fa06360cbb453",60*10));
-	//	System.out.println(getObjectAccessUrl("hongjiu-1252785849","COS_be7e706ddd024451944617610181e437",60*10));
+		//Logger.info(getObjectAccessUrl("tasty","0290abbbbcb94b048d8fa06360cbb453",60*10));
+	//	Logger.info(getObjectAccessUrl("hongjiu-1252785849","COS_be7e706ddd024451944617610181e437",60*10));
 		//String key = uploadToAliOss("tasty",new File(path));
-		//System.out.println(key);
+		//Logger.info(key);
 		
 		
 		//System.out.print(getObjectAccessUrl("tasty",key,3600));
@@ -896,7 +896,7 @@ public class API {
 			noceStr.append(noceStrs[random]);
 		}
 		//CYQZS5KG2CI3DX5N201FAUD9EXU0P1YL
-		System.out.println(noceStr.toString());*/
+		Logger.info(noceStr.toString());*/
 		
 		
 		//(String appid,String mch_id,String body,String out_trade_no,int total_fee,
@@ -907,7 +907,7 @@ public class API {
 				 "QL-20171208180046-1512727246429",1,
 				"10.164.16.48","https://91loving.cn/proxy/cook/cookbook/wxPaynotify",
 				"JSAPI","CYQZS5KG2CI3DX5N201FAUD9EXU0P1YL",ext);
-		System.out.println(result);*/
+		Logger.info(result);*/
 		 
 	}
 	

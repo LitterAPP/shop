@@ -76,7 +76,9 @@ public class Shop extends Controller{
 	private static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
 	public static void createOrder(String session,String productId,String groupId,String appid,int buyNum,
-			String userAccountId,String couponAccountId,boolean together,String togetherId,String address){
+			String userAccountId,String couponAccountId,boolean together,String togetherId,String address,
+			String referScene,String referAppId,String referChannel
+			){
 		try{
 			if(buyNum==0)buyNum=1;
 			
@@ -127,7 +129,9 @@ public class Shop extends Controller{
 				result.put("needPay", false);
 				result.put("useBalance", 0);
 				boolean order = ShopOrderService.createOrder(false,null,null,null,0,0,0,
-						buyNum,out_trade_no,user.getId().intValue(), null,address,product,productGroup);
+						buyNum,out_trade_no,user.getId().intValue(), null,address,product,productGroup,
+						referScene,referAppId,referChannel
+						);
 				result.put("order", order);
 				renderJSON(RtnUtil.returnSuccess("OK",result));
 			}
@@ -155,7 +159,9 @@ public class Shop extends Controller{
 				result.put("useUserBalance", 0);
 				result.put("useCouponBalance", reduceCoupon);
 				boolean order = ShopOrderService.createOrder(together,togetherId,null,
-						couponAccountId,0,reduceCoupon,0,buyNum,out_trade_no,user.getId().intValue(), null,address,product,productGroup);
+						couponAccountId,0,reduceCoupon,0,buyNum,out_trade_no,user.getId().intValue(), null,address,product,productGroup,
+						referScene,referAppId,referChannel
+						);
 				result.put("order", order);
 				renderJSON(RtnUtil.returnSuccess("OK",result));
 			}
@@ -176,7 +182,9 @@ public class Shop extends Controller{
 					result.put("useUserBalance", reduceUser);
 					result.put("useCouponBalance", reduceCoupon);
 					boolean order = ShopOrderService.createOrder(together,togetherId,userAccountId,couponAccountId,
-							reduceUser,reduceCoupon,0,buyNum,out_trade_no,user.getId().intValue(), null,address,product,productGroup);
+							reduceUser,reduceCoupon,0,buyNum,out_trade_no,user.getId().intValue(), null,address,product,productGroup,
+							referScene,referAppId,referChannel
+							);
 					result.put("order", order);
 					renderJSON(RtnUtil.returnSuccess("OK",result));
 				}
@@ -204,7 +212,9 @@ public class Shop extends Controller{
 			Map<String,String> litterPayParams = API.getLitterAppPayParams(appid, prepay_id, key,nonce_str);
 			String jsonstr = litterPayParams!=null?gson.toJson(litterPayParams):null;
 			boolean order = ShopOrderService.createOrder(together,togetherId,userAccountId,couponAccountId,
-					reduceUser,reduceCoupon,diffPay,buyNum,out_trade_no,user.getId().intValue(),jsonstr,address,product,productGroup);
+					reduceUser,reduceCoupon,diffPay,buyNum,out_trade_no,user.getId().intValue(),jsonstr,address,product,productGroup,
+					referScene,referAppId,referChannel
+					);
 			result.put("useUserBalance", reduceUser);
 			result.put("useCouponBalance", reduceCoupon);
 			result.put("useCash", diffPay);

@@ -73,7 +73,10 @@
     <cache prefix="ForgSuggestDDL_v1" comment="" class="modules.forg.ddl.ForgSuggestDDL" enabled="true"/>  
     <cache prefix="ShopIndexDDL_v1" comment="" class="modules.cookbook.ddl.ShopIndexDDL" enabled="true"/>  
     <cache prefix="ShopMngUserDDL_v1" comment="" class="modules.cookbook.ddl.ShopMngUserDDL" enabled="true"/>  
-    <cache prefix="ShopMngSessionDDL_v1" comment="" class="modules.cookbook.ddl.ShopMngSessionDDL" enabled="true"/> 
+    <cache prefix="ShopMngSessionDDL_v1" comment="" class="modules.cookbook.ddl.ShopMngSessionDDL" enabled="true"/>  
+    <cache prefix="ShopWetaoDDL_v1" comment="" class="modules.shop.ddl.ShopWetaoDDL" enabled="true"/>  
+    <cache prefix="ShopWetaoCommentDDL_v1" comment="" class="modules.shop.ddl.ShopWetaoCommentDDL" enabled="true"/>  
+    <cache prefix="ShopRefundOrderDDL_v1" comment="" class="modules.shop.ddl.ShopRefundOrderDDL" enabled="true"/> 
   </row-cache>  
   <!-- List缓存: 基于sql语句的缓
               sql : sql语句

@@ -25,5 +25,6 @@
         <api name="session" path="/sns/jscode2session"  timeout="15s"/>
         <api name="token" path="/cgi-bin/token"  timeout="15s"/>
         <api name="msgSend" path="/cgi-bin/message/wxopen/template/send"  timeout="15s"/> 
+        <api name="codeunlimit" path="/wxa/getwxacodeunlimit"  timeout="15s"/> 
     </service>
 </httpclient.sf>

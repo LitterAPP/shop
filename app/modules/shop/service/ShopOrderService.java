@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -60,7 +61,9 @@ public class ShopOrderService {
 			String userAccountId,String couponAccountId,
 			int useUserAccount,int useCouponAccount,int useCash,
 			int buyNum,String orderId,int buyerUserId,String litterAppParams,
-			String address,ShopProductDDL product,ShopProductGroupDDL group) throws Exception{
+			String address,ShopProductDDL product,ShopProductGroupDDL group,
+			String referScene,String referAppId,String referChannel
+			) throws Exception{
 		 
 		ShopOrderDDL order = new ShopOrderDDL();
 		//生成拼团Id
@@ -76,7 +79,10 @@ public class ShopOrderService {
 				}
 			}
 			
-		}		
+		}
+		order.setReferAppid(referAppId);
+		order.setReferScene(referScene);
+		order.setReferChannel(referChannel);
 		order.setShopId(product.getShopId());
 		order.setSellerTelNumber(product.getSellerTelNumber());
 		order.setSellerWxNumber(product.getSellerWxNumber());
@@ -230,7 +236,7 @@ public class ShopOrderService {
 			
 			
 			Map<String,String> k5 = new HashMap<String,String>();
-			k5.put("value", "如有疑问，请联系微信号：xiaoyu022994");
+			k5.put("value", "如有疑问，请点击进入页面后联系客服");
 			k5.put("color", "#3300cc");
 			
 			dataMap.put("keyword1", k1);
@@ -303,8 +309,7 @@ public class ShopOrderService {
 	 * @param order
 	 */
 	public static void refund_nofity(ShopOrderDDL order,Map<String,String> refundNotifyParams){
-		if(order==null) return ;
-		
+		if(order==null) return ;		
 		/**
 		 * 	public static final int ORDER_REFUN_FAIL = 55555;//退款处理失败
 			public static final int ORDER_REFUN_AUDIT_FAIL = 5555;//退款未审核通过
@@ -367,7 +372,7 @@ public class ShopOrderService {
 						new File(Jws.configuration.getProperty(appid+".refund.certificate.file")), 
 						order.getOrderId(), 
 						order.getUseCash(), totalFee, 
-						Jws.configuration.getProperty(appid+".notify.url"), 
+						Jws.configuration.getProperty(appid+".refund.notify.url"), 
 						Jws.configuration.getProperty(appid+".pay.key"), 
 						null);
 				//申请成功
@@ -377,11 +382,12 @@ public class ShopOrderService {
 						&& result.get("result_code").equals("SUCCESS")){
 					
 				}else{
-					String appendMsg = (result!=null&&result.containsKey("err_code")&&result.containsKey("err_code_des"))?
-							"error_code:"+result.get("err_code")+",err_code_des:"+result.get("err_code_des"):result.toString();
-					order.setStatus(ORDER_REFUN_AUDIT); //提交微信申请失败，可以重试退款
-					order.setMemo(genMemo(order,result.get("err_code_des")));
-				}
+					/*String appendMsg = (result!=null&&result.containsKey("err_code")&&result.containsKey("err_code_des"))?
+							"error_code:"+result.get("err_code")+",err_code_des:"+result.get("err_code_des"):result.toString();*/
+					order.setStatus(ORDER_REFUN_FAIL); //提交微信申请失败，可以重试退款
+					order.setMemo(genMemo(order,result.get("err_code_des")+","+result.get("return_msg")));
+				} 
+				Logger.info("Order refund order \n [%s],refund result \n [%s]", new Gson().toJson(order),result);
 			}
 			//退余额、者代金券
 			if(order.getUseUserAmount()>0){

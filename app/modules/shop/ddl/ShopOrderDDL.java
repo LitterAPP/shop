@@ -9,7 +9,7 @@ import jws.dal.common.DbType;
 /**
  * 
  * @author auto
- * @createDate 2018-04-25 17:51:31
+ * @createDate 2018-05-15 17:09:07
  **/
 @Table(name="shop_order")
 public class ShopOrderDDL{
@@ -347,16 +347,43 @@ public class ShopOrderDDL{
 	public void setProductType(Integer productType){
 		this.productType=productType;
 	}
-	
-	
+
 	@Column(name="memo", type=DbType.Varchar)
 	private String memo;
 	public String getMemo() {
 		return memo;
 	}
-	public void setMemo(String memo) {
-		this.memo = memo;
+	public void setMemo(String memo){
+		this.memo=memo;
 	}
+
+	@Column(name="refer_scene", type=DbType.Varchar)
+	private String referScene;
+	public String getReferScene() {
+		return referScene;
+	}
+	public void setReferScene(String referScene){
+		this.referScene=referScene;
+	}
+
+	@Column(name="refer_appid", type=DbType.Varchar)
+	private String referAppid;
+	public String getReferAppid() {
+		return referAppid;
+	}
+	public void setReferAppid(String referAppid){
+		this.referAppid=referAppid;
+	}
+
+	@Column(name="refer_channel", type=DbType.Varchar)
+	private String referChannel;
+	public String getReferChannel() {
+		return referChannel;
+	}
+	public void setReferChannel(String referChannel){
+		this.referChannel=referChannel;
+	}
+
 	public static ShopOrderDDL newExample(){
 		ShopOrderDDL object=new ShopOrderDDL();
 		object.setId(null);
@@ -396,6 +423,10 @@ public class ShopOrderDDL{
 		object.setSellerWxNumber(null);
 		object.setPrizeLevel(null);
 		object.setProductType(null);
+		object.setMemo(null);
+		object.setReferScene(null);
+		object.setReferAppid(null);
+		object.setReferChannel(null);
 		return object;
 	}
 }

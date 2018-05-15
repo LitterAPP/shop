@@ -1319,6 +1319,11 @@ public class ShopMng extends Controller{
 
 				map.put("orderTime", DateUtil.format(order.getOrderTime()));
 				map.put("payTime", order.getPayTime()!=null?DateUtil.format(order.getPayTime()):"");
+				
+				map.put("referAppId", order.getReferAppid());
+				map.put("referChannel", order.getReferChannel());
+				map.put("referScene", order.getReferScene());
+				
 				orders.add(map);
 			}
 			response.put("list", orders);

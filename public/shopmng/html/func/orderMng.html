@@ -10,6 +10,8 @@
     <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
     <link type="text/css" rel="styleSheet"  href="../../css/page.css" />
     <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+
+    <link type="text/css" rel="styleSheet"  href="../../css/jquery.datetimepicker.css" />
 </head>
 <body>
 <div id="orderMng" style="margin-bottom: 50px;">
@@ -43,7 +45,14 @@
         </div>
 
         <div>
+            选择时间范围：<input id="startTimePicker"    type="text" style="width: 150px;"  readonly placeholder="开始时间"/>
+            至<input id="endTimePicker"  type="text" style="width: 150px;"   readonly  placeholder="结束时间"/>
+        </div>
+
+
+        <div>
             <button class="button1" @click="search">查询</button>
+            <button class="button1" @click="exportData">导出</button>
         </div>
     </div>
 
@@ -65,6 +74,9 @@
             <th width="5%">代金券支付</th>
             <th width="15%">下单时间</th>
             <th width="15%">支付时间</th>
+            <th width="10%">来源场景</th>
+            <th width="10%">来源APPID</th>
+            <th width="10%">来源渠道</th>
             <th width="5%">备注</th>
         </thead>
         <tr  v-for="item in list">
@@ -103,6 +115,9 @@
             <td>{{item.couponPay}}元</td>
             <td>{{item.orderTime}}</td>
             <td>{{item.payTime}}</td>
+            <td>{{item.referScene}}</td>
+            <td>{{item.referAppId}}</td>
+            <td>{{item.referChannel}}</td>
             <td  class="memo" v-bind:data-memo="item.memo" style="cursor:pointer;" >
                 查看
             </td>
@@ -122,6 +137,8 @@
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="../../js/config.js"></script>
 <script src="../../js/orderMng.js"></script>
+<script src="../../js/jquery.datetimepicker.js"></script>
+
 <script>
     var flag = true
     $(document).ready(function(){
@@ -134,6 +151,19 @@
             flag = !flag;
         })
     });
+
+    $('#startTimePicker').datetimepicker(
+            {
+                lang:'ch',
+                format:"Y-m-d H:i:00"
+            }
+    );
+    $('#endTimePicker').datetimepicker(
+            {
+                lang:'ch',
+                format:"Y-m-d H:i:00"
+            }
+    );
 </script>
 </body>
 </html>
