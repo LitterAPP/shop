@@ -25,6 +25,7 @@ import controllers.dto.ProductInfoDto.TogetherInfo;
 import controllers.dto.SelectSourceDto;
 import dto.shop.AddressDto;
 import dto.shop.ShopIndexDto;
+import dto.shop.ShopIndexDto.ShopNavWrap;
 import dto.shop.ShopNavDto;
 import jws.Jws;
 import jws.Logger;
@@ -52,7 +53,6 @@ import modules.shop.ddl.ShopProductGroupDDL;
 import modules.shop.ddl.ShopProductImagesDDL;
 import modules.shop.ddl.ShopRefundOrderDDL;
 import modules.shop.ddl.ShopTogetherDDL;
-import modules.shop.ddl.ShopTogetherJoinerDDL;
 import modules.shop.ddl.ShopWetaoDDL;
 import modules.shop.ddl.UsersDDL;
 import modules.shop.service.ApplyService;
@@ -181,6 +181,12 @@ public class ShopMng extends Controller{
 			}
 			for(ShopNavDto dto : shopIndexConfig.fiveNavList){
 				if(dto.linkType == 2){
+					dto.img = API.getObjectAccessUrlSimple(dto.imgkey);
+				}
+			}
+			
+			for(ShopNavWrap wrap : shopIndexConfig.shopNavWrapList){
+				for(ShopNavDto dto : wrap.list){
 					dto.img = API.getObjectAccessUrlSimple(dto.imgkey);
 				}
 			}
@@ -803,7 +809,10 @@ public class ShopMng extends Controller{
 			for(ShopNavDto dto : index.swiperList){
 				dto.url = appendShopId(dto.url,session.getShopId());
 			}
-			boolean createShop = ShopIndexService.update(session.getShopId(), index.shopName, index.shopAvatarKey,gson.toJson(index));
+			boolean createShop = ShopIndexService.update(session.getShopId(), 
+					index.shopName, index.shopAvatarKey,
+					index.contactMobile,index.contactWx,
+					gson.toJson(index));
 			if(createShop){
 				renderJSON(RtnUtil.returnSuccess("OK"));
 			}
@@ -1239,7 +1248,7 @@ public class ShopMng extends Controller{
 		}
 	}
 	
-	public static void exoprtOrderData(String orderId,String keyword,String startTime,String endTime,int status){
+	public static void exoprtOrderData(String orderId,String keyword,String startTime,String endTime,int status,String referScene,String appid,String channel){
 		try{
 			if(request.cookies==null || !request.cookies.containsKey("shop_sid")){
 				renderJSON(RtnUtil.returnFail("未登录"));
@@ -1249,14 +1258,16 @@ public class ShopMng extends Controller{
 			if(session==null){				 
 				renderJSON(RtnUtil.returnFail("未登录"));
 			}
-			ByteArrayInputStream is = ExportData.reportOrderByCondition(session.getShopId(), orderId, keyword, startTime, endTime, status);
+			ByteArrayInputStream is = ExportData.reportOrderByCondition(session.getShopId(), orderId, keyword, startTime, endTime, status,referScene,appid, channel);
 			renderBinary(is, "report_order.xls");
 		}catch(Exception e){
 			Logger.error(e, e.getMessage());
 			renderJSON(RtnUtil.returnFail("服务器异常"));
 		}
 	}
-	public static void listOrder(String orderId,String keyword,String startTime,String endTime,int status,int page,int pageSize){
+	public static void listOrder(String orderId,String keyword,String startTime,String endTime,int status,
+			String referScene,String appid,String channel,
+			int page,int pageSize){
 		try{
 			if(request.cookies==null || !request.cookies.containsKey("shop_sid")){
 				renderJSON(RtnUtil.returnFail("未登录"));
@@ -1270,7 +1281,9 @@ public class ShopMng extends Controller{
 			List<Map<String,Object>> orders = new ArrayList<Map<String,Object>>();
 			Map<String,Object> response = new HashMap<String,Object>();
 			
-			int total = ShopOrderService.countMngOrder(session.getShopId(),orderId, keyword, startTime,endTime,status);
+			int total = ShopOrderService.countMngOrder(session.getShopId(),orderId, keyword, 
+					startTime,endTime,status,
+					referScene,appid,channel);
 			response.put("total", total);
 			response.put("pageTotal", Math.ceil(total/(double)pageSize));
 			 
@@ -1283,7 +1296,10 @@ public class ShopMng extends Controller{
 			page = page==0?1:page;
 			pageSize = pageSize==0?10:pageSize;
 			
-			List<ShopOrderDDL> list = ShopOrderService.listMngOrder(session.getShopId(),orderId, keyword, startTime,endTime,status, page, pageSize);
+			List<ShopOrderDDL> list = ShopOrderService.listMngOrder(session.getShopId(),orderId,
+					keyword, startTime,endTime,status,
+					referScene,appid,channel,
+					page, pageSize);
 			
 			for(ShopOrderDDL order : list){
 				Map<String,Object> map = new HashMap<String,Object>();
@@ -1294,6 +1310,7 @@ public class ShopMng extends Controller{
 				map.put("groupId", order.getGroupId());
 				map.put("productId", order.getProductId());
 				map.put("orderStatus", order.getStatus());
+				map.put("orderType", order.getOrderType());
 				map.put("prize", order.getPrizeLevel());
 				map.put("buyNum", order.getBuyNum());
 				map.put("memo", order.getMemo());

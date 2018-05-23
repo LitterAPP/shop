@@ -28,11 +28,14 @@ import com.google.gson.JsonParser;
 
 import controllers.dto.SelectSourceDto;
 import dto.shop.ShopIndexDto;
+import dto.shop.ShopIndexDto.ShopNavWrap;
 import dto.shop.ShopNavDto;
 import jws.Jws;
 import jws.Logger;
 import jws.cache.Cache;
+import jws.dal.Dal;
 import jws.mvc.Controller;
+import modules.shop.ddl.ShopCarDDL;
 import modules.shop.ddl.ShopCouponMngDDL;
 import modules.shop.ddl.ShopExpressDDL;
 import modules.shop.ddl.ShopIndexDDL;
@@ -48,6 +51,7 @@ import modules.shop.ddl.ShopWetaoCommentDDL;
 import modules.shop.ddl.ShopWetaoDDL;
 import modules.shop.ddl.UserAccountDDL;
 import modules.shop.ddl.UsersDDL;
+import modules.shop.service.ShopCarService;
 import modules.shop.service.ShopCategoryService;
 import modules.shop.service.ShopCommunityService;
 import modules.shop.service.ShopCouponMngService;
@@ -65,7 +69,6 @@ import modules.shop.service.UserAccountService;
 import modules.shop.service.UserService;
 import util.API;
 import util.AmountUtil;
-import util.Base64Util;
 import util.DateUtil;
 import util.EncryptUtil;
 import util.IDUtil;
@@ -75,6 +78,319 @@ import util.RtnUtil;
 public class Shop extends Controller{
 	private static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
+	public static void createCarOrder(String session,String carIds,
+			String referScene,String referAppId,String referChannel){
+		try{ 
+			UsersDDL user = UserService.findBySession(session);
+			if(user==null){
+				renderJSON(RtnUtil.returnLoginFail());
+			}
+			if(Cache.get("ORDER_USER_"+user.getId())!=null){
+				renderJSON(RtnUtil.returnFail("操作频繁,请10秒后再试"));
+			}
+			Cache.set("ORDER_USER_"+user.getId(), "1", "10s"); 
+			
+			String orderId = IDUtil.gen("QL");
+			boolean flag = ShopOrderService.createOrder(false, null, "", "", 0, 0, 0, 
+					0, orderId, user.getId().intValue(), null, "", null,
+					null, referScene, referAppId, referChannel,carIds,1);
+			if(flag){
+				renderJSON(RtnUtil.returnSuccess("OK",orderId));
+			}			
+			renderJSON(RtnUtil.returnFail("创建订单失败"));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail(e.getMessage()));
+		}
+	}
+	
+	public static void carPayPage(String session,String orderId){
+		try{ 
+			UsersDDL user = UserService.findBySession(session);
+			if(user==null){
+				renderJSON(RtnUtil.returnLoginFail());
+			}
+			ShopOrderDDL order = ShopOrderService.findByOrderId(orderId);
+			if(order==null){
+				renderJSON(RtnUtil.returnFail("订单不存在"));
+			}
+			
+			if(order.getStatus() != ShopOrderService.ORDER_PAYING){
+				renderJSON(RtnUtil.returnFail("订单暂不能支付"));
+			}
+			
+			if(order.getOrderType() != 1){
+				renderJSON(RtnUtil.returnFail("非合并支付订单"));
+			}
+			
+			if(StringUtils.isEmpty(order.getCarIds())){
+				renderJSON(RtnUtil.returnFail("不存在购物IDs"));
+			} 
+			List<ShopCarDDL> carList = ShopCarService.findByCarIds(order.getCarIds().split(","));
+			 
+			
+			Map<String,Object> result = new HashMap<String,Object>();
+			List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+			
+			if(carList==null || carList.size()==0){
+				result.put("list", list);
+				renderJSON(RtnUtil.returnSuccess("OK",result));
+			}
+			int sumAmount = 0;
+			for(ShopCarDDL car : carList){
+				Map<String,Object> one = new HashMap<String,Object>();
+				ShopProductDDL product = ShopProductService.getByProductId(car.getProductId());
+				ShopProductGroupDDL group = ShopProductGroupService.findByProductIdAndGroupId(car.getProductId(), car.getGroupId());
+				if(group==null || product==null) continue;
+				one.put("id", car.getId());
+				one.put("productId", product.getProductId());
+				one.put("groupId", group.getGroupId());
+				one.put("productName", product.getProductName());
+				one.put("groupImgage",API.getObjectAccessUrlSimple(group.getGroupImage()));
+				one.put("buyNum", car.getBuyNum());
+				one.put("status",car.getStatus());
+				one.put("groupName", group.getGroupName());
+				one.put("totalAmount", AmountUtil.f2y(group.getGroupPrice()*car.getBuyNum()));//实时
+				one.put("singPrice", AmountUtil.f2y(group.getGroupPrice()));//实时
+				one.put("checked", true);
+				sumAmount+=group.getGroupPrice()*car.getBuyNum();
+				list.add(one);
+			}
+			
+			result.put("sumAmount", AmountUtil.f2y(sumAmount));
+			result.put("list", list); 
+			
+			UserAccountDDL account = UserAccountService.getBasicAccount(user.getId().intValue());
+			Map<String,Object> accountMap = new HashMap<String,Object>();
+			accountMap.put("accountId", account.getAccountId());
+			accountMap.put("amount", AmountUtil.f2y(account.getAmount()));
+			result.put("account", accountMap);
+			
+			renderJSON(RtnUtil.returnSuccess("OK",result));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail(e.getMessage()));
+		}
+	}	
+	public static void payCarOrder(String session,String appid,String couponAccountId,String userAccountId,String orderId,String address,String memo){
+		try{ 
+			UsersDDL user = UserService.findBySession(session);
+			if(user==null){
+				renderJSON(RtnUtil.returnLoginFail());
+			}
+			if(Cache.get("PAYING_USER_"+user.getId())!=null){
+				renderJSON(RtnUtil.returnFail("操作频繁,请10秒后再试"));
+			}
+			Cache.set("PAYING_USER_"+user.getId(), "1", "10s");
+			
+			ShopOrderDDL order = ShopOrderService.findByOrderId(orderId);
+			if(order==null){
+				renderJSON(RtnUtil.returnFail("订单不存在"));
+			}
+			
+			if(order.getStatus() != ShopOrderService.ORDER_PAYING){
+				renderJSON(RtnUtil.returnFail("订单暂不能支付"));
+			}
+			
+			if(order.getOrderType() != 1){
+				renderJSON(RtnUtil.returnFail("非合并支付订单"));
+			}
+			
+			if(StringUtils.isEmpty(order.getCarIds())){
+				renderJSON(RtnUtil.returnFail("不存在购物IDs"));
+			} 
+			if(StringUtils.isEmpty(address)){
+				renderJSON(RtnUtil.returnFail("收货地址为空"));
+			}
+			order.setAddress(address);
+			if(!StringUtils.isEmpty(memo)){
+				order.setMemo(ShopOrderService.genMemo(order, memo));
+			}
+			
+			List<ShopCarDDL> carList = ShopCarService.findByCarIds(order.getCarIds().split(","));
+			if(carList==null || carList.size()==0){
+				renderJSON(RtnUtil.returnFail("数据异常"));
+			}
+			//总共需要支付
+			int totalAmount = 0;
+			int totalBuyNum = 0;
+			StringBuffer productNames = new StringBuffer();
+			StringBuffer groupNames = new StringBuffer();
+			//商品组合
+			for(ShopCarDDL car : carList){
+				ShopProductDDL product = ShopProductService.getByProductId(car.getProductId());
+				if(product == null || product.getStatus()!=1 || product.getStore()<=0 || product.getStore() < car.getBuyNum()){
+					renderJSON(RtnUtil.returnFail("商品已下架或库存不足"));
+				}
+				
+				ShopProductGroupDDL productGroup =  ShopProductGroupService.findByProductIdAndGroupId(car.getProductId(), car.getGroupId());
+				if(productGroup == null){
+					renderJSON(RtnUtil.returnFail("商品组已下架"));
+				}
+				//
+				productNames.append(product.getProductName());
+				groupNames.append(productGroup.getGroupName()).append(" x").append(car.getBuyNum()).append(" | ");
+				totalAmount+= productGroup.getGroupPrice() * car.getBuyNum(); 
+				totalBuyNum += car.getBuyNum();
+			}
+			
+			Map<String,Object> result = new HashMap<String,Object>();
+			 
+			result.put("orderId", orderId);  
+			
+			order.setProductName(productNames.toString());
+			order.setGroupName(groupNames.toString());
+			order.setBuyNum(totalBuyNum);
+			
+			//不需要任何支付
+			if( 0 == totalAmount){
+				result.put("needPay", false);
+				result.put("useBalance", 0);  
+				
+				order.setStatus(ShopOrderService.ORDER_PAYED);
+				order.setPayTime(System.currentTimeMillis());
+				 
+				if(Dal.replace(order) > 0 ){
+					ShopOrderService.paySuccess(order);
+					result.put("order", order); 
+					renderJSON(RtnUtil.returnSuccess("OK",result));
+				}else{
+					renderJSON(RtnUtil.returnFail("支付失败"));
+				} 
+			}
+			
+			int reduceCoupon = 0;
+			int reduceUser = 0;
+			int diffPay = totalAmount;
+			
+			UserAccountDDL couponAccount = null;			
+			if(!StringUtils.isEmpty(couponAccountId)){
+				//优先使用代金券类型账户
+				couponAccount = UserAccountService.canUse(couponAccountId, "", 0,totalAmount);
+				if( couponAccount == null ){
+					renderJSON(RtnUtil.returnFail("代金券无法使用编号:"+couponAccountId));
+				}
+			}
+			
+			boolean reduceCoupnd = true;
+			//先扣代金券金额
+			if( couponAccount != null){
+				diffPay = totalAmount - couponAccount.getAmount(); 
+				
+			}
+			
+			//代金券已经够扣了
+			if( diffPay <= 0 ){
+				reduceCoupon = totalAmount;
+				result.put("needPay", false);
+				result.put("useUserBalance", 0);
+				result.put("useCouponBalance", reduceCoupon);
+				
+
+				
+				order.setStatus(ShopOrderService.ORDER_PAYED);
+				order.setPayTime(System.currentTimeMillis());
+				
+				
+				if(couponAccount != null){
+					order.setUseCouponAccountId(couponAccountId);
+					order.setUseCouponAmount(reduceCoupon);
+					reduceCoupnd = UserAccountService.reduceBalance(couponAccountId, reduceCoupon);
+				}
+				 
+				if( reduceCoupnd && Dal.replace(order) > 0 ){
+					ShopOrderService.paySuccess(order);
+					result.put("order", order); 
+					renderJSON(RtnUtil.returnSuccess("OK",result));
+				}else{
+					renderJSON(RtnUtil.returnFail("支付失败"));
+				} 
+			}
+			
+			//说明使用了代金券，但不够支付,全部扣除
+			if(couponAccount != null){
+				order.setUseCouponAccountId(couponAccountId);
+				order.setUseCouponAmount(couponAccount.getAmount());//全部使用完代金券
+				reduceCoupnd = UserAccountService.reduceBalance(couponAccountId, couponAccount.getAmount());
+			}
+			boolean reduceUserAccount = true;
+			//使用用户余额账户扣减
+			UserAccountDDL userAccount = UserAccountService.getByAccountId(userAccountId);
+			if(userAccount!=null){
+				diffPay = diffPay - (userAccount==null?0:userAccount.getAmount());
+				//余额扣够了
+				if( diffPay <= 0 ){
+					reduceUser = totalAmount-reduceCoupon;
+					result.put("needPay", false);
+					result.put("useUserBalance", reduceUser);
+					result.put("useCouponBalance", reduceCoupon);
+					
+					order.setUseUserAccountId(userAccount.getAccountId());
+					order.setUseUserAmount(reduceUser);
+					
+					order.setStatus(ShopOrderService.ORDER_PAYED);
+					order.setPayTime(System.currentTimeMillis());
+					 
+					reduceUserAccount = UserAccountService.reduceBalance(userAccount.getAccountId(), reduceUser);
+					
+					if( reduceUserAccount && Dal.replace(order) > 0 ){
+						ShopOrderService.paySuccess(order);
+						result.put("order", order); 
+						renderJSON(RtnUtil.returnSuccess("OK",result));
+					}else{
+						renderJSON(RtnUtil.returnFail("支付失败"));
+					} 
+				}
+			} 
+			
+			//使用了余额 还不够扣除
+			if(userAccount!=null){
+				reduceUser = userAccount.getAmount() ; 
+				order.setUseUserAccountId(userAccount.getAccountId());
+				order.setUseUserAmount(reduceUser);
+				reduceUserAccount = UserAccountService.reduceBalance(userAccount.getAccountId(), reduceUser);
+			}
+			
+			String body = Jws.configuration.getProperty(appid+".body.prefix")+"-"+order.getOrderId();
+			String spbill_create_ip = InetAddress.getLocalHost().getHostAddress();
+			String notify_url = Jws.configuration.getProperty(appid+".notify.url");
+			String trade_type="JSAPI";
+			String key = Jws.configuration.getProperty(appid+".pay.key");
+			
+			
+			Map<String,Object> ext = new HashMap<String,Object>();
+			ext.put("openid", user.getOpenId());
+			Map<String,String>  wxResult = API.weixin_unifiedorder(appid, Jws.configuration.getProperty(appid+".mch_id"), 
+				body, orderId, diffPay, spbill_create_ip, 
+				notify_url, trade_type, key, ext);
+			String prepay_id = wxResult.get("prepay_id");
+			String nonce_str = wxResult.get("nonce_str");
+			Map<String,String> litterPayParams = API.getLitterAppPayParams(appid, prepay_id, key,nonce_str);
+			String jsonstr = litterPayParams!=null?gson.toJson(litterPayParams):null;
+
+			order.setUseCash(diffPay);
+			order.setStatus(ShopOrderService.ORDER_PAYING);
+			order.setPayTime(System.currentTimeMillis());
+			 
+			//扣减用户余额支付部分
+			if(reduceCoupnd && reduceUserAccount && Dal.replace(order) > 0 ){
+				ShopOrderService.paySuccess(order); 
+				result.put("useUserBalance", reduceUser);
+				result.put("useCouponBalance", reduceCoupon);
+				result.put("useCash", diffPay);
+				result.put("needPay", true);
+				result.put("order", order);
+				result.put("litterPayParams",litterPayParams);	 
+				renderJSON(RtnUtil.returnSuccess("OK",result));
+			}else{
+				renderJSON(RtnUtil.returnFail("支付失败"));
+			}  
+			 
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail(e.getMessage()));
+		}
+	}
 	public static void createOrder(String session,String productId,String groupId,String appid,int buyNum,
 			String userAccountId,String couponAccountId,boolean together,String togetherId,String address,
 			String referScene,String referAppId,String referChannel
@@ -318,6 +634,7 @@ public class Shop extends Controller{
 			if(order == null){
 				Logger.error("支付：微信回调时,找不到订单out_trade_no=%s", out_trade_no);
 			}else{
+				//order.setUseCash(Integer.parseInt(notifyTreeMap.get("cash_fee")));
 				order.setTransactionId(transaction_id);
 				order.setNotifyBody(notifyBody);
 				if( order.getUseCash() <= cash_fee  ){
@@ -917,25 +1234,68 @@ public class Shop extends Controller{
 			if(order == null){
 				renderJSON(RtnUtil.returnFail("订单不存在"));
 			} 
+			 
 			Map<String,Object> map = new HashMap<String,Object>();
-			map.put("isSeller", user.getId().intValue() == order.getSellerUserId());
-			map.put("orderId",order.getOrderId());
-			map.put("groupImg", API.getObjectAccessUrlSimple( order.getGroupImg()));
-			map.put("groupName", order.getGroupName());
-			map.put("productName", order.getProductName());
-			map.put("groupId", order.getGroupId());
-			map.put("productType", order.getProductType());
-			map.put("productId", order.getProductId());
-			map.put("orderStatus", order.getStatus());
-			map.put("buyNum", order.getBuyNum());
-			map.put("groupPrice", AmountUtil.f2y(order.getGroupPrice()));
-			map.put("prize", order.getPrizeLevel());
-			map.put("sellerTelNumber", order.getSellerTelNumber());
-			map.put("sellerWxNumber", order.getSellerWxNumber());
 			
+			//通用信息
+			map.put("orderType",order.getOrderType());
+			map.put("orderId",order.getOrderId());
+			map.put("orderStatus", order.getStatus());
+			map.put("buyNum", order.getBuyNum());  
+			
+			ShopIndexDDL shop = ShopIndexService.getByShopId(order.getShopId());
+			String defaultContactMobile = shop.getContactMobile();
+			String defaultContactWx = shop.getContactWx();
+			
+			map.put("sellerTelNumber", StringUtils.isEmpty(order.getSellerTelNumber())?defaultContactMobile:order.getSellerTelNumber());
+			map.put("sellerWxNumber",StringUtils.isEmpty(order.getSellerWxNumber())?defaultContactWx:order.getSellerWxNumber());
+			
+			map.put("prize", order.getPrizeLevel());
+			
+			if(order.getOrderType()==0){//单笔订单支付
+				map.put("groupPrice", AmountUtil.f2y(order.getGroupPrice()));
+				map.put("groupImg", API.getObjectAccessUrlSimple( order.getGroupImg()));
+				map.put("isSeller", user.getId().intValue() == order.getSellerUserId());
+				map.put("groupName", order.getGroupName());
+				map.put("productName", order.getProductName());
+				map.put("groupId", order.getGroupId());
+				map.put("productType", order.getProductType());
+				map.put("productId", order.getProductId()); 
+			}else if(order.getOrderType()==1){
+				
+				List<ShopCarDDL> carList = ShopCarService.findByCarIds(order.getCarIds().split(","));
+				
+				List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+				if(carList==null || carList.size()==0){
+					throw new Exception("购物车为空");
+				}
+				
+				int sumAmount = 0;
+				for(ShopCarDDL car : carList){
+					Map<String,Object> one = new HashMap<String,Object>();
+					ShopProductDDL product = ShopProductService.getByProductId(car.getProductId());
+					ShopProductGroupDDL group = ShopProductGroupService.findByProductIdAndGroupId(car.getProductId(), car.getGroupId());
+					if(group==null || product==null) continue;
+					one.put("id", car.getId());
+					one.put("productId", product.getProductId());
+					one.put("groupId", group.getGroupId());
+					one.put("productName", product.getProductName());
+					one.put("groupImgage",API.getObjectAccessUrlSimple(group.getGroupImage()));
+					one.put("buyNum", car.getBuyNum());
+					one.put("status",car.getStatus());
+					one.put("groupName", group.getGroupName());
+					one.put("totalAmount", AmountUtil.f2y(group.getGroupPrice()*car.getBuyNum()));//实时
+					one.put("singPrice", AmountUtil.f2y(group.getGroupPrice()));//实时					
+					sumAmount+=group.getGroupPrice()*car.getBuyNum();
+					list.add(one);
+				}
+				
+				map.put("sumAmount", AmountUtil.f2y(sumAmount));
+				map.put("productList", list); 
+			}
 			//订单是否可以退款
 			map.put("canRefund", ShopOrderService.canRefund(order));
-			map.put("shareImage",API.getObjectAccessUrlSimple( "4d638917b143496a95bb83d3d935c7c1"));
+			map.put("shareImage",API.getObjectAccessUrlSimple("4d638917b143496a95bb83d3d935c7c1"));
 			
 			if(order.getGroupTogetherPrice() != null){
 				map.put("groupTogetherPrice", AmountUtil.f2y(order.getGroupTogetherPrice()));
@@ -1191,6 +1551,12 @@ public class Shop extends Controller{
 			}
 			for(ShopNavDto dto : shopIndexConfig.fiveNavList){
 				if(dto.linkType == 2){
+					dto.img = API.getObjectAccessUrlSimple(dto.imgkey);
+				}
+			}
+			
+			for(ShopNavWrap wrap : shopIndexConfig.shopNavWrapList){
+				for(ShopNavDto dto : wrap.list){
 					dto.img = API.getObjectAccessUrlSimple(dto.imgkey);
 				}
 			}
@@ -1461,5 +1827,161 @@ public class Shop extends Controller{
 			renderJSON(RtnUtil.returnFail("服务器异常"));
 		}
 	}
-	 
+	
+	public static void addTocar(String session,String productId,String groupId,int buyNum){
+		try{ 
+			UsersDDL user = UserService.findBySession(session);
+			if(user==null){
+				renderJSON(RtnUtil.returnLoginFail());
+			}
+			
+			if(buyNum<=0){
+				renderJSON(RtnUtil.returnFail("购买数量不能少于1"));
+			}
+			
+			ShopProductDDL product = ShopProductService.getByProductId(productId);
+			if(product==null){
+				renderJSON(RtnUtil.returnFail("商品已经下架"));
+			}
+			
+			ShopProductGroupDDL productGroup = null;
+			
+			if(StringUtils.isEmpty(groupId)){
+				List<ShopProductGroupDDL> groups = ShopProductGroupService.findByProductId(productId);
+				if(groups!=null && groups.size()>0){
+					productGroup = groups.get(0);
+				}
+			}else{
+				productGroup = ShopProductGroupService.findByProductIdAndGroupId(productId, groupId);
+			}
+			if(productGroup==null){
+				renderJSON(RtnUtil.returnFail("商品此规格已经下架"));
+			}
+		
+			
+			ShopCarDDL shopCar = new ShopCarDDL();
+			shopCar.setBuyNum(buyNum);
+			shopCar.setCreateTime(System.currentTimeMillis());
+			shopCar.setUpdateTime(System.currentTimeMillis());
+			shopCar.setGroupId(productGroup.getGroupId());
+			shopCar.setProductId(productGroup.getProductId());
+			shopCar.setShopId(product.getShopId());
+			
+			ShopIndexDDL shop = ShopIndexService.getByShopId(product.getShopId());
+			shopCar.setShopName(shop==null?"":shop.getName());
+			
+			shopCar.setStatus(ShopCarService.UN_PAYED);
+			shopCar.setUserId(user.getId().intValue());
+			 
+			
+			ShopCarService.addToShopCar(shopCar);
+			
+			renderJSON(RtnUtil.returnSuccess("OK"));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	public static void listMyCar(String session,int page,int pageSize){
+		try{ 
+			UsersDDL user = UserService.findBySession(session);
+			
+			if(user==null){
+				renderJSON(RtnUtil.returnLoginFail());
+			}
+			
+			
+			List<ShopCarDDL> carList = ShopCarService.myCarList(user.getId().intValue(),page,pageSize);
+			
+			Map<String,Object> result = new HashMap<String,Object>();
+			List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+			
+			if(carList==null || carList.size()==0){
+				result.put("list", list);
+				renderJSON(RtnUtil.returnSuccess("OK",result));
+			}
+			int sumAmount = 0;
+			for(ShopCarDDL car : carList){
+				Map<String,Object> one = new HashMap<String,Object>();
+				ShopProductDDL product = ShopProductService.getByProductId(car.getProductId());
+				ShopProductGroupDDL group = ShopProductGroupService.findByProductIdAndGroupId(car.getProductId(), car.getGroupId());
+				if(group==null || product==null) continue;
+				one.put("id", car.getId());
+				one.put("productId", product.getProductId());
+				one.put("groupId", group.getGroupId());
+				one.put("productName", product.getProductName());
+				one.put("groupImgage",API.getObjectAccessUrlSimple(group.getGroupImage()));
+				one.put("buyNum", car.getBuyNum());
+				one.put("status",car.getStatus());
+				one.put("groupName", group.getGroupName());
+				one.put("totalAmount", AmountUtil.f2y(group.getGroupPrice()*car.getBuyNum()));//实时
+				one.put("singPrice", AmountUtil.f2y(group.getGroupPrice()));//实时
+				one.put("checked", true);
+				sumAmount+=group.getGroupPrice()*car.getBuyNum();
+				list.add(one);
+			}
+			result.put("sumAmount", AmountUtil.f2y(sumAmount));
+			result.put("list", list); 
+			
+			UserAccountDDL basicAccount = UserAccountService.getBasicAccount(user.getId().intValue());
+			result.put("userAmount", AmountUtil.f2y(basicAccount.getAmount()));
+			renderJSON(RtnUtil.returnSuccess("OK",result));
+			
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	public static void calCoupon(String session,String amount){
+		try{ 
+			UsersDDL user = UserService.findBySession(session);
+			if(user==null){
+				renderJSON(RtnUtil.returnLoginFail());
+			}
+			UserAccountDDL coupon = UserAccountService.fullReduce(user.getId().intValue(), AmountUtil.y2f(amount));
+			Map<String,Object> result = new HashMap<String,Object>();
+			if(coupon!=null){ 
+				result.put("couponId", coupon.getAccountId());
+				result.put("couponName", coupon.getAccountName());
+				result.put("couponAmount", AmountUtil.f2y(coupon.getAmount()));
+			}else{
+				result.put("couponId", "");
+				result.put("couponName", "");
+				result.put("couponAmount", 0);
+			}
+			renderJSON(RtnUtil.returnSuccess("OK",result));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	public static void deleteProductFromMyCar(String session,int id){
+		try{ 
+			UsersDDL user = UserService.findBySession(session);
+			if(user==null){
+				renderJSON(RtnUtil.returnLoginFail());
+			}
+			ShopCarService.updateStatus(id, user.getId().intValue(),ShopCarService.DELETED);
+			renderJSON(RtnUtil.returnSuccess("OK"));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
+	
+	public static void updateBuyNumOfMyCar(String session,int id,int buyNum){
+		try{ 
+			UsersDDL user = UserService.findBySession(session);
+			if(user==null){
+				renderJSON(RtnUtil.returnLoginFail());
+			}
+			ShopCarService.updateBuyNum(id, user.getId().intValue(),buyNum);
+			renderJSON(RtnUtil.returnSuccess("OK"));
+		}catch(Exception e){
+			Logger.error(e, e.getMessage());
+			renderJSON(RtnUtil.returnFail("服务器异常"));
+		}
+	}
 }

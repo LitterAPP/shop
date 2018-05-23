@@ -19,7 +19,7 @@ public class ShopIndexService {
 		 return list.get(0);
 	}
 	
-	public static boolean update(String shopId,String name,String avatar,String config){
+	public static boolean update(String shopId,String name,String avatar,String contactMobile,String contactWx,String config){
 		ShopIndexDDL shop = getByShopId(shopId);
 		
 		//根据shopID
@@ -31,13 +31,17 @@ public class ShopIndexService {
 			s.setAvatar(avatar);
 			s.setConfig(config);
 			s.setFollow(0);
+			s.setContactMobile(contactMobile);
+			s.setContactWx(contactWx);
 			s.setCreateTime(System.currentTimeMillis());
 			return Dal.insert(s)>0;
 		}else{
 			shop.setName(name);
 			shop.setAvatar(avatar);
 			shop.setConfig(config);
-			return Dal.update(shop, "ShopIndexDDL.name,ShopIndexDDL.avatar,ShopIndexDDL.config", 
+			shop.setContactMobile(contactMobile);
+			shop.setContactWx(contactWx);
+			return Dal.update(shop, "ShopIndexDDL.contactMobile,ShopIndexDDL.contactWx,ShopIndexDDL.name,ShopIndexDDL.avatar,ShopIndexDDL.config", 
 					new Condition("ShopIndexDDL.id","=",shop.getId()))>0;
 		}
 	}

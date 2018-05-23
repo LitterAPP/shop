@@ -107,6 +107,12 @@ public class ShopProductService {
 		ShopProductDDL old = getByProductId(productId);
 		old.setStatus(status);
 		old.setUpdateTime(System.currentTimeMillis());
+		
+		//下架，更新用户购物商品为下架状态
+		if(status == ShopProductService.Status.PRODUCT_STATUS_UNSELL.getValue() ){
+			ShopCarService.productUnSell(productId);
+		}
+		
 		return Dal.update(old, "ShopProductDDL.status,ShopProductDDL.updateTime",
 				new Condition("ShopProductDDL.productId","=",productId))>0;
 	}

@@ -57,12 +57,27 @@ public class ShopOrderService {
 	public static final int ORDER_UNLUCKY_MAN= 12;//已支付抽奖完成，未中奖订单
 	public static final int ORDER_TOGETHER_NOT_FULL= 14;//过期未成团，退款
 	
+	
 	public static boolean createOrder(boolean together,String togetherId,
 			String userAccountId,String couponAccountId,
 			int useUserAccount,int useCouponAccount,int useCash,
 			int buyNum,String orderId,int buyerUserId,String litterAppParams,
 			String address,ShopProductDDL product,ShopProductGroupDDL group,
 			String referScene,String referAppId,String referChannel
+			) throws Exception{
+		return createOrder(together,togetherId,
+				userAccountId,couponAccountId,
+				useUserAccount,useCouponAccount,useCash,
+				buyNum,orderId,buyerUserId,litterAppParams,
+				address,product,group,
+				referScene,referAppId,referChannel,null,0);
+	}
+	public static boolean createOrder(boolean together,String togetherId,
+			String userAccountId,String couponAccountId,
+			int useUserAccount,int useCouponAccount,int useCash,
+			int buyNum,String orderId,int buyerUserId,String litterAppParams,
+			String address,ShopProductDDL product,ShopProductGroupDDL group,
+			String referScene,String referAppId,String referChannel,String carIds,int orderType
 			) throws Exception{
 		 
 		ShopOrderDDL order = new ShopOrderDDL();
@@ -80,31 +95,33 @@ public class ShopOrderService {
 			}
 			
 		}
+		order.setCarIds(carIds);
+		order.setOrderType(orderType);
 		order.setReferAppid(referAppId);
 		order.setReferScene(referScene);
 		order.setReferChannel(referChannel);
-		order.setShopId(product.getShopId());
-		order.setSellerTelNumber(product.getSellerTelNumber());
-		order.setSellerWxNumber(product.getSellerWxNumber());
-		order.setGroupId(group.getGroupId());
-		order.setGroupName(group.getGroupName());
+		order.setShopId(product==null || StringUtils.isEmpty(product.getShopId())?Jws.configuration.getProperty("shop.index.default"):product.getShopId());
+		order.setSellerTelNumber(product==null || StringUtils.isEmpty(product.getSellerTelNumber())?"":product.getSellerTelNumber());
+		order.setSellerWxNumber(product==null || StringUtils.isEmpty(product.getSellerWxNumber())?"":product.getSellerWxNumber());
+		order.setGroupId(group==null || StringUtils.isEmpty(group.getGroupId())?"":group.getGroupId());
+		order.setGroupName(group==null ||StringUtils.isEmpty(group.getGroupName())?"":group.getGroupName());
 		order.setBuyerUserId(buyerUserId);
 		order.setExpireTime(System.currentTimeMillis()+2*60*60*1000);
 		order.setOrderId(orderId);
 		order.setLitterAppParams(litterAppParams);
 		order.setOrderTime(System.currentTimeMillis());
-		order.setProductId(product.getProductId());
-		order.setProductName(product.getProductName());
-		order.setProductNowAmount(product.getProductNowAmount());
-		order.setProductOriginAmount(product.getProductOriginAmount());
-		order.setSellerUserId(product.getSellerUserId());
+		order.setProductId(product==null || StringUtils.isEmpty(product.getProductId())?"":product.getProductId());
+		order.setProductName(product==null || StringUtils.isEmpty(product.getProductName())?"":product.getProductName());
+		order.setProductNowAmount(product==null || product.getProductNowAmount()==null?0:product.getProductNowAmount());
+		order.setProductOriginAmount(product==null || product.getProductOriginAmount()==null?0:product.getProductOriginAmount());
+		order.setSellerUserId(product==null || product.getSellerUserId()==null?0:product.getSellerUserId());
 		order.setStatus(ORDER_PAYING); 
 		order.setAddress(address);
-		order.setProductTogetherAmount(product.getProductTogetherAmount());
-		order.setGroupPrice(group.getGroupPrice());
-		order.setGroupTogetherPrice(group.getGroupTogetherPrice());
-		order.setGroupImg(group.getGroupImage());
-		order.setProductType(product.getProductType()==null?
+		order.setProductTogetherAmount(product==null || product.getProductTogetherAmount()==null?0:product.getProductTogetherAmount());
+		order.setGroupPrice(group==null || group.getGroupPrice()==null?0:group.getGroupPrice());
+		order.setGroupTogetherPrice(group==null || group.getGroupTogetherPrice()==null?0:group.getGroupTogetherPrice());
+		order.setGroupImg(group==null || StringUtils.isEmpty(group.getGroupImage())?"":group.getGroupImage());
+		order.setProductType(product==null || product.getProductType()==null?
 				ShopProductService.Type.PRODUCT_TYPE_ENTITY.getValue():product.getProductType());
 		if(useUserAccount>0){
 			if(!UserAccountService.reduceBalance(userAccountId, useUserAccount)){
@@ -130,14 +147,15 @@ public class ShopOrderService {
 		order.setUseUserAccountId(userAccountId);
 		order.setUseUserAmount(useUserAccount);
 		order.setBuyNum(buyNum);
+		
 		//以签约的收费比例为准
-		int sellerUid = product.getSellerUserId();
+		int sellerUid = product==null||product.getSellerUserId()==null?0:product.getSellerUserId();
 		ShopApplyInfoDDL applyInfo = ApplyService.getApplyInfo(sellerUid);
 		order.setPlatformGetsRate(applyInfo==null?0:applyInfo.getFeeRate());
 		
 		order.setUseCash(useCash);
 		
-		if(useCash == 0){
+		if(useCash == 0 && orderType==0){//单笔购买，无需现金支付的，直接成功
 			order.setStatus(ORDER_PAYED);
 			order.setPayTime(System.currentTimeMillis());
 			if(Dal.insert(order)>0){
@@ -207,6 +225,13 @@ public class ShopOrderService {
 					+ "ShopOrderDDL.sellerGets,ShopOrderDDL.payTime,"
 					+ "ShopOrderDDL.transactionId,ShopOrderDDL.notifyBody", new Condition("ShopOrderDDL.orderId","=",order.getOrderId()));
 			
+		}
+		//如果是合并订单支付，则更改购物车物品状态为结算状态
+		if(order.getOrderType() == 1){
+			String[] tmp = order.getCarIds().split(",");
+			for(String t :tmp){
+				ShopCarService.updateStatus(Integer.parseInt(t), order.getBuyerUserId(), ShopCarService.PAYED);
+			}
 		}
 		//触发订单支付成功微信服务通知
 		if(!StringUtils.isEmpty(order.getLitterAppParams())){
@@ -293,7 +318,7 @@ public class ShopOrderService {
 	} 
 	
 	
-	private static String genMemo(ShopOrderDDL order,String memo){
+	public static String genMemo(ShopOrderDDL order,String memo){
 		memo = StringUtils.isEmpty(memo)?"":memo;
 		if(StringUtils.isEmpty(order.getMemo())){
 			return DateUtil.format(System.currentTimeMillis())+"->"+memo;
@@ -521,7 +546,7 @@ public class ShopOrderService {
 	
 	public static List<ShopOrderDDL> listMngOrder(String shopId,String orderId,String keyword,
 			String startTime,String endTime,
-			int status,int page,int pageSize){
+			int status,String referScene,String appid,String channel,int page,int pageSize){
 		Condition condition = new Condition("ShopOrderDDL.id",">",0);
 		if(!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)){
 			condition.add(new Condition("ShopOrderDDL.orderTime","<>",
@@ -538,6 +563,18 @@ public class ShopOrderService {
 		}
 		if(!StringUtils.isEmpty(keyword)){
 			condition.add(new Condition("ShopOrderDDL.productName","like","%"+keyword+"%"), "and");
+		}
+		
+		if(!StringUtils.isEmpty(referScene)){
+			condition.add(new Condition("ShopOrderDDL.referScene","=",referScene), "and");			 
+		}
+		
+		if(!StringUtils.isEmpty(appid)){
+			condition.add(new Condition("ShopOrderDDL.referAppid","=",appid), "and");			 
+		}
+		
+		if(!StringUtils.isEmpty(channel)){
+			condition.add(new Condition("ShopOrderDDL.referChannel","=",channel), "and");			 
 		}
 		
 		if(status>=0){//单独状态查询
@@ -563,7 +600,7 @@ public class ShopOrderService {
 	
 	public static int countMngOrder(String shopId,String orderId,String keyword,
 			String startTime,String endTime,
-			int status){
+			int status,String referScene,String appid,String channel){
 		Condition condition = new Condition("ShopOrderDDL.id",">",0);
 		
 		if(!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)){
@@ -582,6 +619,19 @@ public class ShopOrderService {
 		
 		if(!StringUtils.isEmpty(keyword)){
 			condition.add(new Condition("ShopOrderDDL.productName","like","%"+keyword+"%"), "and");
+		}
+		
+		
+		if(!StringUtils.isEmpty(referScene)){
+			condition.add(new Condition("ShopOrderDDL.referScene","=",referScene), "and");			 
+		}
+		
+		if(!StringUtils.isEmpty(appid)){
+			condition.add(new Condition("ShopOrderDDL.referAppid","=",appid), "and");			 
+		}
+		
+		if(!StringUtils.isEmpty(channel)){
+			condition.add(new Condition("ShopOrderDDL.referChannel","=",channel), "and");			 
 		}
 		
 		if(status>=0){//单独状态查询

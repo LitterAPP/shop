@@ -1,18 +1,15 @@
 package modules.shop.service;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import jws.dal.Dal;
 import jws.dal.sqlbuilder.Condition;
-import modules.shop.ddl.ShopProductCategoryRelDDL;
+import modules.shop.ddl.ShopCouponMngDDL;
 import modules.shop.ddl.UserAccountDDL;
 import util.IDUtil;
 
@@ -120,6 +117,29 @@ public class UserAccountService {
 				new Condition("UserAccountDDL.accountId","=",accountId)
 			) > 0;
 	}
+	
+	/**
+	 * 根据用户消费，获取一张满额扣减的优惠券
+	 * @param userId
+	 * @param spentAmount
+	 * @return
+	 */
+	public static UserAccountDDL fullReduce(int userId,int spentAmount){
+		//列出所有有效代金券
+		List<UserAccountDDL> allCoupons = listValidateCoupons(userId,1,-1);
+		if(allCoupons==null || allCoupons.size()==0){
+			return null;
+		}
+		for(UserAccountDDL coupon:allCoupons){
+			ShopCouponMngDDL couponMng = ShopCouponMngService.getCouponByCouponId(coupon.getAccountId());
+			if(couponMng!=null && StringUtils.isEmpty(couponMng.getLimitProductId())
+				&& couponMng.getAmount()<=spentAmount && (couponMng.getLimitPrice()==null || couponMng.getLimitPrice()<=spentAmount)
+			){	
+				return coupon;
+			}
+		}
+		return null;
+	}
 
 	public static UserAccountDDL canUse(String accountId,String productId,int sellerId,int price) throws Exception{
 		UserAccountDDL account = getByAccountId(accountId);
@@ -138,6 +158,7 @@ public class UserAccountService {
 		if( StringUtils.isEmpty(account.getLimitRule())) {
 			return account;
 		}  
+		
 		//
 		/*{ 
 		    "productId":"product_1"
@@ -145,10 +166,11 @@ public class UserAccountService {
 		    "price": 8888
 		}
 		*/ 
-		JsonObject  rule = new JsonParser().parse(account.getLimitRule()).getAsJsonObject();
+ 		ShopCouponMngDDL couponMng = ShopCouponMngService.getCouponByCouponId(account.getAccountId());
 		//判断商品ID规则
 		boolean productRule = true;
-		String limitProductId = rule.get("productId")==null?null:rule.get("productId").getAsString();
+		String limitProductId = couponMng==null||couponMng.getLimitProductId()==null?null:couponMng.getLimitProductId();
+		
 		if(!StringUtils.isEmpty(limitProductId) && !limitProductId.equals(productId)){
 			productRule = false;
 		}
@@ -158,17 +180,16 @@ public class UserAccountService {
 		
 		//判断商品ID规则
 		boolean sellerRule = true;
-		int limitSellerId = rule.get("sellerId")==null?0:rule.get("sellerId").getAsInt();
+ 		int limitSellerId = couponMng==null||couponMng.getLimitSellerId()==null?null:couponMng.getLimitSellerId();
 		if(limitSellerId!=0 && limitSellerId != sellerId){
 			sellerRule = false;
 		}
 		if(!sellerRule){
 			throw new Exception("账户不满足商家使用条件accountId="+accountId+",sellerId="+sellerId);
 		}
-		
-		//判断商品价格规则 满减
-		int limitPrice = rule.get("price")==null?0:rule.get("price").getAsInt();
-		if( limitPrice != 0 && price < limitPrice){
+		//判断商品价格规则 满减 
+ 		int limitPrice = couponMng==null||couponMng.getLimitPrice()==null?null:couponMng.getLimitPrice();
+		if( limitPrice != 0 && price <= limitPrice){
 			throw new Exception("账户不满足额度使用条件accountId="+accountId+",productId="+productId);
 		}  
 		return account;

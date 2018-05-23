@@ -9,7 +9,7 @@ import jws.dal.common.DbType;
 /**
  * 
  * @author auto
- * @createDate 2018-05-15 17:09:07
+ * @createDate 2018-05-22 16:37:00
  **/
 @Table(name="shop_order")
 public class ShopOrderDDL{
@@ -42,7 +42,7 @@ public class ShopOrderDDL{
 		this.groupId=groupId;
 	}
 
-	@Column(name="group_name", type=DbType.Varchar)
+	@Column(name="group_name", type=DbType.Text)
 	private String groupName;
 	public String getGroupName() {
 		return groupName;
@@ -78,7 +78,7 @@ public class ShopOrderDDL{
 		this.productId=productId;
 	}
 
-	@Column(name="product_name", type=DbType.Varchar)
+	@Column(name="product_name", type=DbType.Text)
 	private String productName;
 	public String getProductName() {
 		return productName;
@@ -202,6 +202,15 @@ public class ShopOrderDDL{
 	}
 	public void setUseCash(Integer useCash){
 		this.useCash=useCash;
+	}
+
+	@Column(name="total_amount", type=DbType.Int)
+	private Integer totalAmount;
+	public Integer getTotalAmount() {
+		return totalAmount;
+	}
+	public void setTotalAmount(Integer totalAmount){
+		this.totalAmount=totalAmount;
 	}
 
 	@Column(name="buy_num", type=DbType.Int)
@@ -384,6 +393,24 @@ public class ShopOrderDDL{
 		this.referChannel=referChannel;
 	}
 
+	@Column(name="order_type", type=DbType.Int)
+	private Integer orderType;
+	public Integer getOrderType() {
+		return orderType;
+	}
+	public void setOrderType(Integer orderType){
+		this.orderType=orderType;
+	}
+
+	@Column(name="car_ids", type=DbType.Varchar)
+	private String carIds;
+	public String getCarIds() {
+		return carIds;
+	}
+	public void setCarIds(String carIds){
+		this.carIds=carIds;
+	}
+
 	public static ShopOrderDDL newExample(){
 		ShopOrderDDL object=new ShopOrderDDL();
 		object.setId(null);
@@ -407,6 +434,7 @@ public class ShopOrderDDL{
 		object.setUseUserAccountId(null);
 		object.setUseUserAmount(null);
 		object.setUseCash(null);
+		object.setTotalAmount(null);
 		object.setBuyNum(null);
 		object.setPlatformGetsRate(null);
 		object.setPlatformGets(null);
@@ -427,6 +455,8 @@ public class ShopOrderDDL{
 		object.setReferScene(null);
 		object.setReferAppid(null);
 		object.setReferChannel(null);
+		object.setOrderType(null);
+		object.setCarIds(null);
 		return object;
 	}
 }

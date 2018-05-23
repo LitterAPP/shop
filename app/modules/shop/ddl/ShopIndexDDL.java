@@ -9,11 +9,12 @@ import jws.dal.common.DbType;
 /**
  * 
  * @author auto
- * @createDate 2018-04-24 11:49:04
+ * @createDate 2018-05-23 14:22:28
  **/
 @Table(name="shop_index")
 public class ShopIndexDDL{
 	@Id
+	@GeneratedValue(generationType= GenerationType.Auto)
 	@Column(name="id", type=DbType.Int)
 	private Integer id;
 	public Integer getId() {
@@ -68,6 +69,24 @@ public class ShopIndexDDL{
 		this.config=config;
 	}
 
+	@Column(name="contact_mobile", type=DbType.Varchar)
+	private String contactMobile;
+	public String getContactMobile() {
+		return contactMobile;
+	}
+	public void setContactMobile(String contactMobile){
+		this.contactMobile=contactMobile;
+	}
+
+	@Column(name="contact_wx", type=DbType.Varchar)
+	private String contactWx;
+	public String getContactWx() {
+		return contactWx;
+	}
+	public void setContactWx(String contactWx){
+		this.contactWx=contactWx;
+	}
+
 	@Column(name="create_time", type=DbType.DateTime)
 	private Long createTime;
 	public Long getCreateTime() {
@@ -85,6 +104,8 @@ public class ShopIndexDDL{
 		object.setAvatar(null);
 		object.setFollow(null);
 		object.setConfig(null);
+		object.setContactMobile(null);
+		object.setContactWx(null);
 		object.setCreateTime(null);
 		return object;
 	}

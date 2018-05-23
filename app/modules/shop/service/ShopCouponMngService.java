@@ -134,6 +134,12 @@ public class ShopCouponMngService {
 		return result; 
 	}
 	
+	public static ShopCouponMngDDL getCouponByCouponId(String couponId){
+		Condition cond = new Condition("ShopCouponMngDDL.couponId","=",couponId);
+		List<ShopCouponMngDDL> list = Dal.select("ShopCouponMngDDL.*", cond, null, 0, -1);
+		if(list==null || list.size()==0)return null;
+		return list.get(0);
+	}
 	
 	public static List<ShopCouponMngDDL> listCoupon(String shopId,String couponId,String keyword,int page,int pageSize){
 		Condition cond = new Condition("ShopCouponMngDDL.id",">",0);

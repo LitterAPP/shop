@@ -18,11 +18,11 @@ import modules.shop.service.ShopOrderService;
 
 public class ExportData {
 	
-	public static ByteArrayInputStream reportOrderByCondition(String shopId,String orderId,String keyword,String startTime,String endTime,int status){
+	public static ByteArrayInputStream reportOrderByCondition(String shopId,String orderId,String keyword,String startTime,String endTime,int status,String referScene,String appid,String channel){
 		try{ 
 			
 			//最多导出1万条
-			List<ShopOrderDDL> list = ShopOrderService.listMngOrder(shopId,orderId, keyword, startTime,endTime,status, 1, 10000);
+			List<ShopOrderDDL> list = ShopOrderService.listMngOrder(shopId,orderId, keyword, startTime,endTime,status,referScene,appid,channel, 1, 10000);
 
 			
 			String[] fieldNames = null;

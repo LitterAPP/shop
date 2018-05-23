@@ -20,7 +20,7 @@
     </div>
     <div class="container" style="margin:0px;">     
         <div style="cursor: pointer;z-index:99;">
-            <div class="">
+            <div class="content-container">
                ${detail?.content.raw()}
             </div>
             <div class="image-container">
@@ -95,6 +95,17 @@
 <script>	
 	weTaoDetail.isZan = ${detail.isZan}	 
 	weTaoDetail.shopId = '${detail.shopId}'	
+	var imgstyle=$('.content-container img');
+	var maxWidth = $(window).width()-20;
+	for(i=0;i<imgstyle.length;i++)
+	{
+		var imgWidth = parseInt($(imgstyle[i]).attr('img_width')||0)
+		console.log('imgWidth=',imgWidth,'maxWidth=',maxWidth)
+		if(imgWidth>maxWidth){
+			imgstyle[i].style.width=($(window).width()-20)+'px';		
+		} 
+		 
+	}
 </script>
 </body>
 </html>
