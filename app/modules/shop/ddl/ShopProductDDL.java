@@ -9,7 +9,7 @@ import jws.dal.common.DbType;
 /**
  * 
  * @author auto
- * @createDate 2018-04-25 17:23:25
+ * @createDate 2018-05-24 15:58:48
  **/
 @Table(name="shop_product")
 public class ShopProductDDL{
@@ -294,6 +294,33 @@ public class ShopProductDDL{
 		this.isSale=isSale;
 	}
 
+	@Column(name="join_seckilling", type=DbType.Int)
+	private Integer joinSeckilling;
+	public Integer getJoinSeckilling() {
+		return joinSeckilling;
+	}
+	public void setJoinSeckilling(Integer joinSeckilling){
+		this.joinSeckilling=joinSeckilling;
+	}
+
+	@Column(name="seckilling_price", type=DbType.Int)
+	private Integer seckillingPrice;
+	public Integer getSeckillingPrice() {
+		return seckillingPrice;
+	}
+	public void setSeckillingPrice(Integer seckillingPrice){
+		this.seckillingPrice=seckillingPrice;
+	}
+
+	@Column(name="seckilling_time", type=DbType.Int)
+	private Integer seckillingTime;
+	public Integer getSeckillingTime() {
+		return seckillingTime;
+	}
+	public void setSeckillingTime(Integer seckillingTime){
+		this.seckillingTime=seckillingTime;
+	}
+
 	public static ShopProductDDL newExample(){
 		ShopProductDDL object=new ShopProductDDL();
 		object.setId(null);
@@ -327,6 +354,9 @@ public class ShopProductDDL{
 		object.setDeal(null);
 		object.setIsHot(null);
 		object.setIsSale(null);
+		object.setJoinSeckilling(null);
+		object.setSeckillingPrice(null);
+		object.setSeckillingTime(null);
 		return object;
 	}
 }

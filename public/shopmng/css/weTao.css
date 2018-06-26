@@ -29,9 +29,8 @@
 
 .top-title {
     font-family:Microsoft Yahei,"Times New Roman",Georgia,Serif;
-    font-size:14px;
-    font-weight:bold;
-    color:#ffffff;
+    font-size:18px;
+    color:#000;
 }
 
 .top{
@@ -46,7 +45,8 @@
     justify-content: flex-start;
     height: 65px;
     padding-top: 10px;
-    background: linear-gradient(#451920,#810020);
+    background: #fff;
+    border-bottom: 1px solid #f2f2f2;
 }
 .container{
     padding: 10px 10px;

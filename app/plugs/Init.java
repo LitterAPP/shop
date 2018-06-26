@@ -3,6 +3,8 @@ package plugs;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import eventbus.EventBusCenter;
+import eventbus.event.ProductUnShellEvent;
 import jws.Logger;
 
 public class Init implements jws.Init{
@@ -13,7 +15,7 @@ public class Init implements jws.Init{
 	public void init() {
 		Logger.info("Plugs init...");
 		//service.scheduleAtFixedRate(new CheckTogetherValid(), 0, 10, TimeUnit.MINUTES); 
-		 
+		EventBusCenter.register(new ProductUnShellEvent());
  	}
 
 }

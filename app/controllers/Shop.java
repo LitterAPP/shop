@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -150,10 +151,19 @@ public class Shop extends Controller{
 				one.put("buyNum", car.getBuyNum());
 				one.put("status",car.getStatus());
 				one.put("groupName", group.getGroupName());
-				one.put("totalAmount", AmountUtil.f2y(group.getGroupPrice()*car.getBuyNum()));//实时
-				one.put("singPrice", AmountUtil.f2y(group.getGroupPrice()));//实时
+				if(product.getJoinSeckilling()!=null && product.getJoinSeckilling()==1){
+					one.put("totalAmount", AmountUtil.f2y(product.getSeckillingPrice()*car.getBuyNum()));//实时
+					one.put("singPrice", AmountUtil.f2y(product.getSeckillingPrice()));//实时
+					sumAmount+=group.getGroupPrice()*car.getBuyNum();
+				}else{
+					one.put("totalAmount", AmountUtil.f2y(group.getGroupPrice()*car.getBuyNum()));//实时
+					one.put("singPrice", AmountUtil.f2y(group.getGroupPrice()));//实时 
+					sumAmount+=group.getGroupPrice()*car.getBuyNum();
+				} 
+				
 				one.put("checked", true);
-				sumAmount+=group.getGroupPrice()*car.getBuyNum();
+				
+				
 				list.add(one);
 			}
 			
@@ -227,10 +237,20 @@ public class Shop extends Controller{
 				if(productGroup == null){
 					renderJSON(RtnUtil.returnFail("商品组已下架"));
 				}
-				//
+				
+				
 				productNames.append(product.getProductName());
 				groupNames.append(productGroup.getGroupName()).append(" x").append(car.getBuyNum()).append(" | ");
-				totalAmount+= productGroup.getGroupPrice() * car.getBuyNum(); 
+				
+				int price = productGroup.getGroupPrice() ;
+				
+				if(product.getJoinSeckilling()!=null && product.getJoinSeckilling() == 1
+						&& getSecKillingEndTimes(product.getSeckillingTime())>System.currentTimeMillis()
+						){
+					price = product.getSeckillingPrice();
+				}
+				//  
+				totalAmount+= price * car.getBuyNum(); 
 				totalBuyNum += car.getBuyNum();
 			}
 			
@@ -433,8 +453,9 @@ public class Shop extends Controller{
 			
 			//总共需要支付
 			int totalAmount = 0;
-			
-			if(together && product.getJoinTogether() == 1){
+			if(product.getJoinSeckilling()!=null && product.getJoinSeckilling()==1){
+				totalAmount = product.getSeckillingPrice() * buyNum;
+			}else if(together && product.getJoinTogether() == 1){
 				totalAmount = productGroup.getGroupTogetherPrice()*buyNum;
 			}else{
 				totalAmount = productGroup.getGroupPrice()*buyNum;
@@ -871,12 +892,16 @@ public class Shop extends Controller{
 	 * @param hot
 	 * @param orderBy 1=时间降序 2=销量降序 3=价格降序 4=价格升序 5=综合排序
 	 */
-	public static void listProduct(String shopId,String productId,String keyword,String pCategoryId,String subCategoryId,boolean isSale,boolean isHot,int status,int orderBy,int page,int pageSize){
+	public static void listProduct(String shopId,String productId,String keyword,
+			String pCategoryId,String subCategoryId,boolean isSale,
+			boolean isHot,int status,int orderBy,boolean isSeckilling,int seckillingTime,
+			int page,int pageSize){
 		try{
 			List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
 			Map<String,Object> response = new HashMap<String,Object>();
 			
-			int total = ShopProductService.countProduct(shopId,productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status);
+			int total = ShopProductService.countProduct(shopId,productId,keyword, pCategoryId, 
+					subCategoryId, isSale?1:0, isHot?1:0, status,isSeckilling?1:-1,seckillingTime);
 			response.put("total", total);
 			response.put("pageTotal", Math.ceil(total/(double)pageSize));
 			 
@@ -884,7 +909,10 @@ public class Shop extends Controller{
 				response.put("list", mapList);
 				renderJSON(RtnUtil.returnSuccess("OK",response));
 			}			
-			List<ShopProductDDL> list = ShopProductService.listProduct(shopId,productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status,orderBy, page<=0?1:page, pageSize<=0?10:pageSize);
+			List<ShopProductDDL> list = ShopProductService.listProduct(shopId,productId,keyword, pCategoryId, subCategoryId,
+					isSale?1:0, isHot?1:0, status,orderBy,
+					isSeckilling?1:-1,seckillingTime,
+					page<=0?1:page, pageSize<=0?10:pageSize);
 			
 			
 			for(ShopProductDDL p : list){
@@ -893,6 +921,17 @@ public class Shop extends Controller{
 				result.put("productName", p.getProductName());
 				result.put("productBanner", API.getObjectAccessUrlSimple( p.getProductBanner()));
 				result.put("productOriginPrice",AmountUtil.f2y(p.getProductOriginAmount()));
+				 
+				//正在秒杀活动
+				if(p.getJoinSeckilling()!=null && p.getJoinSeckilling()==1 && 
+						getSecKillingEndTimes(p.getSeckillingTime()) > System.currentTimeMillis()
+						){
+					result.put("joinSeckilling",p.getJoinSeckilling());
+					result.put("seckillingPrice",AmountUtil.f2y(p.getSeckillingPrice())); 
+					String secKillingTime = DateUtil.format(getSecKillingEndTimes(p.getSeckillingTime()), "HH:mm");
+					result.put("secKillingTime",secKillingTime); 
+				} 
+				
 				result.put("productNowPrice",AmountUtil.f2y(p.getProductNowAmount()));
 				if(p.getJoinTogether()==1){
 					result.put("productTogetherPrice",AmountUtil.f2y(p.getProductTogetherAmount()));
@@ -909,6 +948,7 @@ public class Shop extends Controller{
 				result.put("createTime", DateUtil.format(p.getCreateTime()));
 				result.put("pv", p.getPv());
 				result.put("deal", p.getDeal());
+				result.put("dealPercent",p.getDeal()/p.getStore());
 				result.put("isHot", p.getIsHot()==1);
 				result.put("isSale", p.getIsSale()==1);
 
@@ -956,6 +996,26 @@ public class Shop extends Controller{
 			result.put("productOriginPrice",AmountUtil.f2y(p.getProductOriginAmount()));
 			result.put("productNowPrice",AmountUtil.f2y(p.getProductNowAmount()));
 			
+			if(p.getJoinSeckilling()!=null && p.getJoinSeckilling()==1 && 
+					getSecKillingEndTimes(p.getSeckillingTime()) > System.currentTimeMillis()
+					){
+				result.put("joinSeckilling",p.getJoinSeckilling());
+				result.put("seckillingPrice",AmountUtil.f2y(p.getSeckillingPrice())); 
+				
+				String secKillingTime = DateUtil.format(getSecKillingEndTimes(p.getSeckillingTime()) , "HH:mm");
+				result.put("secKillingTime",secKillingTime);
+			}
+			
+			//正在秒杀活动
+			if(p.getJoinSeckilling()!=null && p.getJoinSeckilling()==1 && 
+					getSecKillingEndTimes(p.getSeckillingTime()) > System.currentTimeMillis()
+					){
+				result.put("joinSeckilling",p.getJoinSeckilling());
+				result.put("seckillingPrice",AmountUtil.f2y(p.getSeckillingPrice())); 
+				String secKillingTime = DateUtil.format(getSecKillingEndTimes(p.getSeckillingTime()), "HH:mm");
+				result.put("secKillingTime",secKillingTime); 
+			} 
+			
 			if(p.getJoinTogether()!=null && p.getJoinTogether() == 1){
 				result.put("productTogetherPrice",AmountUtil.f2y(p.getProductTogetherAmount()));
 				result.put("joinTogether", p.getJoinTogether());
@@ -964,7 +1024,7 @@ public class Shop extends Controller{
 			}
 			result.put("platformChecked", p.getPlatformChecked());
 			//截图
-			List<ShopProductImagesDDL> ssimages = ShopProductImageService.listImages(productId, ShopProductImageService.SCREENSHOT_TYPE, 1, 5);
+			List<ShopProductImagesDDL> ssimages = ShopProductImageService.listImages(productId, ShopProductImageService.SCREENSHOT_TYPE, 1, 50);
 			if(ssimages!=null && ssimages.size()>0){
 				List<String> screenshots = new ArrayList<String>();
 				for( ShopProductImagesDDL img : ssimages ){
@@ -973,7 +1033,7 @@ public class Shop extends Controller{
 				result.put("screenshots", screenshots);
 			}
 			//详情图片
-			List<ShopProductImagesDDL> detailimages = ShopProductImageService.listImages(productId, ShopProductImageService.DETAIL_TYPE, 1, 10);
+			List<ShopProductImagesDDL> detailimages = ShopProductImageService.listImages(productId, ShopProductImageService.DETAIL_TYPE, 1, 100);
 			if(detailimages!=null && detailimages.size()>0){
 				List<String> detailImages = new ArrayList<String>();
 				for( ShopProductImagesDDL img : detailimages ){
@@ -983,7 +1043,7 @@ public class Shop extends Controller{
 			}
 			
 			//详情图片
-			List<ShopProductImagesDDL> showimages = ShopProductImageService.listImages(productId, ShopProductImageService.BUYER_SHOW, 1, 10);
+			List<ShopProductImagesDDL> showimages = ShopProductImageService.listImages(productId, ShopProductImageService.BUYER_SHOW, 1, 100);
 			if(showimages!=null && showimages.size()>0){
 				List<String> showImages = new ArrayList<String>();
 				for( ShopProductImagesDDL img : showimages ){
@@ -1883,6 +1943,16 @@ public class Shop extends Controller{
 		}
 	}
 	
+	private static long getSecKillingEndTimes(int time){
+		//设置秒杀结束时间
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.HOUR_OF_DAY, time);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.add(Calendar.HOUR_OF_DAY,2);
+		return c.getTimeInMillis();
+	}
+	
 	public static void listMyCar(String session,int page,int pageSize){
 		try{ 
 			UsersDDL user = UserService.findBySession(session);
@@ -1915,9 +1985,27 @@ public class Shop extends Controller{
 				one.put("buyNum", car.getBuyNum());
 				one.put("status",car.getStatus());
 				one.put("groupName", group.getGroupName());
-				one.put("totalAmount", AmountUtil.f2y(group.getGroupPrice()*car.getBuyNum()));//实时
-				one.put("singPrice", AmountUtil.f2y(group.getGroupPrice()));//实时
+				
 				one.put("checked", true);
+				
+				//正在秒杀活动
+				if(product.getJoinSeckilling()!=null && product.getJoinSeckilling()==1 && 
+						getSecKillingEndTimes(product.getSeckillingTime()) > System.currentTimeMillis()
+						){
+					one.put("joinSeckilling",product.getJoinSeckilling());
+					one.put("seckillingPrice",AmountUtil.f2y(product.getSeckillingPrice()));
+					
+					one.put("totalAmount", AmountUtil.f2y(product.getSeckillingPrice()*car.getBuyNum()));//实时
+					one.put("singPrice", AmountUtil.f2y(product.getSeckillingPrice()));//实时 
+					
+					String secKillingTime = DateUtil.format(getSecKillingEndTimes(product.getSeckillingTime()), "HH:mm");
+					one.put("secKillingTime",secKillingTime); 
+					
+				}else{
+					one.put("totalAmount", AmountUtil.f2y(group.getGroupPrice()*car.getBuyNum()));//实时
+					one.put("singPrice", AmountUtil.f2y(group.getGroupPrice()));//实时
+				}
+				
 				sumAmount+=group.getGroupPrice()*car.getBuyNum();
 				list.add(one);
 			}

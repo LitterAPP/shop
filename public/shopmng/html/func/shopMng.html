@@ -44,6 +44,18 @@
         <div class="setting-title">(点击头像修改100*100)</div>
     </div>
 
+    <div id="contact" class="card">
+        <div style="display: block;">
+            <div class="setting-title" class="setting-title">设置店铺客服联系方式，用户在订单详情页面可见</div>
+        </div>
+        <div>
+            <input v-cloak v-model="contactMobile" value="{{contactMobile}}"  placeholder="请输入店铺客服手机号码"/>
+        </div>
+        <div>
+            <input v-cloak v-model="contactWx" value="{{contactWx}}"  placeholder="请输入店铺客服微信号码"/>
+        </div>
+    </div>
+
     <div id="shopWellcome" class="card">
         <div style="display: block;">
             <div class="setting-title">设置店铺欢迎语</div>
@@ -82,7 +94,7 @@
 
     <div id="shopFirstNav" class="card">
         <div  style="display: block;">
-            <div class="setting-title">设置店铺第一部分导航(60*30)</div>
+            <div class="setting-title">设置店铺底部导航(60*30)</div>
         </div>
         <div style="display: block;border:1px solid #fff;" v-for="(item,index) in firstNavList">
             <div>
@@ -201,7 +213,7 @@
 
     <div id="shopThirdNav"  class="card">
         <div  style="display: block;">
-            <div class="setting-title">设置店铺第三部分导航(40*40)</div>
+            <div class="setting-title">设置分类导航(40*40)</div>
         </div>
         <div style="display: block;border:1px solid #fff;" v-for="(item,index) in thirdNavList">
             <div>
@@ -241,14 +253,12 @@
 
     <div id="shopFourthNav"  class="card">
         <div  style="display: block;">
-            <div class="setting-title">设置店铺第四部分导航(320*120)</div>
+            <div class="setting-title">设置店铺图片导航(320*120)</div>
         </div>
         <div style="display: block;border:1px solid #fff;" v-for="(item,index) in fourthNavList">
             <div>
                 <select v-model="item.linkType">
-                    <option value="0" disabled selected >导航类型</option>
-                    <option value="1" >文字</option>
-                    <option value="2" >图片</option>
+                    <option value="2">图片</option>
                 </select>
             </div>
             <div v-if="item.linkType==1">
@@ -281,7 +291,7 @@
 
     <div id="shopFiveNav"  class="card">
         <div  style="display: block;">
-            <div class="setting-title">设置店铺第五部分导航(60*30)</div>
+            <div class="setting-title">设置店铺底部导航(60*30)</div>
         </div>
         <div style="display: block;border:1px solid #fff;" v-for="(item,index) in fiveNavList">
             <div>
@@ -316,6 +326,70 @@
         <div  style="display: block;">
             <div @click="addNavItem" data-flag="6" style="font-size:13px;color:green;cursor: pointer;">增加</div>
         </div>
+    </div>
+
+    <div id="shopWrapNav"  class="card">
+        <div  style="display: block;">
+            <div class="setting-title">设置店铺高级导航</div>
+        </div>
+        <div style="display: block;border:1px solid #ff8000;" v-for="(item7,index7) in shopNavWrapList">
+            <div  style="display: block;border:1px solid #fff;">
+                <div>
+                    <select v-model="item7.layout">
+                        <option value="0" disabled selected >选择布局</option>
+                        <option value="1">一行一列</option>
+                        <option value="2" >一行两列</option>
+                    </select>
+                </div>
+                <div>
+                    <input v-model="item7.title" type="text" placeholder="导航标题" value="{{item7.title}}"  style="width: 100px;" v-bind:style="{color:item7.color,fontSize:item7.fontSize+'px'}" />
+                </div>
+                <div>
+                    <input v-model="item7.color"   type="text" placeholder="颜色(#000000)" value="{{item7.color}}"  style="width: 80px;" />
+                </div>
+                <div>
+                    <input v-model="item7.fontSize" type="text" placeholder="字体大小" value="{{item7.fontSize}}"  style="width: 80px;" />
+                </div>
+                <div>
+                    <select v-model="item7.position">
+                        <option value="left">居左显示</option>
+                        <option value="center" >居中显示</option>
+                        <option value="right" >居右显示</option>
+                    </select>
+                </div>
+                <div @click="delNavItem" data-flag="7" v-bind:data-idx="index7" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+            </div>
+            <div style="display: block;border:1px solid #fff;" v-for="(item,index) in item7.list">
+                <div v-if="item7.layout==1" class="" style="width: 320px;">
+                    <img data-flag="8" v-bind:data-pidx="index7"  v-bind:data-idx="index" v-if="item.img" @click="navImgClick" v-bind:src="item.img"/>
+                    <img data-flag="8" v-bind:data-pidx="index7"  v-bind:data-idx="index" v-else @click="navImgClick" src="../../images/default-img.png"/>
+                    <input data-flag="8" v-bind:data-pidx="index7"   v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="navImgChanged" type="file" id="wrapNavInput" style="display: none;"><br/>
+                </div>
+                <div v-if="item7.layout==2" class="" style="width: 150px;">
+                    <img data-flag="8" v-bind:data-pidx="index7"  v-bind:data-idx="index" v-if="item.img" @click="navImgClick" v-bind:src="item.img"/>
+                    <img data-flag="8" v-bind:data-pidx="index7"  v-bind:data-idx="index" v-else @click="navImgClick" src="../../images/default-img.png"/>
+                    <input data-flag="8" v-bind:data-pidx="index7"   v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="navImgChanged" type="file" id="wrapNavInput" style="display: none;"><br/>
+                </div>
+                <div>
+                    <select v-model="item.type">
+                        <option value="0" disabled selected >链接类型</option>
+                        <option value="1" >小程序链接</option>
+                        <option value="2" >H5链接</option>
+                    </select>
+                </div>
+                <div>
+                    <input v-model="item.url" type="text" placeholder="链接" value="{{item.url}}"  style="width: 200px;" />
+                </div>
+                <div @click="delNavItem" v-bind:data-pidx="index7" data-flag="8" v-bind:data-idx="index" style="font-size:13px;color:#CCCCCC;cursor: pointer;">删除</div>
+             </div>
+            <div  style="display: block;">
+                <div @click="addNavItem" data-flag="8" v-bind:data-pidx="index7" style="font-size:13px;color:orangered;cursor: pointer;">增加</div>
+            </div>
+        </div>
+        <div  style="display: block;">
+            <div @click="addNavItem" data-flag="7" style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        </div>
+
     </div>
 
     <div  style="position: fixed;bottom: 10px;left:50%;margin-left: -63px;">
@@ -360,7 +434,7 @@
                     </div>
                 </a>
 
-                <a href="#shopSecondNav">
+                <a  v-if='shopSecondNav&&shopSecondNav.length>0' href="#shopSecondNav">
                     <div  style="height: 35px;line-height: 35px; width: 300px;text-align: center;  background: #fff;">
                         <div style="display:inline-block;text-align: left;font-size: 13px;color: #515151; width: 50px; border-left: 1px solid #ccc;" v-for="item in secondNavList">
                             <span v-if="item.linkType==1" style="margin-left:5px;">
@@ -371,8 +445,8 @@
                     </div>
                 </a>
 
-                <a href="#shopSwiperNav">
-                    <div class="swiper-container">
+                <a v-if='swiperList&&swiperList.length>0' href="#shopSwiperNav">
+                    <div  class="swiper-container">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide" v-for="item in swiperList">
                                 <img  v-bind:src="item.img" style="width: 300px;">
@@ -383,7 +457,7 @@
                     </div>
                 </a>
 
-                <a href="#shopThirdNav">
+                <a  v-if='thirdNavList&&thirdNavList.length>0' href="#shopThirdNav">
                     <div  style="height: 60px;line-height: 60px; width: 300px;text-align: center;  background: #fff;">
                         <div style="display:inline-block;text-align: left;font-size: 13px;color: #515151; width: 50px;"
                              v-for="item in thirdNavList">
@@ -395,14 +469,39 @@
                     </div>
                 </a>
 
-                <a href="#shopFourthNav">
+                <a v-if='fourthNavList&&fourthNavList.length>0' href="#shopFourthNav">
                     <div  style="width: 300px;text-align: center;  background: #fff;">
-                        <div style="display:block;text-align: left;font-size: 13px;color: #515151; width: 50px;"
+                        <div style="display:block;text-align: left;font-size: 13px;color: #515151;"
                              v-for="item in fourthNavList">
                             <span v-if="item.linkType==1" style="margin-left:5px;">
                                 {{item.text}}
                             </span>
-                            <img  v-if="item.linkType==2"  style="display:inline-block;height: 170px;width: 300px;" v-bind:src="item.img">
+                            <img  v-if="item.linkType==2"  style="display:inline-block;width: 300px;" v-bind:src="item.img">
+                        </div>
+                    </div>
+                </a>
+
+
+                <a v-if='shopNavWrapList&&shopNavWrapList.length>0'  href="#shopWrapNav">
+                    <div v-for="item in shopNavWrapList">
+                        <div style="background: #FFFFFF;padding: 10px;" v-bind:style="{textAlign: item.position}">
+                            <span v-bind:style="{fontSize:item.fontSize+'px',color:item.color}">{{item.title}}</span>
+                        </div>
+                        <div v-if="item.layout==1">
+                            <div  v-for="item1 in item.list">
+                                <img  style="width: 300px;" v-bind:src="item1.img">
+                            </div>
+                        </div>
+
+                        <div v-if="item.layout==2">
+                            <template  v-for="(item1,index) in item.list">
+                                <img  v-if="index%2==1"   style="padding-left:3px;width:138px;display: inline-block;" v-bind:src="item1.img">
+                                <img  v-if="index%2==0"   style="padding-right:2px;width:138px;display: inline-block;" v-bind:src="item1.img">
+                            </template>
+                            <!--
+                            <img v-if="index%2==1" style="margin-top:5px;float:right;width:138px;display: inline-block;" v-bind:src="item1.img">
+                            <img v-if="index%2==0" style="margin-top:5px;float:left;width:138px;display: inline-block;" v-bind:src="item1.img">
+                            -->
                         </div>
                     </div>
                 </a>
@@ -418,6 +517,7 @@
                     </div>
                 </div>
             </a>
+
         </div>
         <div class="screen-footer">
 

@@ -58,7 +58,10 @@ var addProduct = new Vue({
         isSale:false,
         isHot:false,
         mask:false,
-        tags:[]
+        tags:[],
+        seckillingTime:0,
+        seckillingPrice:0,
+        joinSeckilling:0,
     },
     methods:{
         listCategroy: function () {
@@ -126,7 +129,10 @@ var addProduct = new Vue({
                 text_details:this.text_details,
                 pic_details:this.pic_details,
                 groups:this.groups,
-                join_together:this.join_together
+                join_together:this.join_together,
+                seckillingTime:this.seckillingTime,
+                seckillingPrice:this.seckillingPrice,
+                joinSeckilling:this.joinSeckilling
             }
             //检查POST的数据是否完整
             if(!postData.title || postData.title.length==0){
@@ -147,6 +153,13 @@ var addProduct = new Vue({
                 setTimeout(function(){that.mask=false},1000)
                 return
             }
+
+            //秒杀活动参数校验
+            if(postData.joinSeckilling==1 && postData.seckillingPrice==0 ){
+                toast(that,'秒杀活动价格为0，请输入大于0的数')
+                return
+            }
+
             if(!postData.banner_pic || !postData.banner_pic.osskey || postData.banner_pic.osskey.length==0){
                 that.mask = true
                 that.maskText='必填：商品的ICON必填'
@@ -601,6 +614,9 @@ var addProduct = new Vue({
                         that.contact_mobile = result.data.contact_mobile
                         that.contact_wx = result.data.contact_wx
                         that.groups=result.data.groups
+                        that.joinSeckilling=result.data.joinSeckilling
+                        that.seckillingTime=result.data.seckillingTime
+                        that.seckillingPrice=result.data.seckillingPrice
                         console.log('加载商品成功',productId,result.data,that.together_info)
                     }else{
                         console.log('加载商品失败',productId)

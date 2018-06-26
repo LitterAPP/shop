@@ -28,6 +28,16 @@
                 </option>
             </select>
         </div>
+        <div>秒杀：
+            <select v-model="condition.joinSeckillings.selected">
+                <option  value="-1">请选择</option>
+                <option v-for="option in condition.joinSeckillings.options" v-bind:value="option.value">
+                    {{ option.text }}
+                </option>
+            </select>
+        </div>
+
+
         <div>一级分类：
             <select v-on:change="pCategoryChanged" v-model="condition.pCategory.selected">
                 <option  value="">请选择</option>
@@ -53,6 +63,7 @@
             <button class="button1"  data-flag="1" @click="operator">下架/下架</button>
             <button class="button1"  data-flag="2" @click="operator">标为热门/非热门</button>
             <button class="button1"  data-flag="3" @click="operator">标为打折/非打折</button>
+            <button class="button1"  data-flag="4" @click="operator">关闭秒杀活动</button>
             <span>(操作总是根据当前商品的状态取反)</span>
         </div>
     </div>
@@ -73,6 +84,9 @@
             <th width="8%">交易量</th>
             <th width="8%">是否热门</th>
             <th width="8%">是否打折</th>
+            <th width="8%">参加秒杀</th>
+            <th width="8%">秒杀价格</th>
+            <th width="8%">秒杀时段</th>
             <th width="8%">创建时间</th>
             <th width="8%">修改时间</th>
             <th width="8%">编辑</th>
@@ -102,6 +116,12 @@
 
             <td v-if="item.isSale" class="table-cell">是</td>
             <td v-else  class="table-cell">否</td>
+
+            <td v-if="item.joinSeckilling==1" class="table-cell">是</td>
+            <td v-else  class="table-cell">否</td>
+            <td>{{item.seckillingPrice}}</td>
+            <td>{{item.seckillingTime}}</td>
+
             <td>{{item.createTime}}</td>
             <td>{{item.updateTime}}</td>
 

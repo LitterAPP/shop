@@ -137,5 +137,8 @@
   </config>  
   <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopRefundOrderDDL"> 
     <map client="shop_db"/> 
+  </config>  
+  <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopCarDDL"> 
+    <map client="shop_db"/> 
   </config> 
 </configs>

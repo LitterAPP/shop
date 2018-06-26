@@ -47,6 +47,11 @@ var productMng = new Vue({
                     {text:'待上架',value:'0'},{text:'上架中',value:'1'},  {text:'下架中',value:'2'},  {text:'禁止',value:'3'}
                 ]
             },
+            joinSeckillings:{
+                selected:'-1',
+                options:[
+                    {text:'未参加',value:'0'},{text:'参加',value:'1'}]
+            },
             pCategory:{
                 /*
                 selected:'0',
@@ -136,6 +141,7 @@ var productMng = new Vue({
             params.pCategoryId = pCategoryId||''
             params.subCategoryId = subCategoryId||''
             params.status = this.condition.status.selected||''
+            params.joinSeckilling=this.condition.joinSeckillings.selected||'-1'
             return params
         },
         search:function() {
@@ -143,7 +149,7 @@ var productMng = new Vue({
             var params = this.getCondition()
            // console.log(this.condition,params)
             that.page=1
-            this.listProduct(params.productId,params.keyword,params.pCategoryId,params.subCategoryId,0,0,params.status,0,that.page,pageSize,false)
+            this.listProduct(params.productId,params.keyword,params.pCategoryId,params.subCategoryId,0,0,params.status,0,params.joinSeckilling,that.page,pageSize,false)
         },
         more:function(event){
             var that = this
@@ -164,9 +170,9 @@ var productMng = new Vue({
 
 
             var params = this.getCondition()
-            this.listProduct(params.productId,params.keyword,params.pCategory,params.subCategory,0,0,params.status,0,that.page,pageSize,false)
+            this.listProduct(params.productId,params.keyword,params.pCategory,params.subCategory,0,0,params.status,0,params.joinSeckilling,that.page,pageSize,false)
         },
-        listProduct: function (productId,keyword,pCategoryId,subCategoryId,isSale,isHot,status,orderBy,page,pageSize,append) {
+        listProduct: function (productId,keyword,pCategoryId,subCategoryId,isSale,isHot,status,orderBy,joinSeckilling,page,pageSize,append) {
             var that = this
             that.mask = true
             that.maskText='请稍后,商品列表加载中...'
@@ -181,6 +187,7 @@ var productMng = new Vue({
                     subCategoryId:subCategoryId,
                     isSale:isSale,
                     isHot:isHot,
+                    joinSeckilling:joinSeckilling,
                     status:status,
                     orderBy:1,
                     page:page,
@@ -238,7 +245,7 @@ var productMng = new Vue({
         console.log('created')
         //检测登录态
         var that = this
-        that.listProduct('','','','',false,false,1,0,1,pageSize,false)
+        that.listProduct('','','','',false,false,1,0,-1,1,pageSize,false)
         common.listCategroy(this,function(result){
             that.condition.pCategory = result.data
         })

@@ -15,11 +15,11 @@
 </head>
 <body>
 <div id="orderMng" style="margin-bottom: 50px;">
-    <div v-if="mask" class="mask">
-        <div v-cloak>
-            {{maskText}}
+        <div v-if="mask" class="mask">
+            <div v-cloak>
+                {{maskText}}
+            </div>
         </div>
-    </div>
 
     <div v-if="showMemo" class="prompt">
         <div class="prompt-1" style="height:500px;margin-top:-250px;overflow-y: scroll;">
@@ -49,6 +49,10 @@
             至<input id="endTimePicker"  type="text" style="width: 150px;"   readonly  placeholder="结束时间"/>
         </div>
 
+        <div>来源场景：<input v-model="condition.referScene"  type="text" placeholder="小程序进入场景值"/></div>
+        <div>来源APPID：<input v-model="condition.appid"  type="text" placeholder="进入小程序的appid"/></div>
+        <div>来源渠道：<input v-model="condition.channel"  type="text" placeholder="进入小程序的渠道标识"/></div>
+
 
         <div>
             <button class="button1" @click="search">查询</button>
@@ -60,6 +64,7 @@
         <thead>
             <th width="20%">订单ID</th>
             <th width="8%">状态</th>
+            <th width="8%">订单方式</th>
             <th width="5%">是否团购</th>
             <th width="10%">团购ID</th>
             <th width="8%">团购价</th>
@@ -98,6 +103,10 @@
             <td  v-else-if="item.orderStatus==8" class="table-cell">已签收</td>
             <td  v-else-if="item.orderStatus==9" class="table-cell">已确认收货</td>
             <td  v-else  class="table-cell">未知状态</td>
+
+            <td  v-if="item.orderType==0" class="table-cell">直接购买下单</td>
+            <td  v-if="item.orderType==1" class="table-cell">购物车下单</td>
+
             <td v-if="item.togetherId" class="table-cell">是</td>
             <td v-else class="table-cell">是</td>
             <td>{{item.togetherId}}</td>

@@ -45,6 +45,39 @@
 
     <div class="card">
         <div style="display: block;">
+            <div style="font-size:10px;color:#888;">秒杀活动（每间隔2小时一秒杀活动，每场活动时长均为2小时）</div>
+        </div>
+        <div>
+            秒杀开关:<select v-model="joinSeckilling" style="color:#6495ED;">
+            <option value="0" selected>退出秒杀活动</option>
+            <option value="1"  >参加秒杀活动</option>
+            </select>
+        </div>
+        <div>
+            秒杀价:<input style="width: 80px;" v-model="seckillingPrice" value="{{seckillingPrice}}"  placeholder="秒杀价格"/>
+        </div>
+        <div>
+            秒杀时段: <select v-model="seckillingTime">
+            <option value="0" selected>0时段</option>
+            <option value="2"  >2时段</option>
+            <option value="4"  >4时段</option>
+            <option value="6"  >6时段</option>
+            <option value="8"  >8时段</option>
+            <option value="10"  >10时段</option>
+            <option value="12" >12时段</option>
+            <option value="14" >14时段</option>
+            <option value="16"  >16时段</option>
+            <option value="18" >18时段</option>
+            <option value="20" >20时段</option>
+            <option value="22">22时段</option>
+            <option value="23"  >23时段</option>
+
+        </select>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display: block;">
             <div style="font-size:10px;color:#888;">商品Icon(100*100)</div>
         </div>
         <div class="productBanner">

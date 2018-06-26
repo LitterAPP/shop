@@ -673,7 +673,8 @@ public class ShopMng extends Controller{
 	 * @param hot
 	 * @param orderBy 1=时间降序 2=销量降序 3=价格降序 4=价格升序 5=综合排序
 	 */
-	public static void listProduct(String productId,String keyword,String pCategoryId,String subCategoryId,boolean isSale,boolean isHot,int status,int orderBy,int page,int pageSize){
+	public static void listProduct(String productId,String keyword,String pCategoryId,String subCategoryId,
+			boolean isSale,boolean isHot,int status,int orderBy,int joinSeckilling,int page,int pageSize){
 		try{
 			List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
 			Map<String,Object> response = new HashMap<String,Object>();
@@ -688,7 +689,7 @@ public class ShopMng extends Controller{
 				renderJSON(RtnUtil.returnFail("未登录"));
 			}
 			
-			int total = ShopProductService.countProduct(session.getShopId(),productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status);
+			int total = ShopProductService.countProduct(session.getShopId(),productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status,joinSeckilling,-1);
 			response.put("total", total);
 			response.put("pageTotal", Math.ceil(total/(double)pageSize));
 			 
@@ -696,7 +697,7 @@ public class ShopMng extends Controller{
 				response.put("list", mapList);
 				renderJSON(RtnUtil.returnSuccess("OK",response));
 			}			
-			List<ShopProductDDL> list = ShopProductService.listProduct(session.getShopId(),productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status,orderBy, page<=0?1:page, pageSize<=0?10:pageSize);
+			List<ShopProductDDL> list = ShopProductService.listProduct(session.getShopId(),productId,keyword, pCategoryId, subCategoryId, isSale?1:0, isHot?1:0, status,orderBy, joinSeckilling,-1,page<=0?1:page, pageSize<=0?10:pageSize);
 			
 			
 			for(ShopProductDDL p : list){
@@ -725,6 +726,12 @@ public class ShopMng extends Controller{
 				result.put("deal", p.getDeal());
 				result.put("isHot", p.getIsHot()==1);
 				result.put("isSale", p.getIsSale()==1);
+				
+				if(p.getJoinSeckilling()!=null && p.getJoinSeckilling()==1){
+					result.put("seckillingTime",p.getSeckillingTime());
+					result.put("seckillingPrice", AmountUtil.f2y(p.getSeckillingPrice()));
+				}
+				result.put("joinSeckilling", p.getJoinSeckilling()==null?0:p.getJoinSeckilling());
 				
 				List<ShopTogetherDDL> togethers = ShopTogetherService.listByProductId(p.getProductId(), 1, 2);
 				if( togethers != null && togethers.size() == 2){
@@ -907,6 +914,17 @@ public class ShopMng extends Controller{
 			dto.productType = product.getProductType();
 			dto.store = product.getStore();
 			dto.title = product.getProductName();
+			
+			//秒杀
+			if(product.getJoinSeckilling() !=null){
+				dto.joinSeckilling =product.getJoinSeckilling(); 
+			}
+			if(product.getSeckillingTime()!=null){
+				dto.seckillingTime = product.getSeckillingTime();
+			}
+			if(product.getSeckillingPrice()!=null){
+				dto.seckillingPrice = String.valueOf(AmountUtil.f2y(product.getSeckillingPrice()));
+			}
 			//处理团信息
 			if(dto.join_together ){
 				TogetherInfo tinfo = new ProductInfoDto().new TogetherInfo();
@@ -1040,6 +1058,11 @@ public class ShopMng extends Controller{
 						product.setIsSale(1);
 					}
 					ShopProductService.updateSale(product);					
+				}
+				
+				else if(flag==4){ 
+					product.setJoinSeckilling(0);
+					ShopProductService.updateSeckilling(product);					
 				}
 			}
 			

@@ -14,7 +14,7 @@
  * @type {Vue}
  */
 var shopId = 1
-var flag,index
+var flag,index,pidx
 var shopMng = new Vue({
     el: '#shopMng',
     data: {
@@ -28,6 +28,8 @@ var shopMng = new Vue({
         activityText:'',
         activityBg:'',
         activityBgKey:'',
+        contactMobile:'',
+        contactWx:'',
         firstNavList:[
 
         ],
@@ -40,6 +42,11 @@ var shopMng = new Vue({
         thirdNavList:[],
         fourthNavList:[],
         fiveNavList:[],
+        /**
+         * 高级配置
+         * {layout:1,sort:2,title:'',color:'',fontSize:'',list:[{img:'',imgKey:''}]}
+         */
+        shopNavWrapList:[],
         mask:true,
         maskText:'请稍后...'
     },
@@ -93,6 +100,7 @@ var shopMng = new Vue({
                             that.thirdNavList = result.data.config.thirdNavList
                             that.fourthNavList = result.data.config.fourthNavList
                             that.fiveNavList = result.data.config.fiveNavList
+                            that.shopNavWrapList = result.data.config.shopNavWrapList
                             that.shopQRCode = result.data.shopQRCode
                         }else{
 
@@ -104,6 +112,7 @@ var shopMng = new Vue({
         },
         delNavItem:function(event){
             var flag = event.target.dataset.flag
+
             var idx = event.target.dataset.idx
             if(flag == 1 && idx>=0 && idx < this.firstNavList.length){
                 this.firstNavList.splice(idx,1)
@@ -132,9 +141,21 @@ var shopMng = new Vue({
                 this.fiveNavList.splice(idx,1)
                 return
             }
+
+            if(flag==7 && idx>=0 && idx < this.shopNavWrapList.length){
+                this.shopNavWrapList.splice(idx,1)
+                return
+            }
+
+            if(flag==8 && idx>=0 && idx < this.shopNavWrapList.length){
+                var pidx = event.target.dataset.pidx
+                this.shopNavWrapList[pidx].list.splice(idx,1)
+                return
+            }
         },
         addNavItem:function(event){
            var flag = event.target.dataset.flag
+            console.log('addNavItem',flag)
             if(flag == 1){
                 this.firstNavList.push({ linkType:0,type:0})
               //  Vue.set(this.firstNavList,this.firstNavList.length-1 , this.firstNavList[this.firstNavList.length-1]);
@@ -158,8 +179,8 @@ var shopMng = new Vue({
             }
 
             if(flag == 5){
-                this.fourthNavList.push({ linkType:0,type:0})
-                //    Vue.set(this.swiperList,this.swiperList.length-1 , this.swiperList[this.swiperList.length-1]);
+                this.fourthNavList.push({ linkType:2,type:0})
+               //set(this.swiperList,this.swiperList.length-1 , this.swiperList[this.swiperList.length-1]);
                 return
             }
 
@@ -168,7 +189,20 @@ var shopMng = new Vue({
                 //    Vue.set(this.swiperList,this.swiperList.length-1 , this.swiperList[this.swiperList.length-1]);
                 return
             }
+            if(flag == 7){
+                this.shopNavWrapList.push({title:'猜您喜欢',position:'left', layout:1,fontSize:13,color:'#000000',list:[{linkType:0,type:0}]})
+                //    Vue.set(this.swiperList,this.swiperList.length-1 , this.swiperList[this.swiperList.length-1]);
+                return
+            }
 
+            if(flag == 8){
+                var pidx = event.target.dataset.pidx
+                console.log('---->',pidx,this.shopNavWrapList[pidx].list)
+                this.shopNavWrapList[pidx].list.push({ linkType:0,type:0})
+               // this.shopNavWrapList.push({title:'猜您喜欢', layout:1,fontSize:13,color:'#000000',list:[{linkType:0,type:0}]})
+                //    Vue.set(this.swiperList,this.swiperList.length-1 , this.swiperList[this.swiperList.length-1]);
+                return
+            }
 
         },
         avatarClick:function(){
@@ -183,6 +217,8 @@ var shopMng = new Vue({
         navImgClick:function(event){
             index = event.target.dataset.idx
             flag = event.target.dataset.flag
+            pidx = event.target.dataset.pidx
+            console.log('navImgClick-->',index,pidx)
             console.log('navImgClick','flag',flag,'index',index)
             if(flag==1){
                 $("#firstNavImageInput").click()
@@ -205,6 +241,10 @@ var shopMng = new Vue({
 
             if(flag==6){
                 $("#fiveImageInput").click()
+            }
+
+            if(flag==8){
+                $("#wrapNavInput").click()
             }
         },
         navImgChanged:function(){
@@ -234,6 +274,10 @@ var shopMng = new Vue({
 
             if(flag==6){
                 file = $("#fiveImageInput")[0].files[0];
+            }
+
+            if(flag==8){
+                file = $("#wrapNavInput")[0].files[0];
             }
             var imgUrlBase64
             if (file) {
@@ -292,6 +336,14 @@ var shopMng = new Vue({
                                             that.fiveNavList[index].img = reader.result
                                             that.fiveNavList[index].imgkey = result.data
                                             Vue.set(that.fiveNavList,index , that.fiveNavList[index]);
+                                        }
+
+                                        if(flag==8){
+                                            console.log('----------->',index,pidx,that.shopNavWrapList[pidx])
+                                            that.shopNavWrapList[pidx].list[index].img = reader.result
+                                            that.shopNavWrapList[pidx].list[index].imgkey = result.data
+                                            Vue.set(that.shopNavWrapList,pidx , that.shopNavWrapList[pidx]);
+                                           // Vue.set(that.shopNavWrapList[pidx].list,index , that.shopNavWrapList[pidx].list[index]);
                                         }
                                     }else{
                                         alert(result.msg)
@@ -434,11 +486,14 @@ var shopMng = new Vue({
                 secondNavList:this.secondNavList || [],
               //  shopAvatar:this.shopAvatar,
                 shopAvatarKey:this.shopAvatarKey,
+                shopNavWrapList:this.shopNavWrapList||[],
               //  shopBanner:this.shopBanner,
                 shopBannerKey:this.shopBannerKey,
                 activityBgKey:this.activityBgKey,
                 activityText:this.activityText,
                 shopName:this.shopName,
+                contactWx:this.contactWx||'',
+                contactMobile:this.contactMobile||'',
                 swiperList:this.swiperList || [],
                 thirdNavList:this.thirdNavList || [],
                 wellcomeText:this.wellcomeText
@@ -462,7 +517,17 @@ var shopMng = new Vue({
             for(var i in postData.swiperList){
                 postData.swiperList[i].img=''
             }
-           showLoading(that,'请稍候,商品配置保存中...')
+           // console.log('save shop config-->11',postData)
+            for(var i in postData.shopNavWrapList){
+                var tmp =  postData.shopNavWrapList[i].list
+                //console.log('-->tmp',tmp)
+                for(var j in tmp){
+                  //  console.log('-->tmp[j]',tmp[j])
+                    tmp[j].img=''
+                }
+            }
+            console.log('save shop config-->',postData)
+           showLoading(that,'请稍候,商铺配置保存中...')
             $.ajax(
                 {
                     // url:"http://localhost:9020/Upload/uploadImageOfBase64",

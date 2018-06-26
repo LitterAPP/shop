@@ -11,11 +11,12 @@ import controllers.dto.ProductInfoDto;
 import controllers.dto.ProductInfoDto.Group;
 import controllers.dto.ProductInfoDto.Image;
 import controllers.dto.ProductInfoDto.TextDetail;
+import eventbus.EventBusCenter;
+import eventbus.event.params.ShopIndexProChangedParams;
 import jws.Logger;
 import jws.dal.Dal;
 import jws.dal.sqlbuilder.Condition;
 import jws.dal.sqlbuilder.Sort;
-import modules.shop.ddl.UsersDDL;
 import modules.shop.ddl.ShopProductAttrDDL;
 import modules.shop.ddl.ShopProductAttrRelDDL;
 import modules.shop.ddl.ShopProductCategoryChildDDL;
@@ -24,6 +25,7 @@ import modules.shop.ddl.ShopProductCategoryRelDDL;
 import modules.shop.ddl.ShopProductDDL;
 import modules.shop.ddl.ShopProductGroupDDL;
 import modules.shop.ddl.ShopProductImagesDDL;
+import modules.shop.ddl.UsersDDL;
 import util.AmountUtil;
 import util.IDUtil;
 
@@ -93,6 +95,11 @@ public class ShopProductService {
 	public static boolean updateSale(ShopProductDDL product){
 		if(product==null)return false;
 		return Dal.update(product, "ShopProductDDL.isSale,ShopProductDDL.updateTime", new Condition("ShopProductDDL.id","=",product.getId()))>0;
+	}
+	
+	public static boolean updateSeckilling(ShopProductDDL product){
+		if(product==null)return false;
+		return Dal.update(product, "ShopProductDDL.joinSeckilling,ShopProductDDL.updateTime", new Condition("ShopProductDDL.id","=",product.getId()))>0;
 	}
 	
 	public static List<ShopProductDDL> listShopIndexProduct(int page,int pageSize){
@@ -288,6 +295,11 @@ public class ShopProductService {
 			p.setUpdateTime(System.currentTimeMillis()); 
 			//拼团
 			p.setJoinTogether(product.join_together?1:0);
+			//秒杀活动
+			p.setJoinSeckilling(product.joinSeckilling);
+			p.setSeckillingPrice(AmountUtil.y2f(product.seckillingPrice));
+			p.setSeckillingTime(product.seckillingTime);
+			
 			if(product.join_together){
 				p.setTogetherExpirHour(product.together_info.hour);
 				p.setTogetherNumber(product.together_info.num);
@@ -314,9 +326,11 @@ public class ShopProductService {
 				}else{
 					//下架旧商品，并新建商品ID 
 					updateStatus(product.productId,Status.PRODUCT_STATUS_UNSELL.getValue());
-					String newProductId = IDUtil.gen("PRO");					
+					String newProductId = IDUtil.gen("PRO");	
+					//下架旧商品，上架新商品，通知需要更新商品ID的地方
+					EventBusCenter.post(new ShopIndexProChangedParams(shopId,newProductId,product.productId));
 					Logger.info("商品上架状态， 新建一商品，旧商品ID：%s，新商品ID：%s", product.productId,newProductId);
-					product.productId = newProductId;
+					product.productId = newProductId; 
 				}
 			}
 			p.setProductId(product.productId);
@@ -465,7 +479,9 @@ public class ShopProductService {
 	}
 	
 	//orderBy 1=时间降序 2=销量降序 3=价格降序 4=价格升序 5=综合排序
-	public static  List<ShopProductDDL> listProduct(String shopId,String productId,String keyword,String pCategoryId,String subCategoryId,int sale,int hot,int status,int orderBy,int page,int pageSize){
+	public static  List<ShopProductDDL> listProduct(String shopId,String productId,String keyword,String pCategoryId,
+			String subCategoryId,int sale,int hot,int status,int orderBy,int joinSeckilling,int seckillingTime,
+			int page,int pageSize){
 		page = page <=0 ?1 : page;
 		pageSize = (pageSize > 30 || pageSize <=0 ) ?10 : pageSize;
 		
@@ -485,6 +501,14 @@ public class ShopProductService {
 		} 
 		if(!StringUtils.isEmpty(keyword)){
 			condition.add(new Condition("ShopProductDDL.productName","like","%"+keyword+"%"), "and");
+		}
+		
+		if(joinSeckilling!=-1){
+			condition.add(new Condition("ShopProductDDL.joinSeckilling","=",joinSeckilling), "and");
+		}
+		
+		if(seckillingTime!=-1){
+			condition.add(new Condition("ShopProductDDL.seckillingTime","=",seckillingTime), "and");
 		}
 		
 		//如果2个分类ID，则查询出来		
@@ -525,7 +549,8 @@ public class ShopProductService {
 		return Dal.select("ShopProductDDL.*", condition, sort, (page-1)*pageSize, pageSize);
 	}
 	
-	public static  int countProduct(String shopId,String productId,String keyword,String pCategoryId,String subCategoryId,int sale,int hot,int status){
+	public static  int countProduct(String shopId,String productId,String keyword,String pCategoryId,
+			String subCategoryId,int sale,int hot,int status,int joinSeckilling,int seckillingTime){
 		Condition condition = new Condition("ShopProductDDL.id",">",0);
 		
 		if(!StringUtils.isEmpty(shopId)){
@@ -541,6 +566,14 @@ public class ShopProductService {
 		} 
 		if(!StringUtils.isEmpty(keyword)){
 			condition.add(new Condition("ShopProductDDL.productName","like","%"+keyword+"%"), "and");
+		}
+		
+		if(joinSeckilling!=-1){
+			condition.add(new Condition("ShopProductDDL.joinSeckilling","=",joinSeckilling), "and");
+		}
+		
+		if(seckillingTime!=-1){
+			condition.add(new Condition("ShopProductDDL.seckillingTime","=",seckillingTime), "and");
 		}
 		
 		//如果2个分类ID，则查询出来

@@ -15,6 +15,7 @@ var orderMng = new Vue({
         condition:{
             orderId:'',
             keyword:'',
+
             status:{
                 selected:'-1',
                 options:[
@@ -34,7 +35,10 @@ var orderMng = new Vue({
                     {text:'已签收',value:'8'},
                     {text:'已确认收货',value:'9'}
                 ]
-            }
+            },
+            referScene:'',
+            appid:'',
+            channel:''
         },
         currentMemo:'',
         showMemo:false,
@@ -60,19 +64,21 @@ var orderMng = new Vue({
             params.orderId = this.condition.orderId || ''
             params.keyword = this.condition.keyword || ''
             params.status = this.condition.status.selected||''
+            params.referScene = this.condition.referScene || ''
+            params.appid = this.condition.appid || ''
+            params.channel = this.condition.channel || ''
             return params
         },
         search:function() {
             var that = this
             var params = this.getCondition()
             that.page=1
-            that.listOrder(params.orderId,params.keyword,params.status,that.page,pageSize,false)
+            that.listOrder(params.orderId,params.keyword,params.status,params.referScene,params.appid,params.channel,that.page,pageSize,false)
         },
         exportData:function(){
             var that = this
             var params = this.getCondition()
-            window.location.href=exportOrderURL+'?orderId='+params.orderId+'&keyword='+params.keyword+'&startTime='+$("#startTimePicker").val()+'&endTime='+$("#endTimePicker").val()+'&status='+params.status
-
+            window.location.href=exportOrderURL+'?orderId='+params.orderId+'&keyword='+params.keyword+'&startTime='+$("#startTimePicker").val()+'&endTime='+$("#endTimePicker").val()+'&status='+params.status+'&referScene='+params.referScene+'&appid='+params.appid+'&channel='+params.channel
         },
         more:function(event){
             var that = this
@@ -91,9 +97,9 @@ var orderMng = new Vue({
                 }
             }
             var params = this.getCondition()
-            this.listOrder(params.orderId,params.keyword,params.status,that.page,pageSize,false)
+            this.listOrder(params.orderId,params.keyword,params.status,params.referScene,params.appid,params.channel,that.page,pageSize,false)
 },
-        listOrder: function (orderId,keyword,status,page,pageSize,append) {
+        listOrder: function (orderId,keyword,status,referScene,appid,channel,page,pageSize,append) {
             var that = this
             showLoading(that,'请稍后,正在加载订单列表...')
             $.ajax({
@@ -104,6 +110,9 @@ var orderMng = new Vue({
                     orderId:orderId,
                     keyword:keyword,
                     status:status,
+                    referScene:referScene,
+                    appid:appid,
+                    channel:channel,
                     startTime:$("#startTimePicker").val(),
                     endTime:$("#endTimePicker").val(),
                     page:page,
@@ -145,7 +154,8 @@ var orderMng = new Vue({
                 window.parent.location.href='../../html/login.html'
             }
         })
-        that.listOrder('','',that.condition.status.selected,1,pageSize,false)
+        that.listOrder('','',that.condition.status.selected,'','','',1,pageSize,false)
+
     },
     updated: function () {
         var that = this

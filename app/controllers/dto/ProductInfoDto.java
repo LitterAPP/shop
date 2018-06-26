@@ -30,7 +30,10 @@ public class ProductInfoDto {
 	public List<String> selectedAttrs;
 	public boolean isHot;
 	public boolean isSale;
-
+	
+	public int  joinSeckilling;
+	public int seckillingTime;
+	public String seckillingPrice;
 	
 	
 	public class TogetherInfo{

@@ -34,7 +34,8 @@
     <class name="ShopProductDDL" comment=""/>  
     <class name="ShopWetaoDDL" comment=""/>  
     <class name="ShopWetaoCommentDDL" comment=""/>  
-    <class name="ShopRefundOrderDDL" comment=""/> 
+    <class name="ShopRefundOrderDDL" comment=""/>  
+    <class name="ShopCarDDL" comment=""/> 
   </package>  
   <package name="modules.common.ddl"> 
     <class name="FormIdsDDL" comment=""/> 
