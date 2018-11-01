@@ -1,10 +1,10 @@
 # Application dependencies
 
 require:
-    - jws
-    - org.apache.httpcomponents -> httpclient 4.4.1
-    - org.apache.httpcomponents -> httpcore 4.4.1
-    - com.aliyun.oss -> aliyun-sdk-oss 2.6.0
-    - net.coobird -> thumbnailator 0.4.8
-    - com.qcloud -> cos_api 5.2.4
-    - org.apache.poi -> poi 3.9
+- jws
+- org.apache.httpcomponents -> httpclient 4.4.1
+- org.apache.httpcomponents -> httpcore 4.4.1
+- com.aliyun.oss -> aliyun-sdk-oss 2.6.0
+- net.coobird -> thumbnailator 0.4.8
+- com.qcloud -> cos_api 5.2.4
+- org.apache.poi -> poi 3.9

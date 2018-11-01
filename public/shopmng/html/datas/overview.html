@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>数据概览</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link type="text/css" rel="styleSheet"  href="../../css/overview.css?v=1.1" />
-    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/jquery.datetimepicker.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+    <link type="text/css" rel="styleSheet" href="../../css/overview.css?v=1.1"/>
+    <link type="text/css" rel="styleSheet" href="../../css/mask.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/jquery.datetimepicker.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/common.css"/>
 </head>
 <body>
 <div id="overview">
@@ -15,40 +15,50 @@
         <div class="data-box">
             <div class="data-1">订单成交量</div>
             <div class="data-2">
-                <div><span class="number-green number">{{today.orderTogetherCount}}</span><span class="number-label">今天</span></div>
-                <div><span class="number-red number">{{yestoday.orderTogetherCount}}</span><span class="number-label">昨天</span></div>
+                <div><span class="number-green number">{{today.orderTogetherCount}}</span><span
+                        class="number-label">今天</span></div>
+                <div><span class="number-red number">{{yestoday.orderTogetherCount}}</span><span
+                        class="number-label">昨天</span></div>
             </div>
         </div>
 
         <div class="data-box">
             <div class="data-1">拼团订单成交量</div>
             <div class="data-2">
-                <div><span class="number-green number">{{today.productCount}}</span><span class="number-label">今天</span></div>
-                <div><span class="number-red number">{{yestoday.productCount}}</span><span class="number-label">昨天</span></div>
+                <div><span class="number-green number">{{today.productCount}}</span><span class="number-label">今天</span>
+                </div>
+                <div><span class="number-red number">{{yestoday.productCount}}</span><span
+                        class="number-label">昨天</span></div>
             </div>
         </div>
 
         <div class="data-box">
             <div class="data-1">商品成交数</div>
             <div class="data-2">
-                <div><span class="number-green number">{{today.productCount}}</span><span class="number-label">今天</span></div>
-                <div><span class="number-red number">{{yestoday.productCount}}</span><span class="number-label">昨天</span></div>
+                <div><span class="number-green number">{{today.productCount}}</span><span class="number-label">今天</span>
+                </div>
+                <div><span class="number-red number">{{yestoday.productCount}}</span><span
+                        class="number-label">昨天</span></div>
             </div>
         </div>
 
         <div class="data-box">
             <div class="data-1">成交总额</div>
             <div class="data-2">
-                <div><span class="number-green number">{{today.orderAmountSum}}</span><span class="number-label">今天</span></div>
-                <div><span class="number-red number">{{yestoday.orderAmountSum}}</span><span class="number-label">昨天</span></div>
+                <div><span class="number-green number">{{today.orderAmountSum}}</span><span
+                        class="number-label">今天</span></div>
+                <div><span class="number-red number">{{yestoday.orderAmountSum}}</span><span
+                        class="number-label">昨天</span></div>
             </div>
         </div>
 
         <div class="data-box">
             <div class="data-1">待发货订单数</div>
             <div class="data-2">
-                <div><span class="number-green number">{{today.deliverCount}}</span><span class="number-label">今天</span></div>
-                <div><span class="number-red number">{{yestoday.deliverCount}}</span><span class="number-label">昨天</span></div>
+                <div><span class="number-green number">{{today.deliverCount}}</span><span class="number-label">今天</span>
+                </div>
+                <div><span class="number-red number">{{yestoday.deliverCount}}</span><span
+                        class="number-label">昨天</span></div>
             </div>
         </div>
     </div>
@@ -60,8 +70,8 @@
             <button id="queryDatasBtn1" class="button1">近30天</button>
             <button id="queryDatasBtn2" class="button1">近15天</button>
             <button id="queryDatasBtn3" class="button1" style="margin-right: 20px;">近7天</button>
-        选择时间范围：<input id="startTimePicker"    type="text" style="width: 80px;"  readonly placeholder="开始时间"/>
-        至<input id="endTimePicker"  type="text" style="width: 80px;"   readonly  placeholder="结束时间"/>
+            选择时间范围：<input id="startTimePicker" type="text" style="width: 80px;" readonly placeholder="开始时间"/>
+            至<input id="endTimePicker" type="text" style="width: 80px;" readonly placeholder="结束时间"/>
             <button id="queryDatasBtn" class="button1">查询</button>
         </div>
     </div>
@@ -82,8 +92,8 @@
     // Step:3 echarts和zrender被echarts-plain.js写入为全局接口
     var myChart = echarts.init(document.getElementById('main'));
 
-    $(document).ready(function(){
-        queryDatas(4,'','')
+    $(document).ready(function () {
+        queryDatas(4, '', '')
     });
     $("#queryDatasBtn1").on('click', function () {
         queryDatas(5, $('#startTimePicker').val(), $('#endTimePicker').val())
@@ -97,119 +107,119 @@
     $("#queryDatasBtn").on('click', function () {
         queryDatas(0, $('#startTimePicker').val(), $('#endTimePicker').val())
     })
-    function queryDatas(flag,beginTime,endTime){
+
+    function queryDatas(flag, beginTime, endTime) {
         myChart.showLoading();
         $.ajax({
-            url:dataOverViewUrl,
-            type:'POST',
-            dataType:'json',
-            data:{
-                flag:flag,
-                beginTime:beginTime,
-                endTime:endTime
+            url: dataOverViewUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                flag: flag,
+                beginTime: beginTime,
+                endTime: endTime
             },
-            success:function(result){
-                console.log('overview-->',result)
+            success: function (result) {
+                console.log('overview-->', result)
 
-                if(result && result.code==1){
-                    var options={
-                        title:{
-                            text:'数据概览',
-                            subtext:'店铺订单走势'
+                if (result && result.code == 1) {
+                    var options = {
+                        title: {
+                            text: '数据概览',
+                            subtext: '店铺订单走势'
                         },
-                        tooltip : {
+                        tooltip: {
                             trigger: 'axis'
                         },
                         legend: {
-                            data:['订单总成交量','拼团订单成交量','商品成交数','成交总额','待发货订单数']
+                            data: ['订单总成交量', '拼团订单成交量', '商品成交数', '成交总额', '待发货订单数']
                         },
                         toolbox: {
-                            show : true,
-                            feature : {
-                                mark : {show: true},
-                                dataView : {show: true, readOnly: false},
-                                magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-                                restore : {show: true},
-                                saveAsImage : {show: true}
+                            show: true,
+                            feature: {
+                                mark: {show: true},
+                                dataView: {show: true, readOnly: false},
+                                magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                                restore: {show: true},
+                                saveAsImage: {show: true}
                             }
                         },
-                        calculable : true,
-                        xAxis : [
+                        calculable: true,
+                        xAxis: [
                             {
-                                type : 'category',
-                                boundaryGap : false,
-                                data :  result.data.xAxis
+                                type: 'category',
+                                boundaryGap: false,
+                                data: result.data.xAxis
                             }
                         ],
-                        yAxis : [
+                        yAxis: [
                             {
-                                type : 'value'
+                                type: 'value'
                             }
                         ],
-                        series : [
+                        series: [
                             {
-                                name:'订单总成交量',
-                                type:'line',
+                                name: '订单总成交量',
+                                type: 'line',
                                 stack: '总量',
-                                data:result.data.orderCount
+                                data: result.data.orderCount
                             },
                             {
-                                name:'拼团订单成交量',
-                                type:'line',
+                                name: '拼团订单成交量',
+                                type: 'line',
                                 stack: '总量',
-                                data:result.data.orderTogetherCount
+                                data: result.data.orderTogetherCount
                             },
                             {
-                                name:'商品成交数',
-                                type:'line',
+                                name: '商品成交数',
+                                type: 'line',
                                 stack: '总量',
-                                data:result.data.productCount
+                                data: result.data.productCount
                             },
                             {
-                                name:'成交总额',
-                                type:'line',
+                                name: '成交总额',
+                                type: 'line',
                                 stack: '总量',
                                 data: result.data.orderAmountSum
                             },
                             {
-                                name:'待发货订单数',
-                                type:'line',
+                                name: '待发货订单数',
+                                type: 'line',
                                 stack: '总量',
-                                data:result.data.deliverCount
+                                data: result.data.deliverCount
                             }
                         ]
                     }
                     myChart.clear();
-                    console.log('options-->',options)
+                    console.log('options-->', options)
                     myChart.setOption(
-                            options
+                        options
                     );
                 }
                 setTimeout(function () {
                     myChart.hideLoading()
-                },1000)
+                }, 1000)
 
             }
         })
     }
 
 
-
     $('#startTimePicker').datetimepicker(
-            {
-                lang:'ch',
-                format:"Y-m-d"
-            }
+        {
+            lang: 'ch',
+            format: "Y-m-d"
+        }
     );
     $('#endTimePicker').datetimepicker(
-            {
-                lang:'ch',
-                format:"Y-m-d"
-            }
+        {
+            lang: 'ch',
+            format: "Y-m-d"
+        }
     );
-   /**
-    var myChart2 = echarts.init(document.getElementById('mainMap'));
-    myChart2.setOption({
+    /**
+     var myChart2 = echarts.init(document.getElementById('mainMap'));
+     myChart2.setOption({
         tooltip : {
             trigger: 'item',
             formatter: '{b}'

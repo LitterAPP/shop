@@ -3,9 +3,9 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link type="text/css" rel="styleSheet"  href="../../css/addWeTao.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+    <link type="text/css" rel="styleSheet" href="../../css/addWeTao.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/mask.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/common.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
 </head>
 <body>
@@ -24,15 +24,18 @@
         <div class="">
             <div style="" v-for="(item,index) in images">
                 <div class="playImage">
-                    <img  v-bind:data-idx="index" v-if="item.remoteUrl"  v-bind:src="item.remoteUrl"  @click="imagesClick" />
-                    <img  v-bind:data-idx="index" v-else  src="../../images/default-img.png"  @click="imagesClick" />
-                    <input  v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="imagesChanged" type="file" id="imagesIpnut" style="display: none;"><br/>
+                    <img v-bind:data-idx="index" v-if="item.remoteUrl" v-bind:src="item.remoteUrl"
+                         @click="imagesClick"/>
+                    <img v-bind:data-idx="index" v-else src="../../images/default-img.png" @click="imagesClick"/>
+                    <input v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg"
+                           v-on:change="imagesChanged" type="file" id="imagesIpnut" style="display: none;"><br/>
                 </div>
-                <div @click="delImages"  v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+                <div @click="delImages" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除
+                </div>
             </div>
         </div>
-        <div  style="display: block;">
-            <div @click="addImages"  style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        <div style="display: block;">
+            <div @click="addImages" style="font-size:13px;color:green;cursor: pointer;">增加</div>
         </div>
     </div>
 
@@ -41,22 +44,22 @@
             <div style="font-size:10px;color:#888;">SEO</div>
         </div>
         <div>
-            <input style="width: 400px;" v-model="seoTitle"   placeholder="title"/>
-            <input style="width: 400px;" v-model="seoKey"   placeholder="keyword"/>
-            <input style="width: 800px;" v-model="seoDesc"   placeholder="description"/>
+            <input style="width: 400px;" v-model="seoTitle" placeholder="title"/>
+            <input style="width: 400px;" v-model="seoKey" placeholder="keyword"/>
+            <input style="width: 800px;" v-model="seoDesc" placeholder="description"/>
         </div>
     </div>
 
     <div style="margin-bottom: 50px;"></div>
-    <div  style="position: fixed;bottom: 10px;right:10px;">
-        <div  style="display: block;text-align: center;">
+    <div style="position: fixed;bottom: 10px;right:10px;">
+        <div style="display: block;text-align: center;">
             <button @click="saveWeTao" class="button1">发表</button>
             <button v-if="id>0" @click="deleteWeTao" class="button-del">删除</button>
         </div>
     </div>
     <div style="position: fixed;bottom: 10px;left:10px;">
-        <div  style="display: block;text-align: center;">
-            <button  @click="goBack" class="button1">&lt;返回</button>
+        <div style="display: block;text-align: center;">
+            <button @click="goBack" class="button1">&lt;返回</button>
         </div>
     </div>
     <div v-if="mask" class="mask">

@@ -1,9 +1,10 @@
-body{
+body {
     margin: auto;
     background: #810020;
 
 }
-.container{
+
+.container {
     height: 450px;
     width: 400px;
     background: #FF6347;
@@ -13,10 +14,11 @@ body{
     margin-top: -225px;
     margin-left: -200px;
     border-radius: 5px;
-    background: linear-gradient(#451920,#810020);
+    background: linear-gradient(#451920, #810020);
     text-align: left;
 }
-.login-title{
+
+.login-title {
     margin-top: 10px;
     font-size: 18px;
     font-weight: bold;
@@ -26,19 +28,21 @@ body{
     width: 100%;
     color: #fff;
 }
-.container div{
+
+.container div {
     text-align: center;
     height: 50px;
     line-height: 50px;
     float: left;
     margin-left: 40px;
 }
+
 [v-cloak] {
     display: none;
 }
 
-input{
+input {
     width: 305px;
-    font-size:15px;
+    font-size: 15px;
     color: #333333;
 }

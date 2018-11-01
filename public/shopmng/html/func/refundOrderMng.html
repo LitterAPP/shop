@@ -3,13 +3,13 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link type="text/css" rel="styleSheet"  href="../../css/refundOrderMng.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/table.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/search.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/page.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/jquery.datetimepicker.css" />
+    <link type="text/css" rel="styleSheet" href="../../css/refundOrderMng.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/table.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/search.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/mask.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/page.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/common.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/jquery.datetimepicker.css"/>
 </head>
 <body>
 <div id="refundOrderMng" style="margin-bottom: 50px;">
@@ -22,23 +22,23 @@
             <div class="">备注：<span v-html="refundOrder.memo"></span></div>
 
             <div class="">状态： <select v-model="auditStatusSelected">
-                <template  v-for="option in auditStatus">
-                    <option   v-bind:value="option.value" >
+                <template v-for="option in auditStatus">
+                    <option v-bind:value="option.value">
                         {{ option.text }}
                     </option>
                 </template>
             </select></div>
 
             <div class="" v-if="auditStatusSelected==55">退款额度：
-                <input  style="width: 80px;" placeholder="金额小于订单额度" v-model="refundFee"/>元  (默认全款退单)
+                <input style="width: 80px;" placeholder="金额小于订单额度" v-model="refundFee"/>元 (默认全款退单)
             </div>
 
-            <div class="" >审核备注：
-                <input  style="width: 200px;" placeholder="请输入审核备注" v-model="auditMemo"/>
+            <div class="">审核备注：
+                <input style="width: 200px;" placeholder="请输入审核备注" v-model="auditMemo"/>
             </div>
 
             <div class="" style="float: right;">
-                <button class="button1"  @click="refundOK">确认</button>
+                <button class="button1" @click="refundOK">确认</button>
                 <button class="button1" @click="refundCancel">取消</button>
             </div>
         </div>
@@ -47,7 +47,7 @@
     <div v-if="showMemo" class="prompt">
         <div class="prompt-1" style="height:500px;margin-top:-250px;overflow-y: scroll;">
             <div class="">
-               <span v-html="currentMemo"></span>
+                <span v-html="currentMemo"></span>
             </div>
             <div class="" style="float: right;">
                 <button class="button1" @click="closeMemo">关闭</button>
@@ -63,8 +63,8 @@
 
 
     <div class="search">
-        <div>订单ID：<input  v-model="condition.orderId" type="text" placeholder=" 订单ID"/></div>
-        <div>商品名称：<input v-model="condition.keyword"  type="text" placeholder="商品名称"/></div>
+        <div>订单ID：<input v-model="condition.orderId" type="text" placeholder=" 订单ID"/></div>
+        <div>商品名称：<input v-model="condition.keyword" type="text" placeholder="商品名称"/></div>
         <div>状态：
             <select v-model="condition.status.selected">
                 <option v-for="option in condition.status.options" v-bind:value="option.value">
@@ -73,8 +73,8 @@
             </select>
         </div>
         <div>
-            选择时间范围：<input id="startTimePicker"    type="text" style="width: 150px;"  readonly placeholder="开始时间"/>
-            至<input id="endTimePicker"  type="text" style="width: 150px;"   readonly  placeholder="结束时间"/>
+            选择时间范围：<input id="startTimePicker" type="text" style="width: 150px;" readonly placeholder="开始时间"/>
+            至<input id="endTimePicker" type="text" style="width: 150px;" readonly placeholder="结束时间"/>
         </div>
 
         <div>
@@ -86,47 +86,49 @@
 
     <table width="100%" border="1" class="t1">
         <thead>
-            <th width="7%">退款审核</th>
-            <th width="10%">订单ID</th>
-            <th width="5%">状态</th>
-            <th width="5%">是否团购</th>
-            <th width="10%">团购ID</th>
-            <th width="5%">团购价</th>
-            <th width="15%">商品ICON</th>
-            <th width="10%">商品组名称</th>
-            <th width="10%">商品名称</th>
-            <th width="5%">购买数量</th>
-            <th width="5%">商品组价格</th>
-            <th width="5%">应付总额</th>
-            <th width="5%">余额支付</th>
-            <th width="5%">现金支付</th>
-            <th width="5%">代金券支付</th>
-            <th width="15%">1下单时间</th>
-            <th width="15%">1支付时间</th>
-            <th width="5%">备注</th>
+        <th width="7%">退款审核</th>
+        <th width="10%">订单ID</th>
+        <th width="5%">状态</th>
+        <th width="5%">是否团购</th>
+        <th width="10%">团购ID</th>
+        <th width="5%">团购价</th>
+        <th width="15%">商品ICON</th>
+        <th width="10%">商品组名称</th>
+        <th width="10%">商品名称</th>
+        <th width="5%">购买数量</th>
+        <th width="5%">商品组价格</th>
+        <th width="5%">应付总额</th>
+        <th width="5%">余额支付</th>
+        <th width="5%">现金支付</th>
+        <th width="5%">代金券支付</th>
+        <th width="15%">1下单时间</th>
+        <th width="15%">1支付时间</th>
+        <th width="5%">备注</th>
         </thead>
-        <tr  v-for="(item,index) in list">
+        <tr v-for="(item,index) in list">
             <td>
-                <button  v-if="item.orderStatus==555"  class="button1" v-bind:data-orderid="item.orderId" v-bind:data-idx="index" @click="refund">审核</button>
+                <button v-if="item.orderStatus==555" class="button1" v-bind:data-orderid="item.orderId"
+                        v-bind:data-idx="index" @click="refund">审核
+                </button>
             </td>
             <td>{{item.orderId}}</td>
-            <td  v-if="item.orderStatus==0" class="table-cell">支付中</td>
-            <td  v-else-if="item.orderStatus==1" class="table-cell">支付成功:待发货</td>
-            <td  v-else-if="item.orderStatus==2" class="table-cell">支付取消</td>
-            <td  v-else-if="item.orderStatus==3" class="table-cell">支付失败</td>
-            <td  v-else-if="item.orderStatus==4" class="table-cell">支付完成:拼团中</td>
+            <td v-if="item.orderStatus==0" class="table-cell">支付中</td>
+            <td v-else-if="item.orderStatus==1" class="table-cell">支付成功:待发货</td>
+            <td v-else-if="item.orderStatus==2" class="table-cell">支付取消</td>
+            <td v-else-if="item.orderStatus==3" class="table-cell">支付失败</td>
+            <td v-else-if="item.orderStatus==4" class="table-cell">支付完成:拼团中</td>
 
-            <td  v-else-if="item.orderStatus==5" class="table-cell">退款成功</td>
-            <td  v-else-if="item.orderStatus==55555" class="table-cell">退款失败</td>
-            <td  v-else-if="item.orderStatus==5555" class="table-cell">退款未审核通过</td>
-            <td  v-else-if="item.orderStatus==555" class="table-cell">退款审核中</td>
-            <td  v-else-if="item.orderStatus==55" class="table-cell">退款中</td>
+            <td v-else-if="item.orderStatus==5" class="table-cell">退款成功</td>
+            <td v-else-if="item.orderStatus==55555" class="table-cell">退款失败</td>
+            <td v-else-if="item.orderStatus==5555" class="table-cell">退款未审核通过</td>
+            <td v-else-if="item.orderStatus==555" class="table-cell">退款审核中</td>
+            <td v-else-if="item.orderStatus==55" class="table-cell">退款中</td>
 
-            <td  v-else-if="item.orderStatus==6" class="table-cell">拼团成功:待发货</td>
-            <td  v-else-if="item.orderStatus==7" class="table-cell">已投递:已揽件</td>
-            <td  v-else-if="item.orderStatus==8" class="table-cell">已签收</td>
-            <td  v-else-if="item.orderStatus==9" class="table-cell">已确认收货</td>
-            <td  v-else  class="table-cell">未知状态</td>
+            <td v-else-if="item.orderStatus==6" class="table-cell">拼团成功:待发货</td>
+            <td v-else-if="item.orderStatus==7" class="table-cell">已投递:已揽件</td>
+            <td v-else-if="item.orderStatus==8" class="table-cell">已签收</td>
+            <td v-else-if="item.orderStatus==9" class="table-cell">已确认收货</td>
+            <td v-else class="table-cell">未知状态</td>
             <td v-if="item.togetherId" class="table-cell">是</td>
             <td v-else class="table-cell">是</td>
             <td>{{item.togetherId}}</td>
@@ -144,8 +146,8 @@
             <td>{{item.couponPay}}元</td>
             <td>{{item.orderTime}}</td>
             <td>{{item.payTime}}</td>
-            <td class="memo" v-bind:data-memo="item.memo" style="cursor:pointer;" >
-               查看
+            <td class="memo" v-bind:data-memo="item.memo" style="cursor:pointer;">
+                查看
             </td>
         </tr>
     </table>
@@ -153,7 +155,7 @@
     <div v-cloak class="pageInfo">
         <div v-cloak data-flag="-1" @click="more">&lt;&lt;上一页</div>
         {{page}}/{{pageTotal}}
-        <div v-cloak  data-flag="1" @click="more">下一页&gt;&gt;</div>
+        <div v-cloak data-flag="1" @click="more">下一页&gt;&gt;</div>
     </div>
 
 </div>
@@ -164,28 +166,28 @@
 <script src="../../js/jquery.datetimepicker.js"></script>
 <script>
     $('#startTimePicker').datetimepicker(
-            {
-                lang:'ch',
-                format:"Y-m-d H:i:00"
-            }
+        {
+            lang: 'ch',
+            format: "Y-m-d H:i:00"
+        }
     );
     $('#endTimePicker').datetimepicker(
-            {
-                lang:'ch',
-                format:"Y-m-d H:i:00"
-            }
+        {
+            lang: 'ch',
+            format: "Y-m-d H:i:00"
+        }
     );
 
 </script>
 
 <script>
     var flag = true
-    $(document).ready(function(){
-        $("table").bind("dblclick",function(){
-            if(flag){
-                $(this).attr('width',2000)
-            }else{
-                $(this).attr('width','100%')
+    $(document).ready(function () {
+        $("table").bind("dblclick", function () {
+            if (flag) {
+                $(this).attr('width', 2000)
+            } else {
+                $(this).attr('width', '100%')
             }
             flag = !flag;
         })

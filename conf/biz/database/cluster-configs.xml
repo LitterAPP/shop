@@ -7,138 +7,138 @@
     hash-str : string取模分库（用户中心取模算法）
     shard-column: 分库字段
 -->
-<configs> 
-  <!--
-        <config class="demo.ddl.Demo" source="mysql" shard-type="hash"
-            shard-column="id" comment="测试">
-            <map client="vdb_01">0</map>
-            <map client="vdb_02">1</map>
-        </config>
-        -->  
-  <!--
-        <config class="demo.ddl.Demo" source="mysql" shard-type="none"
-            comment="测试-不分库场景">
-            <map client="vdb_01">0</map>
-        </config>
+<configs>
+    <!--
+          <config class="demo.ddl.Demo" source="mysql" shard-type="hash"
+              shard-column="id" comment="测试">
+              <map client="vdb_01">0</map>
+              <map client="vdb_02">1</map>
+          </config>
+          -->
+    <!--
+          <config class="demo.ddl.Demo" source="mysql" shard-type="none"
+              comment="测试-不分库场景">
+              <map client="vdb_01">0</map>
+          </config>
 
-        <config class="demo.ddl.Demo" source="mysql" shard-type="range"
-            shard-column="id" comment="测试-按范围分库">
-            <map client="vdb_01">0-100</map>
-            <map client="vdb_02">100-9223372036854775807</map>
-        </config>
+          <config class="demo.ddl.Demo" source="mysql" shard-type="range"
+              shard-column="id" comment="测试-按范围分库">
+              <map client="vdb_01">0-100</map>
+              <map client="vdb_02">100-9223372036854775807</map>
+          </config>
 
-        <config class="demo.ddl.Demo" source="mysql" shard-type="range"
-            shard-column="id" comment="测试-按范围分库">
-            <map client="vdb_01">0-100</map>
-            <map client="vdb_02">100-9223372036854775807</map>
-        </config>
+          <config class="demo.ddl.Demo" source="mysql" shard-type="range"
+              shard-column="id" comment="测试-按范围分库">
+              <map client="vdb_01">0-100</map>
+              <map client="vdb_02">100-9223372036854775807</map>
+          </config>
 
-        <config class="demo.ddl.Demo" source="mysql" shard-type="hash-string"
-            shard-column="t_name" substring="0,16" comment="测试-对字符串，按hash-string分库">
-            <map client="vdb_01">0</map>
-            <map client="vdb_02">1</map>
-        </config>
+          <config class="demo.ddl.Demo" source="mysql" shard-type="hash-string"
+              shard-column="t_name" substring="0,16" comment="测试-对字符串，按hash-string分库">
+              <map client="vdb_01">0</map>
+              <map client="vdb_02">1</map>
+          </config>
 
-        <config class="demo.ddl.Demo" source="mysql" shard-type="range-hash"
-            shard-column="id" comment="测试-hash+rang分库">
-            <range map="0-10000000" >
-                <map client="vdb_01">0</map>
-                <map client="vdb_02">1</map>
-            </range>
-            <range map="10000001-9223372036854775807" >
-                <map client="vdb_01">0</map>
-                <map client="vdb_02">1</map>
-            </range>
-        </config>
-        -->  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.UsersDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.WxAccessTokenDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.SmsCodeHistoryDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopOrderDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductAttrDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductAttrRelDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductCategoryDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductCategoryChildDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductCategoryRelDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductGroupDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.UserAccountDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopTogetherDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopTogetherJoinerDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductImagesDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductCommunityDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductCommunityRelDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopExpressDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopExpressCodeDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopExpressTracesDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopCouponMngDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopApplyInfoDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" source="mysql" class="modules.common.ddl.FormIdsDDL" comment=""> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopIndexDDL"> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopMngUserDDL"> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopMngSessionDDL"> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopWetaoDDL"> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopWetaoCommentDDL"> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopRefundOrderDDL"> 
-    <map client="shop_db"/> 
-  </config>  
-  <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopCarDDL"> 
-    <map client="shop_db"/> 
-  </config> 
+          <config class="demo.ddl.Demo" source="mysql" shard-type="range-hash"
+              shard-column="id" comment="测试-hash+rang分库">
+              <range map="0-10000000" >
+                  <map client="vdb_01">0</map>
+                  <map client="vdb_02">1</map>
+              </range>
+              <range map="10000001-9223372036854775807" >
+                  <map client="vdb_01">0</map>
+                  <map client="vdb_02">1</map>
+              </range>
+          </config>
+          -->
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.UsersDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.WxAccessTokenDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.SmsCodeHistoryDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopOrderDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductAttrDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductAttrRelDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductCategoryDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductCategoryChildDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductCategoryRelDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductGroupDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.UserAccountDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopTogetherDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopTogetherJoinerDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductImagesDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductCommunityDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopProductCommunityRelDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopExpressDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopExpressCodeDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopExpressTracesDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopCouponMngDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.shop.ddl.ShopApplyInfoDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" source="mysql" class="modules.common.ddl.FormIdsDDL" comment="">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopIndexDDL">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopMngUserDDL">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopMngSessionDDL">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopWetaoDDL">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopWetaoCommentDDL">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopRefundOrderDDL">
+        <map client="shop_db"/>
+    </config>
+    <config shard-type="none" comment="" source="mysql" class="modules.shop.ddl.ShopCarDDL">
+        <map client="shop_db"/>
+    </config>
 </configs>

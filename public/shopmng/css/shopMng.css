@@ -1,63 +1,72 @@
 [v-cloak] {
     display: none;
 }
-a{
+
+a {
     text-decoration: none;
 }
-a:hover{
+
+a:hover {
 
 }
 
-.shopAvatar img{
+.shopAvatar img {
     height: 45px;
     width: 45px;
-    border:2px solid #fff;
+    border: 2px solid #fff;
 }
 
-.shopBanner{
+.shopBanner {
     width: 320px;
 }
 
-.navImage{
+.navImage {
     width: 60px;
 }
 
-.bannerImage{
+.bannerImage {
     width: 320px;
 }
-.thirdImage{
+
+.thirdImage {
     height: 40px;
     width: 40px;
 }
-.fourthImage{
+
+.fourthImage {
     height: 120px;
     width: 320px;
 }
-.activityBg{
+
+.activityBg {
     height: 320px;
     width: 320px;
 }
-.preview_1{
+
+.preview_1 {
     position: fixed;
     right: 0px;
     bottom: 10px;
 }
-.preview_0{
+
+.preview_0 {
     position: fixed;
     right: -300px;
     bottom: 10px;
 }
-.screen-header{
+
+.screen-header {
     height: 80px;
     width: 338px;
-    background-size:100% 100%;
+    background-size: 100% 100%;
     background-image: url("../images/mobile_header_bg.png");
 }
-.screen-middle{
+
+.screen-middle {
     height: 450px;
     width: 338px;
     background-repeat: repeat-x;
-    background-size:100% 100%;
+    background-size: 100% 100%;
     background-image: url("../images/mobile_middle_bg.png");
     /*
     background: #DDDDDD;
@@ -65,19 +74,22 @@ a:hover{
     position: relative;
 
 }
-.screen-footer{
+
+.screen-footer {
     height: 85px;
     width: 338px;
-    background-size:100% 100%;
+    background-size: 100% 100%;
     background-image: url("../images/mobile_footer_bg.png");
 }
-.screen-middle-1{
+
+.screen-middle-1 {
     height: 120px;
     width: 300px;
     position: relative;
     margin-left: 19px;
 }
-.screen-middle-2{
+
+.screen-middle-2 {
     height: 45px;
     line-height: 45px;
     width: 300px;
@@ -85,15 +97,19 @@ a:hover{
     margin-left: 19px;
     background: #fff;
 }
-.screen-middle-2 div{
+
+.screen-middle-2 div {
     height: 40px;
     text-align: center;
-    width:60px;background:rgba(0,0,0,0);color:#2c2c2c;
+    width: 60px;
+    background: rgba(0, 0, 0, 0);
+    color: #2c2c2c;
     float: left;
     margin-left: 5px;
-    font-size:13px;
+    font-size: 13px;
 }
-.screen-middle-bottom{
+
+.screen-middle-bottom {
     height: 45px;
     line-height: 45px;
     width: 300px;
@@ -102,16 +118,19 @@ a:hover{
     left: 19px;
     background: #fff;
 }
-.screen-middle-bottom div{
+
+.screen-middle-bottom div {
     text-align: center;
-    width:60px;background:rgba(0,0,0,0);color:#2c2c2c;
+    width: 60px;
+    background: rgba(0, 0, 0, 0);
+    color: #2c2c2c;
     float: left;
     margin-left: 5px;
-    font-size:13px;
+    font-size: 13px;
     background: #fff;
 }
 
-.screen-middle-middle{
+.screen-middle-middle {
     height: 240px;
     overflow-y: auto;
     width: 300px;
@@ -120,7 +139,7 @@ a:hover{
     overflow-x: hidden;
 }
 
-.screen-middle-middle div{
+.screen-middle-middle div {
 
 }
 
@@ -128,6 +147,7 @@ a:hover{
     width: 300px;
     height: 170px;
 }
+
 .swiper-slide {
     text-align: center;
     font-size: 18px;
@@ -147,7 +167,7 @@ a:hover{
     align-items: center;
 }
 
-img{
+img {
     width: auto;
     height: auto;
     max-width: 100%;

@@ -1,15 +1,18 @@
-body{
+body {
     margin: auto;
 }
-.nav{
+
+.nav {
 
 }
-.logo{
+
+.logo {
     width: 80px;
     text-align: center;
     margin: 10px 0px;
 }
-.item{
+
+.item {
     text-align: left;
     padding-left: 10px;
     height: 35px;
@@ -19,17 +22,20 @@ body{
     font-size: 15px;
     color: #DDDDDD;
 }
-.item:hover{
-   background: #666666;
-    box-shadow: 0px 1px 8px #666666 ;
+
+.item:hover {
+    background: #666666;
+    box-shadow: 0px 1px 8px #666666;
 }
-.activite{
-    color:#000;
+
+.activite {
+    color: #000;
     background: #fff;
-    box-shadow: 0px 1px 8px #fff ;
+    box-shadow: 0px 1px 8px #fff;
     font-weight: bold;
 }
-.userinfo{
+
+.userinfo {
     position: fixed;
     left: 0px;
     bottom: 10px;
@@ -38,7 +44,6 @@ body{
     font-size: 14px;
     color: #178FE5;
 }
-
 
 button {
     /*background-color: #178FE5; */
@@ -61,12 +66,12 @@ button {
     color: #E0EEEE;
     margin-top: 10px;
 }
+
 .button1:hover {
     background-color: #666666;
     color: white;
-    box-shadow: 0px 1px 8px #666666 ;
+    box-shadow: 0px 1px 8px #666666;
 }
-
 
 [v-cloak] {
     display: none;

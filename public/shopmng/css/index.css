@@ -1,43 +1,55 @@
-body{
+body {
     margin: auto;
 }
-html { overflow-y: hidden; }
-.top{
+
+html {
+    overflow-y: hidden;
+}
+
+.top {
     padding: 10px;
     background: #FF7256;
     height: 60px;
     line-height: 60px;
-    color:#fff;
+    color: #fff;
 }
-.top div{
+
+.top div {
     display: inline-block;
 }
-.top-title{
+
+.top-title {
     font-size: 30px;
 }
-.login{
+
+.login {
     float: right;
 }
-.login div{
+
+.login div {
     font-size: 15px;
 }
 
-.container div{
+.container div {
     display: inline-block;
 }
-.nav{
+
+.nav {
     width: 80px;
     background: #333333;
     vertical-align: top;
 }
-.content{
+
+.content {
     background: #fff;
     vertical-align: top;
 }
-iframe{
+
+iframe {
     width: 100%;
     height: 100%;
 }
+
 [v-cloak] {
     display: none;
 }

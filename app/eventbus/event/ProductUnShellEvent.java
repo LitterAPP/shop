@@ -13,17 +13,17 @@ import modules.shop.service.ShopIndexService;
 
 public class ProductUnShellEvent {
 
-	@Subscribe
-	public void shopIndexNavChanged(ShopIndexProChangedParams params){
-		Logger.info("recv msg -> %s", new Gson().toJson(params));
-		
-		ShopIndexDDL shopIdex = ShopIndexService.getByShopId(params.getShopId());
-		String config = shopIdex.getConfig();
-		if(StringUtils.isEmpty(config)){
-			return;
-		}
+    @Subscribe
+    public void shopIndexNavChanged(ShopIndexProChangedParams params) {
+        Logger.info("recv msg -> %s", new Gson().toJson(params));
+
+        ShopIndexDDL shopIdex = ShopIndexService.getByShopId(params.getShopId());
+        String config = shopIdex.getConfig();
+        if (StringUtils.isEmpty(config)) {
+            return;
+        }
         config = config.replaceAll(params.getOldProductId(), params.getProductId());
-		shopIdex.setConfig(config);
-		Dal.replace(shopIdex);
-	}
+        shopIdex.setConfig(config);
+        Dal.replace(shopIdex);
+    }
 }

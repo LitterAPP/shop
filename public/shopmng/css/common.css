@@ -1,35 +1,36 @@
-body{
+body {
     margin: auto;
     margin: 0px;
 }
-input{
-    border:none;
-    outline:medium;
+
+input {
+    border: none;
+    outline: medium;
     height: 30px;
     padding: 5px;
     border-radius: 5px;
 }
-select{
-    border:none;
-    outline:none;
+
+select {
+    border: none;
+    outline: none;
     height: 30px;
     padding: 5px;
     border-radius: 3px;
 }
-select:hover{
+
+select:hover {
     border: 1px solid #ffffff;
     box-shadow: 0px 1px 8px #ffffff;
 }
 
-
-input:focus{
-    border-bottom:1px solid #bbbbbb;
+input:focus {
+    border-bottom: 1px solid #bbbbbb;
     box-shadow: 0px 1px 8px #fff;
     background: #fff;
     border-radius: 0px;
     border-radius: 5px;
 }
-
 
 button {
     /*background-color: #178FE5; */
@@ -58,18 +59,20 @@ button {
     color: #fff;
     border: 1px solid #810020;
 }
+
 .buttonLogin:hover {
     background-color: #810020;
     color: white;
     box-shadow: 0px 1px 8px #FF4500;
 }
 
-.button-del{
+.button-del {
     background-color: white;
     color: #000;
     border: 1px solid #DC143C;
 }
-.button-del:hover{
+
+.button-del:hover {
     background-color: red;
     color: white;
     box-shadow: 0px 1px 8px red;
@@ -81,68 +84,75 @@ button {
     box-shadow: 0px 1px 8px #FF4500;
 }
 
-.buttonDisable{
+.buttonDisable {
     background-color: #BBBBBB;
     color: white;
     border: 1px solid #810020;
 }
-.buttonReg{
-    background: rgba(0,0,0,0);
+
+.buttonReg {
+    background: rgba(0, 0, 0, 0);
 }
-.buttonReg:hover{
+
+.buttonReg:hover {
     background-color: #810020;
     color: white;
     box-shadow: 0px 1px 8px #FF4500;
 }
-.card{
+
+.card {
     background: #fff;
-    margin-bottom:10px ;
+    margin-bottom: 10px;
     font-size: 14px;
     color: #000;
-    border:1px solid #E0EEEE;
+    border: 1px solid #E0EEEE;
     margin: 10px 10px;
 }
-.card div{
+
+.card div {
     display: inline-block;
     margin: 10px 5px;
 }
-.setting-title{
+
+.setting-title {
     color: #666666;
     font-size: 10px;
 }
 
-.autocomplete-suggestions{
+.autocomplete-suggestions {
     padding: 10px;
     background: #fff;
     border: 1px solid #E0EEEE;
     overflow: auto;
 }
-.autocomplete-suggestion{
+
+.autocomplete-suggestion {
     height: 35px;
     line-height: 35px;
     padding: 5px;
-    border-bottom:1px solid #E0EEEE;
+    border-bottom: 1px solid #E0EEEE;
 }
-.autocomplete-suggestion:hover{
+
+.autocomplete-suggestion:hover {
     background: #E0EEEE;
 }
 
-.prompt{
+.prompt {
     height: 100%;
     width: 100%;
     position: fixed;
     top: 0px;
     left: 0px;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.8);
 }
 
-.prompt-1{
+.prompt-1 {
     height: 400px;
     width: 400px;
     background: #E0EEEE;
     color: #000;
     position: absolute;
-    top:50%;
+    top: 50%;
     left: 50%;
     margin-left: -200px;
     margin-top: -200px;
@@ -151,6 +161,7 @@ button {
     text-align: left;
     border-radius: 6px;
 }
-.prompt-1 div{
+
+.prompt-1 div {
     margin: 10px;
 }

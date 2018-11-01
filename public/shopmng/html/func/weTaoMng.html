@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 
-    <link type="text/css" rel="styleSheet"  href="../../css/weTaoMng.css" />
+    <link type="text/css" rel="styleSheet" href="../../css/weTaoMng.css"/>
 
-    <link type="text/css" rel="styleSheet"  href="../../css/search.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/page.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+    <link type="text/css" rel="styleSheet" href="../../css/search.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/mask.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/page.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/common.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
 </head>
 <body>
@@ -20,14 +20,14 @@
         </div>
     </div>
     <div class="search">
-        <div>搜索关键字：<input v-model="condition.keyword"  type="text" placeholder="关键字"/></div>
+        <div>搜索关键字：<input v-model="condition.keyword" type="text" placeholder="关键字"/></div>
         <div>
             <button class="button1" @click="search">查询</button>
             <button class="button1" @click="add">新建</button>
         </div>
     </div>
 
-    <div class="container" style="" v-for="item in list" >
+    <div class="container" style="" v-for="item in list">
         <div class="title">
             <span v-html="item.content"></span>
         </div>
@@ -54,8 +54,8 @@
                     <img src="../../images/comment-0.png">
                     <span>{{item.comment}}</span>
                 </div>
-                <button v-bind:data-id="item.id" @click="goToEdit"  class="button1">编辑</button>
-                <button v-if="item.deleted==0" v-bind:data-id="item.id" @click="offLine"  class="button1">删除</button>
+                <button v-bind:data-id="item.id" @click="goToEdit" class="button1">编辑</button>
+                <button v-if="item.deleted==0" v-bind:data-id="item.id" @click="offLine" class="button1">删除</button>
             </div>
         </div>
     </div>
@@ -63,7 +63,7 @@
     <div v-cloak class="pageInfo">
         <div v-cloak data-flag="-1" @click="more">&lt;&lt;上一页</div>
         {{page}}/{{pageTotal}}
-        <div v-cloak  data-flag="1" @click="more">下一页&gt;&gt;</div>
+        <div v-cloak data-flag="1" @click="more">下一页&gt;&gt;</div>
     </div>
 
 </div>

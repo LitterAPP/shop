@@ -3,9 +3,9 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link type="text/css" rel="styleSheet"  href="../../css/addProduct.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+    <link type="text/css" rel="styleSheet" href="../../css/addProduct.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/mask.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/common.css"/>
 </head>
 <body>
 <div id="addProduct" style="margin-bottom: 55px;">
@@ -14,13 +14,13 @@
             <div style="font-size:10px;color:#888;">商品信息</div>
         </div>
         <div>
-            商品名称:<input style="width: 600px;" v-model="title" value="{{title}}"  placeholder="商品名称"/>
+            商品名称:<input style="width: 600px;" v-model="title" value="{{title}}" placeholder="商品名称"/>
         </div>
         <div>
-            商品库存: <input style="width: 80px;" v-model="store" value="{{store}}"  placeholder="商品库存"/>
+            商品库存: <input style="width: 80px;" v-model="store" value="{{store}}" placeholder="商品库存"/>
         </div>
         <div>
-            商品成交量: <input style="width: 80px;" v-model="dealNum" value="{{dealNum}}"  placeholder="成交量"/>
+            商品成交量: <input style="width: 80px;" v-model="dealNum" value="{{dealNum}}" placeholder="成交量"/>
         </div>
         <div>
             <input type="checkbox" id="sale" value="是否打折" v-model="isSale">
@@ -36,10 +36,10 @@
             <div style="font-size:10px;color:#888;">商品价格</div>
         </div>
         <div>
-            商品原价:<input style="width: 80px;" v-model="price[0]" value="{{price[0]}}"  placeholder="商品原价"/>
+            商品原价:<input style="width: 80px;" v-model="price[0]" value="{{price[0]}}" placeholder="商品原价"/>
         </div>
         <div>
-            商品现价: <input style="width: 80px;" v-model="price[1]" value="{{price[1]}}"  placeholder="商品现价"/>
+            商品现价: <input style="width: 80px;" v-model="price[1]" value="{{price[1]}}" placeholder="商品现价"/>
         </div>
     </div>
 
@@ -50,27 +50,27 @@
         <div>
             秒杀开关:<select v-model="joinSeckilling" style="color:#6495ED;">
             <option value="0" selected>退出秒杀活动</option>
-            <option value="1"  >参加秒杀活动</option>
-            </select>
+            <option value="1">参加秒杀活动</option>
+        </select>
         </div>
         <div>
-            秒杀价:<input style="width: 80px;" v-model="seckillingPrice" value="{{seckillingPrice}}"  placeholder="秒杀价格"/>
+            秒杀价:<input style="width: 80px;" v-model="seckillingPrice" value="{{seckillingPrice}}" placeholder="秒杀价格"/>
         </div>
         <div>
             秒杀时段: <select v-model="seckillingTime">
             <option value="0" selected>0时段</option>
-            <option value="2"  >2时段</option>
-            <option value="4"  >4时段</option>
-            <option value="6"  >6时段</option>
-            <option value="8"  >8时段</option>
-            <option value="10"  >10时段</option>
-            <option value="12" >12时段</option>
-            <option value="14" >14时段</option>
-            <option value="16"  >16时段</option>
-            <option value="18" >18时段</option>
-            <option value="20" >20时段</option>
+            <option value="2">2时段</option>
+            <option value="4">4时段</option>
+            <option value="6">6时段</option>
+            <option value="8">8时段</option>
+            <option value="10">10时段</option>
+            <option value="12">12时段</option>
+            <option value="14">14时段</option>
+            <option value="16">16时段</option>
+            <option value="18">18时段</option>
+            <option value="20">20时段</option>
             <option value="22">22时段</option>
-            <option value="23"  >23时段</option>
+            <option value="23">23时段</option>
 
         </select>
         </div>
@@ -81,9 +81,10 @@
             <div style="font-size:10px;color:#888;">商品Icon(100*100)</div>
         </div>
         <div class="productBanner">
-            <img  v-if="banner_pic.remoteUrl" @click="productBannerClick" v-bind:src="banner_pic.remoteUrl"/>
-            <img  v-else @click="productBannerClick" src="../../images/default-img.png"/>
-            <input accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="productBannerChange" type="file" id="productBannerInput" style="display: none;"><br/>
+            <img v-if="banner_pic.remoteUrl" @click="productBannerClick" v-bind:src="banner_pic.remoteUrl"/>
+            <img v-else @click="productBannerClick" src="../../images/default-img.png"/>
+            <input accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="productBannerChange" type="file"
+                   id="productBannerInput" style="display: none;"><br/>
         </div>
     </div>
 
@@ -93,27 +94,30 @@
         </div>
         <div class="">
             <div style="display: block;border:1px solid #fff;" v-for="(item,index) in category">
-               <div> 一级分类：
-                    <select v-bind:data-idx="index"  v-on:change="pCategoryChanged" v-model="item.selected">
-                        <option value="0" disabled selected >请选择</option>
+                <div> 一级分类：
+                    <select v-bind:data-idx="index" v-on:change="pCategoryChanged" v-model="item.selected">
+                        <option value="0" disabled selected>请选择</option>
                         <option v-for="option in item.options" v-bind:value="option.value">
                             {{ option.text }}
                         </option>
                     </select>
                 </div>
 
-                <div  v-if="item.options[item.selectedIndex] && item.options[item.selectedIndex].subCategory">二级分类：
+                <div v-if="item.options[item.selectedIndex] && item.options[item.selectedIndex].subCategory">二级分类：
                     <select v-bind:data-idx="index" v-model="item.options[item.selectedIndex].subCategory.selected">
                         <option disabled value="0">请选择</option>
-                        <option  v-for="option in item.options[item.selectedIndex].subCategory.options" v-bind:value="option.value">
+                        <option v-for="option in item.options[item.selectedIndex].subCategory.options"
+                                v-bind:value="option.value">
                             {{ option.text }}
                         </option>
                     </select>
                 </div>
-                <div @click="delPCategoryItem"  v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+                <div @click="delPCategoryItem" v-bind:data-idx="index"
+                     style="font-size:13px;color:red;cursor: pointer;">删除
+                </div>
             </div>
-            <div  style="display: block;">
-                <div @click="addPCategoryItem"  style="font-size:13px;color:green;cursor: pointer;">增加</div>
+            <div style="display: block;">
+                <div @click="addPCategoryItem" style="font-size:13px;color:green;cursor: pointer;">增加</div>
             </div>
         </div>
     </div>
@@ -126,12 +130,13 @@
         <div class="">
             <div style="display: inline-block;border:1px solid #fff;" v-for="(item,index) in selectedAttrs">
                 <div> 标签：
-                    <input class='autoTagsComplete' type="text" style="width: 100px;" placeholder="请输入标签" v-bind:value="item"  />
+                    <input class='autoTagsComplete' type="text" style="width: 100px;" placeholder="请输入标签"
+                           v-bind:value="item"/>
                 </div>
-                <div @click="delAttr"  v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+                <div @click="delAttr" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
             </div>
-            <div  style="display: block;">
-                <div @click="addAttr"  style="font-size:13px;color:green;cursor: pointer;">增加</div>
+            <div style="display: block;">
+                <div @click="addAttr" style="font-size:13px;color:green;cursor: pointer;">增加</div>
             </div>
         </div>
     </div>
@@ -143,15 +148,18 @@
         <div class="">
             <div style="" v-for="(item,index) in play_pics">
                 <div class="playImage">
-                    <img  v-bind:data-idx="index" v-if="item.remoteUrl"  v-bind:src="item.remoteUrl"  @click="playImgClick" />
-                    <img  v-bind:data-idx="index" v-else  src="../../images/default-img.png"  @click="playImgClick" />
-                    <input  v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="playImgChanged" type="file" id="playImgInput" style="display: none;"><br/>
+                    <img v-bind:data-idx="index" v-if="item.remoteUrl" v-bind:src="item.remoteUrl"
+                         @click="playImgClick"/>
+                    <img v-bind:data-idx="index" v-else src="../../images/default-img.png" @click="playImgClick"/>
+                    <input v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg"
+                           v-on:change="playImgChanged" type="file" id="playImgInput" style="display: none;"><br/>
                 </div>
-                <div @click="delPlayPic"  v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+                <div @click="delPlayPic" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除
+                </div>
             </div>
         </div>
-        <div  style="display: block;">
-            <div @click="addPlayPic"  style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        <div style="display: block;">
+            <div @click="addPlayPic" style="font-size:13px;color:green;cursor: pointer;">增加</div>
         </div>
     </div>
 
@@ -164,10 +172,14 @@
             <label for="joinTogether">是否参团</label>
         </div>
         <div v-if="join_together">
-            拼团价:<input style="width: 80px;" v-model="together_info.price" v-bind:value="together_info.price"  placeholder="拼团价"/>
-            成团人数:<input style="width: 80px;" v-model="together_info.num" v-bind:value="together_info.num"  placeholder="成团人数"/>
-            有效时长(小时):<input style="width: 80px;" v-model="together_info.hour" v-bind:value="together_info.hour"  placeholder="有效时长(小时)"/>
-            假的成团数:<input style="width: 80px;" v-model="together_info.vcount" v-bind:value="together_info.vcount"  placeholder=" 假的成团数"/>
+            拼团价:<input style="width: 80px;" v-model="together_info.price" v-bind:value="together_info.price"
+                       placeholder="拼团价"/>
+            成团人数:<input style="width: 80px;" v-model="together_info.num" v-bind:value="together_info.num"
+                        placeholder="成团人数"/>
+            有效时长(小时):<input style="width: 80px;" v-model="together_info.hour" v-bind:value="together_info.hour"
+                            placeholder="有效时长(小时)"/>
+            假的成团数:<input style="width: 80px;" v-model="together_info.vcount" v-bind:value="together_info.vcount"
+                         placeholder=" 假的成团数"/>
         </div>
     </div>
 
@@ -176,13 +188,15 @@
         <div style="display: block;">
             <div style="font-size:10px;color:#888;">商品详情描述</div>
         </div>
-        <div style="display: block;border:1px solid #fff;"  v-for="(item,index) in text_details">
-            ({{index+1}}).<input  style="width: 600px;" type="text" v-model="item.value" v-bind:value="item.value" placeholder="一句话商品描述特征或备注">
-            <div @click="delTextDetail"  v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+        <div style="display: block;border:1px solid #fff;" v-for="(item,index) in text_details">
+            ({{index+1}}).<input style="width: 600px;" type="text" v-model="item.value" v-bind:value="item.value"
+                                 placeholder="一句话商品描述特征或备注">
+            <div @click="delTextDetail" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除
+            </div>
         </div>
 
-        <div  style="display: block;">
-            <div @click="addTextDetail"  style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        <div style="display: block;">
+            <div @click="addTextDetail" style="font-size:13px;color:green;cursor: pointer;">增加</div>
         </div>
     </div>
 
@@ -194,39 +208,50 @@
         <div class="">
             <div style="border:1px solid #fff;" v-for="(item,index) in pic_details">
                 <div class="playImage">
-                    <img  v-bind:data-idx="index" v-if="item.remoteUrl"  v-bind:src="item.remoteUrl"  @click="picDetailClick" />
-                    <img  v-bind:data-idx="index" v-else  src="../../images/default-img.png"  @click="picDetailClick" />
-                    <input  v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="picDetailChanged" type="file" id="picDetailInput" style="display: none;"><br/>
+                    <img v-bind:data-idx="index" v-if="item.remoteUrl" v-bind:src="item.remoteUrl"
+                         @click="picDetailClick"/>
+                    <img v-bind:data-idx="index" v-else src="../../images/default-img.png" @click="picDetailClick"/>
+                    <input v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg"
+                           v-on:change="picDetailChanged" type="file" id="picDetailInput" style="display: none;"><br/>
                 </div>
-                <div @click="delPicDetail"  v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+                <div @click="delPicDetail" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">
+                    删除
+                </div>
             </div>
         </div>
-        <div  style="display: block;">
-            <div @click="addPicDetail"  style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        <div style="display: block;">
+            <div @click="addPicDetail" style="font-size:13px;color:green;cursor: pointer;">增加</div>
         </div>
     </div>
 
     <div class="card">
-        <div  style="display: block;">
+        <div style="display: block;">
             <div style="font-size:10px;color:#888;">设置商品分组或者规格</div>
         </div>
         <div style="display: block;border:1px solid #fff;" v-for="(item,index) in groups">
             <div>
-                商品组规格：<input v-model="item.title" type="text" placeholder="商品组规格描述" value="item.title"  style="width: 260px;" />
-                商品组原价：<input v-model="item.price1" type="text" placeholder="商品组原价" value="item.price1"  style="width: 80px;" />
-                商品组现价：<input v-model="item.price2" type="text" placeholder="商品组现价" value="item.price2"  style="width: 80px;" />
+                商品组规格：<input v-model="item.title" type="text" placeholder="商品组规格描述" value="item.title"
+                             style="width: 260px;"/>
+                商品组原价：<input v-model="item.price1" type="text" placeholder="商品组原价" value="item.price1"
+                             style="width: 80px;"/>
+                商品组现价：<input v-model="item.price2" type="text" placeholder="商品组现价" value="item.price2"
+                             style="width: 80px;"/>
             </div>
             <div>
-                商品组Icon(60*60)：<div class="groupImage">
-                    <img  v-bind:data-idx="index" v-if="item.remoteUrl" @click="groupImgClick" v-bind:src="item.remoteUrl"/>
-                    <img   v-bind:data-idx="index" v-else @click="groupImgClick" src="../../images/default-img.png"/>
-                    <input v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg" v-on:change="groupImgChanged" type="file" id="groupImageInput" style="display: none;"><br/>
+                商品组Icon(60*60)：
+                <div class="groupImage">
+                    <img v-bind:data-idx="index" v-if="item.remoteUrl" @click="groupImgClick"
+                         v-bind:src="item.remoteUrl"/>
+                    <img v-bind:data-idx="index" v-else @click="groupImgClick" src="../../images/default-img.png"/>
+                    <input v-bind:data-idx="index" accept="image/gif, image/jpeg,image/png,image/jpg"
+                           v-on:change="groupImgChanged" type="file" id="groupImageInput" style="display: none;"><br/>
                 </div>
             </div>
-            <div @click="delGroupItem"  v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除</div>
+            <div @click="delGroupItem" v-bind:data-idx="index" style="font-size:13px;color:red;cursor: pointer;">删除
+            </div>
         </div>
-        <div  style="display: block;">
-            <div @click="addGroupItem"  style="font-size:13px;color:green;cursor: pointer;">增加</div>
+        <div style="display: block;">
+            <div @click="addGroupItem" style="font-size:13px;color:green;cursor: pointer;">增加</div>
         </div>
     </div>
 
@@ -235,21 +260,22 @@
             <div style="font-size:10px;color:#888;">客服信息</div>
         </div>
         <div>
-            客服电话: <input style="width: 120px;" v-model="contact_mobile" v-bind:value="contact_mobile"  placeholder="客服电话"/>
+            客服电话: <input style="width: 120px;" v-model="contact_mobile" v-bind:value="contact_mobile"
+                         placeholder="客服电话"/>
         </div>
         <div>
-            客服微信: <input style="width: 120px;" v-model="contact_wx" v-bind:value="contact_wx"  placeholder="客服微信"/>
+            客服微信: <input style="width: 120px;" v-model="contact_wx" v-bind:value="contact_wx" placeholder="客服微信"/>
         </div>
     </div>
 
 
-    <div  style="position: fixed;bottom: 10px;right:10px;">
-        <div  style="display: block;text-align: center;">
+    <div style="position: fixed;bottom: 10px;right:10px;">
+        <div style="display: block;text-align: center;">
             <button @click="saveProduct" class="button1">上架商品</button>
         </div>
     </div>
     <div style="position: fixed;bottom: 10px;left:10px;">
-        <div  style="display: block;text-align: center;">
+        <div style="display: block;text-align: center;">
             <button @click="goBack" class="button1">&lt;返回</button>
         </div>
     </div>

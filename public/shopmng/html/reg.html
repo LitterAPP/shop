@@ -4,42 +4,47 @@
     <meta charset="UTF-8">
     <title>商铺注册</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link type="text/css" rel="styleSheet"  href="../css/reg.css" />
-    <link type="text/css" rel="styleSheet"  href="../css/common.css" />
-    <link type="text/css" rel="styleSheet"  href="../css/mask.css" />
+    <link type="text/css" rel="styleSheet" href="../css/reg.css"/>
+    <link type="text/css" rel="styleSheet" href="../css/common.css"/>
+    <link type="text/css" rel="styleSheet" href="../css/mask.css"/>
     <meta name="title" content="小程序电商后台">
     <meta name="keywords" content="小程序商店,一键生成小程序商店,快速生成小程序商店,小程序微店,小程序店铺,小程序开店">
-    <meta name="description" content="快速注册，永久免费小程序商店" />
+    <meta name="description" content="快速注册，永久免费小程序商店"/>
 </head>
 <body>
 
 <div id='regMng'>
-    <div  class="container">
+    <div class="container">
         <div class="login-title" style=" margin-left: 0px;">手机一键注册</div>
         <div>
-            <span><input v-model="userName"  type="text" placeholder="登录用户名"></span>
+            <span><input v-model="userName" type="text" placeholder="登录用户名"></span>
         </div>
         <div>
-            <span> <input  v-model="password"   type="password" placeholder="登录密码"></span>
+            <span> <input v-model="password" type="password" placeholder="登录密码"></span>
         </div>
         <div>
-            <span> <input  v-model="repassword"   type="password" placeholder="请再次输入登录密码"></span>
+            <span> <input v-model="repassword" type="password" placeholder="请再次输入登录密码"></span>
         </div>
         <div>
             <span>
                 <input v-model="mobile" style="width: 200px;" type="text" placeholder="手机号码">
-                <button v-if="disable" class="buttonDisable" style=" padding: 10px 10px;width: 100px;">{{regButtonText}}</button>
-                <button v-else  class="button1" @click="sendSms" style="padding: 10px 10px;width: 100px;">发送验证码</button>
+                <button v-if="disable" class="buttonDisable"
+                        style=" padding: 10px 10px;width: 100px;">{{regButtonText}}</button>
+                <button v-else class="button1" @click="sendSms" style="padding: 10px 10px;width: 100px;">发送验证码</button>
             </span>
         </div>
         <div>
-            <span><input v-model="code"  type="text" placeholder="短信验证码"></span>
+            <span><input v-model="code" type="text" placeholder="短信验证码"></span>
         </div>
         <div>
-            <button class="buttonLogin" @click="validteCode"style="padding: 10px 10px;width: 315px;margin-top: 20px;">注册</button>
+            <button class="buttonLogin" @click="validteCode" style="padding: 10px 10px;width: 315px;margin-top: 20px;">
+                注册
+            </button>
         </div>
         <div>
-            <button class="buttonReg" @click="login"style="margin-top:20px;padding: 10px 10px;width: 315px;">已有账号，直接登录</button>
+            <button class="buttonReg" @click="login" style="margin-top:20px;padding: 10px 10px;width: 315px;">
+                已有账号，直接登录
+            </button>
         </div>
     </div>
 

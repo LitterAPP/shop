@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>微淘</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link type="text/css" rel="styleSheet"  href="../css/mask.css" />
-    <link type="text/css" rel="styleSheet"  href="../css/weTao.css" />
+    <link type="text/css" rel="styleSheet" href="../css/mask.css"/>
+    <link type="text/css" rel="styleSheet" href="../css/weTao.css"/>
 </head>
 <body style="background: linear-gradient(#F0F0F0,#F2F2F2);margin: auto;">
 <div id="weTao">
@@ -18,8 +18,8 @@
     <div v-if="top" class="tips">
         刷新中...
     </div>
-    <div class="container" style="" v-for="item in list" >
-        <div style="cursor: pointer;z-index:99;" @click="getDetail"  v-bind:data-id="item.id">
+    <div class="container" style="" v-for="item in list">
+        <div style="cursor: pointer;z-index:99;" @click="getDetail" v-bind:data-id="item.id">
             <div class="title">
                 <span v-html="item.content"></span>
             </div>
@@ -39,8 +39,10 @@
                 </div>
                 <div style="float: right;">
                     <div class="wrap">
-                        <img style="vertical-align: text-bottom;" v-if="item.isZan" src="../images/zan-1.png"  @click.stop="zan" v-bind:data-id="item.id" >
-                        <img style="vertical-align: text-bottom;" @click.stop="zan" v-bind:data-id="item.id" v-else src="../images/zan-0.png">
+                        <img style="vertical-align: text-bottom;" v-if="item.isZan" src="../images/zan-1.png"
+                             @click.stop="zan" v-bind:data-id="item.id">
+                        <img style="vertical-align: text-bottom;" @click.stop="zan" v-bind:data-id="item.id" v-else
+                             src="../images/zan-0.png">
                         <span>{{item.zan}}</span>
                     </div>
                     <div class="wrap">

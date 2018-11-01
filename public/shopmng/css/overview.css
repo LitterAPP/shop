@@ -1,47 +1,56 @@
-.data{
+.data {
     text-align: center;
 }
-.data-box{
-    background: linear-gradient(#e0eeee,#fff);
+
+.data-box {
+    background: linear-gradient(#e0eeee, #fff);
     margin: 5px;
     border-radius: 5px;
 }
-.data-1{
+
+.data-1 {
     width: 100px;
     text-align: center;
-    text-align: center; /*ÉèÖÃÎÄ±¾Ë®Æ½¾ÓÖÐ*/
+    text-align: center; /*ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½Ë®Æ½ï¿½ï¿½ï¿½ï¿½*/
     padding: 30px 5px;
     color: #696969;
     font-size: 15px;
     display: inline-block;
     float: left;
 }
-.data-2{
+
+.data-2 {
     width: 100px;
     text-align: center;
-    text-align: left; /*ÉèÖÃÎÄ±¾Ë®Æ½¾ÓÖÐ*/
+    text-align: left; /*ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½Ë®Æ½ï¿½ï¿½ï¿½ï¿½*/
     padding: 24px 0px;
     display: inline-block;
 }
-.data-2 div{
+
+.data-2 div {
     display: block;
     width: 100px;
 }
+
 .number-label {
     font-size: 13px;
     color: #aaaaaa;
     margin-left: 5px;
 }
-.number{
+
+.number {
     font-size: 20px;
 }
-.number-green{
+
+.number-green {
     color: green;
 }
-.number-red{
+
+.number-red {
     color: red;
 }
-.data div{
+
+.data div {
     display: inline-block;
 }
 

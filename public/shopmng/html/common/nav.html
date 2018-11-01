@@ -3,7 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link type="text/css" rel="styleSheet"  href="../../css/nav.css" />
+    <link type="text/css" rel="styleSheet" href="../../css/nav.css"/>
 </head>
 <body>
 <!--
@@ -16,16 +16,16 @@
 </div>-->
 <div id="nav" class="nav">
     <div class="logo">
-        <img src="../../images/default-logo.png" />
+        <img src="../../images/default-logo.png"/>
     </div>
-    <div  v-for="(item ,index) in list">
-        <div v-cloak @click="navigation"  class="item" v-bind:class="{activite:item.activite}"  v-bind:data-idx="index" >
+    <div v-for="(item ,index) in list">
+        <div v-cloak @click="navigation" class="item" v-bind:class="{activite:item.activite}" v-bind:data-idx="index">
             {{item.title}}
         </div>
     </div>
 
     <div class="userinfo">
-        <div v-cloak >{{userName}}</div>
+        <div v-cloak>{{userName}}</div>
         <div>
             <button @click="quitLogin" class="button1">退出</button>
         </div>

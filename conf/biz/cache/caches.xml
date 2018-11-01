@@ -1,102 +1,138 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<config> 
-  <!-- Row缓存: 只支持通过主键获取数据的情况 prefix: 缓存前缀 enabled: 开关 -->  
-  <row-cache> 
-    <!--
-        <cache class="demo.ddl.Demo" prefix="demo_r_"  enabled="true"  comment=""/>
-        -->  
-    <cache enabled="true" prefix="CookBookChildClassDDL_v1" class="modules.cookbook.ddl.CookBookChildClassDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookParentClassDDL_v1" class="modules.cookbook.ddl.CookBookParentClassDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookInfoDDL_v1" class="modules.cookbook.ddl.CookBookInfoDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookClassRelDDL_v1" class="modules.cookbook.ddl.CookBookClassRelDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookTagDDL_v1" class="modules.cookbook.ddl.CookBookTagDDL" comment=""/>  
-    <cache enabled="true" prefix="SmsCodeHistoryDDL_v1" class="modules.cookbook.ddl.SmsCodeHistoryDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookCollectDDL_v1" class="modules.cookbook.ddl.CookBookCollectDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookFavorDDL_v1" class="modules.cookbook.ddl.CookBookFavorDDL" comment=""/>  
-    <cache enabled="true" prefix="BaiduAccessTokenDDL_v1" class="modules.cookbook.ddl.BaiduAccessTokenDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookMomentDDL_v1" class="modules.cookbook.ddl.CookBookMomentDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookMomentCommentDDL_v1" class="modules.cookbook.ddl.CookBookMomentCommentDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookMomentTimeLineDDL_v1" class="modules.cookbook.ddl.CookBookMomentTimeLineDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookFavorClassDDL_v1" class="modules.cookbook.ddl.CookBookFavorClassDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookCollectStatDDL_v1" class="modules.cookbook.ddl.CookBookCollectStatDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookViewStatDDL_v1" class="modules.cookbook.ddl.CookBookViewStatDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookFavorStatDDL_v1" class="modules.cookbook.ddl.CookBookFavorStatDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookMenuDDL_v1" class="modules.cookbook.ddl.CookBookMenuDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookMenuRelDDL_v1" class="modules.cookbook.ddl.CookBookMenuRelDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookMaterialSelectDDL_v1" class="modules.cookbook.ddl.CookBookMaterialSelectDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookSubjectDDL_v1" class="modules.cookbook.ddl.CookBookSubjectDDL" comment=""/>  
-    <cache enabled="true" prefix="BaiduAiDishDDL_v1" class="modules.cookbook.ddl.BaiduAiDishDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookMemuCommentDDL_v1" class="modules.cookbook.ddl.CookBookMemuCommentDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookMemuFavorDDL_v1" class="modules.cookbook.ddl.CookBookMemuFavorDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopProductDDL_v1" class="modules.cookbook.ddl.ShopProductDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopOrderDDL_v1" class="modules.cookbook.ddl.ShopOrderDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopProductAttrDDL_v1" class="modules.cookbook.ddl.ShopProductAttrDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopProductAttrRelDDL_v1" class="modules.cookbook.ddl.ShopProductAttrRelDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopProductCategoryDDL_v1" class="modules.cookbook.ddl.ShopProductCategoryDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopProductCategoryChildDDL_v1" class="modules.cookbook.ddl.ShopProductCategoryChildDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopProductCategoryRelDDL_v1" class="modules.cookbook.ddl.ShopProductCategoryRelDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopProductGroupDDL_v1" class="modules.cookbook.ddl.ShopProductGroupDDL" comment=""/>  
-    <cache enabled="true" prefix="UserAccountDDL_v1" class="modules.cookbook.ddl.UserAccountDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopTogetherDDL_v1" class="modules.cookbook.ddl.ShopTogetherDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopTogetherJoinerDDL_v1" class="modules.cookbook.ddl.ShopTogetherJoinerDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopProductImagesDDL_v1" class="modules.cookbook.ddl.ShopProductImagesDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopProductCommunityDDL_v1" class="modules.cookbook.ddl.ShopProductCommunityDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopProductCommunityRelDDL_v1" class="modules.cookbook.ddl.ShopProductCommunityRelDDL" comment=""/>  
-    <cache enabled="true" prefix="WxAccessTokenDDL_v1" class="modules.cookbook.ddl.WxAccessTokenDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopExpressDDL_v1" class="modules.cookbook.ddl.ShopExpressDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopExpressCodeDDL_v1" class="modules.cookbook.ddl.ShopExpressCodeDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopExpressTracesDDL_v1" class="modules.cookbook.ddl.ShopExpressTracesDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopCouponMngDDL_v1" class="modules.cookbook.ddl.ShopCouponMngDDL" comment=""/>  
-    <cache enabled="true" prefix="CookBookUsersDDL_v1" class="modules.cookbook.ddl.CookBookUsersDDL" comment=""/>  
-    <cache enabled="true" prefix="ShopApplyInfoDDL_v1" class="modules.cookbook.ddl.ShopApplyInfoDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgReadingBooksDDL_v1" class="modules.forg.ddl.ForgReadingBooksDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgReadingContentShotDDL_v1" class="modules.forg.ddl.ForgReadingContentShotDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgReadingRecordDDL_v1" class="modules.forg.ddl.ForgReadingRecordDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgBookFlowDDL_v1" class="modules.forg.ddl.ForgBookFlowDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgRecordFlowDDL_v1" class="modules.forg.ddl.ForgRecordFlowDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgReadingHistoryDDL_v1" class="modules.forg.ddl.ForgReadingHistoryDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgMusicDDL_v1" class="modules.forg.ddl.ForgMusicDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgActivityDDL_v1" class="modules.forg.ddl.ForgActivityDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgMessageIdDDL_v1" class="modules.forg.ddl.ForgMessageIdDDL" comment=""/>  
-    <cache enabled="true" prefix="FormIdsDDL_v1" class="modules.forg.ddl.FormIdsDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgBainianReplayDDL_v1" class="modules.forg.ddl.ForgBainianReplayDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgBainianRecordDDL_v1" class="modules.forg.ddl.ForgBainianRecordDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgBainianCoverDDL_v1" class="modules.forg.ddl.ForgBainianCoverDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgActivityRankDDL_v1" class="modules.forg.ddl.ForgActivityRankDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgReadingRecordsDDL_v1" class="modules.forg.ddl.ForgReadingRecordsDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgCollectDDL_v1" class="modules.forg.ddl.ForgCollectDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgFollowDDL_v1" class="modules.forg.ddl.ForgFollowDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgReadingCommentsDDL_v1" class="modules.forg.ddl.ForgReadingCommentsDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgMiniAppDDL_v1" class="modules.forg.ddl.ForgMiniAppDDL" comment=""/>  
-    <cache enabled="true" prefix="ForgReadSpeedConfigDDL_v1" class="modules.forg.ddl.ForgReadSpeedConfigDDL" comment=""/>  
-    <cache prefix="ForgSuggestDDL_v1" comment="" class="modules.forg.ddl.ForgSuggestDDL" enabled="true"/>  
-    <cache prefix="ShopIndexDDL_v1" comment="" class="modules.cookbook.ddl.ShopIndexDDL" enabled="true"/>  
-    <cache prefix="ShopMngUserDDL_v1" comment="" class="modules.cookbook.ddl.ShopMngUserDDL" enabled="true"/>  
-    <cache prefix="ShopMngSessionDDL_v1" comment="" class="modules.cookbook.ddl.ShopMngSessionDDL" enabled="true"/>  
-    <cache prefix="ShopWetaoDDL_v1" comment="" class="modules.shop.ddl.ShopWetaoDDL" enabled="true"/>  
-    <cache prefix="ShopWetaoCommentDDL_v1" comment="" class="modules.shop.ddl.ShopWetaoCommentDDL" enabled="true"/>  
-    <cache prefix="ShopRefundOrderDDL_v1" comment="" class="modules.shop.ddl.ShopRefundOrderDDL" enabled="true"/>  
-    <cache prefix="ShopCarDDL_v1" comment="" class="modules.shop.ddl.ShopCarDDL" enabled="true"/> 
-  </row-cache>  
-  <!-- List缓存: 基于sql语句的缓
-              sql : sql语句
-              key : 缓存key的唯一标示
-              params : sql语句参数 
-              cache-item : 缓存的列，越少越好
-              offset : 缓存区域下限
-              count : 缓存区域大小
-      -->  
-  <list-cache> 
-    <!--
-        <cache name="demo_list" class="demo.ddl.Demo" prefix="demo_l_" enabled ="true"  comment ="">
-            <sql>select id from demo where t_name=?</sql>
-            <key>id</key>
-            <params>t_name</params>
-            <cache-item>id</cache-item>
-            <offset>0</offset>
-            <count>10</count>
-        </cache>
-        --> 
-  </list-cache> 
+<config>
+    <!-- Row缓存: 只支持通过主键获取数据的情况 prefix: 缓存前缀 enabled: 开关 -->
+    <row-cache>
+        <!--
+            <cache class="demo.ddl.Demo" prefix="demo_r_"  enabled="true"  comment=""/>
+            -->
+        <cache enabled="true" prefix="CookBookChildClassDDL_v1" class="modules.cookbook.ddl.CookBookChildClassDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookParentClassDDL_v1" class="modules.cookbook.ddl.CookBookParentClassDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookInfoDDL_v1" class="modules.cookbook.ddl.CookBookInfoDDL" comment=""/>
+        <cache enabled="true" prefix="CookBookClassRelDDL_v1" class="modules.cookbook.ddl.CookBookClassRelDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookTagDDL_v1" class="modules.cookbook.ddl.CookBookTagDDL" comment=""/>
+        <cache enabled="true" prefix="SmsCodeHistoryDDL_v1" class="modules.cookbook.ddl.SmsCodeHistoryDDL" comment=""/>
+        <cache enabled="true" prefix="CookBookCollectDDL_v1" class="modules.cookbook.ddl.CookBookCollectDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookFavorDDL_v1" class="modules.cookbook.ddl.CookBookFavorDDL" comment=""/>
+        <cache enabled="true" prefix="BaiduAccessTokenDDL_v1" class="modules.cookbook.ddl.BaiduAccessTokenDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookMomentDDL_v1" class="modules.cookbook.ddl.CookBookMomentDDL" comment=""/>
+        <cache enabled="true" prefix="CookBookMomentCommentDDL_v1" class="modules.cookbook.ddl.CookBookMomentCommentDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookMomentTimeLineDDL_v1"
+               class="modules.cookbook.ddl.CookBookMomentTimeLineDDL" comment=""/>
+        <cache enabled="true" prefix="CookBookFavorClassDDL_v1" class="modules.cookbook.ddl.CookBookFavorClassDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookCollectStatDDL_v1" class="modules.cookbook.ddl.CookBookCollectStatDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookViewStatDDL_v1" class="modules.cookbook.ddl.CookBookViewStatDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookFavorStatDDL_v1" class="modules.cookbook.ddl.CookBookFavorStatDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookMenuDDL_v1" class="modules.cookbook.ddl.CookBookMenuDDL" comment=""/>
+        <cache enabled="true" prefix="CookBookMenuRelDDL_v1" class="modules.cookbook.ddl.CookBookMenuRelDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookMaterialSelectDDL_v1"
+               class="modules.cookbook.ddl.CookBookMaterialSelectDDL" comment=""/>
+        <cache enabled="true" prefix="CookBookSubjectDDL_v1" class="modules.cookbook.ddl.CookBookSubjectDDL"
+               comment=""/>
+        <cache enabled="true" prefix="BaiduAiDishDDL_v1" class="modules.cookbook.ddl.BaiduAiDishDDL" comment=""/>
+        <cache enabled="true" prefix="CookBookMemuCommentDDL_v1" class="modules.cookbook.ddl.CookBookMemuCommentDDL"
+               comment=""/>
+        <cache enabled="true" prefix="CookBookMemuFavorDDL_v1" class="modules.cookbook.ddl.CookBookMemuFavorDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ShopProductDDL_v1" class="modules.cookbook.ddl.ShopProductDDL" comment=""/>
+        <cache enabled="true" prefix="ShopOrderDDL_v1" class="modules.cookbook.ddl.ShopOrderDDL" comment=""/>
+        <cache enabled="true" prefix="ShopProductAttrDDL_v1" class="modules.cookbook.ddl.ShopProductAttrDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ShopProductAttrRelDDL_v1" class="modules.cookbook.ddl.ShopProductAttrRelDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ShopProductCategoryDDL_v1" class="modules.cookbook.ddl.ShopProductCategoryDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ShopProductCategoryChildDDL_v1"
+               class="modules.cookbook.ddl.ShopProductCategoryChildDDL" comment=""/>
+        <cache enabled="true" prefix="ShopProductCategoryRelDDL_v1"
+               class="modules.cookbook.ddl.ShopProductCategoryRelDDL" comment=""/>
+        <cache enabled="true" prefix="ShopProductGroupDDL_v1" class="modules.cookbook.ddl.ShopProductGroupDDL"
+               comment=""/>
+        <cache enabled="true" prefix="UserAccountDDL_v1" class="modules.cookbook.ddl.UserAccountDDL" comment=""/>
+        <cache enabled="true" prefix="ShopTogetherDDL_v1" class="modules.cookbook.ddl.ShopTogetherDDL" comment=""/>
+        <cache enabled="true" prefix="ShopTogetherJoinerDDL_v1" class="modules.cookbook.ddl.ShopTogetherJoinerDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ShopProductImagesDDL_v1" class="modules.cookbook.ddl.ShopProductImagesDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ShopProductCommunityDDL_v1" class="modules.cookbook.ddl.ShopProductCommunityDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ShopProductCommunityRelDDL_v1"
+               class="modules.cookbook.ddl.ShopProductCommunityRelDDL" comment=""/>
+        <cache enabled="true" prefix="WxAccessTokenDDL_v1" class="modules.cookbook.ddl.WxAccessTokenDDL" comment=""/>
+        <cache enabled="true" prefix="ShopExpressDDL_v1" class="modules.cookbook.ddl.ShopExpressDDL" comment=""/>
+        <cache enabled="true" prefix="ShopExpressCodeDDL_v1" class="modules.cookbook.ddl.ShopExpressCodeDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ShopExpressTracesDDL_v1" class="modules.cookbook.ddl.ShopExpressTracesDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ShopCouponMngDDL_v1" class="modules.cookbook.ddl.ShopCouponMngDDL" comment=""/>
+        <cache enabled="true" prefix="CookBookUsersDDL_v1" class="modules.cookbook.ddl.CookBookUsersDDL" comment=""/>
+        <cache enabled="true" prefix="ShopApplyInfoDDL_v1" class="modules.cookbook.ddl.ShopApplyInfoDDL" comment=""/>
+        <cache enabled="true" prefix="ForgReadingBooksDDL_v1" class="modules.forg.ddl.ForgReadingBooksDDL" comment=""/>
+        <cache enabled="true" prefix="ForgReadingContentShotDDL_v1" class="modules.forg.ddl.ForgReadingContentShotDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ForgReadingRecordDDL_v1" class="modules.forg.ddl.ForgReadingRecordDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ForgBookFlowDDL_v1" class="modules.forg.ddl.ForgBookFlowDDL" comment=""/>
+        <cache enabled="true" prefix="ForgRecordFlowDDL_v1" class="modules.forg.ddl.ForgRecordFlowDDL" comment=""/>
+        <cache enabled="true" prefix="ForgReadingHistoryDDL_v1" class="modules.forg.ddl.ForgReadingHistoryDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ForgMusicDDL_v1" class="modules.forg.ddl.ForgMusicDDL" comment=""/>
+        <cache enabled="true" prefix="ForgActivityDDL_v1" class="modules.forg.ddl.ForgActivityDDL" comment=""/>
+        <cache enabled="true" prefix="ForgMessageIdDDL_v1" class="modules.forg.ddl.ForgMessageIdDDL" comment=""/>
+        <cache enabled="true" prefix="FormIdsDDL_v1" class="modules.forg.ddl.FormIdsDDL" comment=""/>
+        <cache enabled="true" prefix="ForgBainianReplayDDL_v1" class="modules.forg.ddl.ForgBainianReplayDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ForgBainianRecordDDL_v1" class="modules.forg.ddl.ForgBainianRecordDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ForgBainianCoverDDL_v1" class="modules.forg.ddl.ForgBainianCoverDDL" comment=""/>
+        <cache enabled="true" prefix="ForgActivityRankDDL_v1" class="modules.forg.ddl.ForgActivityRankDDL" comment=""/>
+        <cache enabled="true" prefix="ForgReadingRecordsDDL_v1" class="modules.forg.ddl.ForgReadingRecordsDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ForgCollectDDL_v1" class="modules.forg.ddl.ForgCollectDDL" comment=""/>
+        <cache enabled="true" prefix="ForgFollowDDL_v1" class="modules.forg.ddl.ForgFollowDDL" comment=""/>
+        <cache enabled="true" prefix="ForgReadingCommentsDDL_v1" class="modules.forg.ddl.ForgReadingCommentsDDL"
+               comment=""/>
+        <cache enabled="true" prefix="ForgMiniAppDDL_v1" class="modules.forg.ddl.ForgMiniAppDDL" comment=""/>
+        <cache enabled="true" prefix="ForgReadSpeedConfigDDL_v1" class="modules.forg.ddl.ForgReadSpeedConfigDDL"
+               comment=""/>
+        <cache prefix="ForgSuggestDDL_v1" comment="" class="modules.forg.ddl.ForgSuggestDDL" enabled="true"/>
+        <cache prefix="ShopIndexDDL_v1" comment="" class="modules.cookbook.ddl.ShopIndexDDL" enabled="true"/>
+        <cache prefix="ShopMngUserDDL_v1" comment="" class="modules.cookbook.ddl.ShopMngUserDDL" enabled="true"/>
+        <cache prefix="ShopMngSessionDDL_v1" comment="" class="modules.cookbook.ddl.ShopMngSessionDDL" enabled="true"/>
+        <cache prefix="ShopWetaoDDL_v1" comment="" class="modules.shop.ddl.ShopWetaoDDL" enabled="true"/>
+        <cache prefix="ShopWetaoCommentDDL_v1" comment="" class="modules.shop.ddl.ShopWetaoCommentDDL" enabled="true"/>
+        <cache prefix="ShopRefundOrderDDL_v1" comment="" class="modules.shop.ddl.ShopRefundOrderDDL" enabled="true"/>
+        <cache prefix="ShopCarDDL_v1" comment="" class="modules.shop.ddl.ShopCarDDL" enabled="true"/>
+    </row-cache>
+    <!-- List缓存: 基于sql语句的缓
+                sql : sql语句
+                key : 缓存key的唯一标示
+                params : sql语句参数
+                cache-item : 缓存的列，越少越好
+                offset : 缓存区域下限
+                count : 缓存区域大小
+        -->
+    <list-cache>
+        <!--
+            <cache name="demo_list" class="demo.ddl.Demo" prefix="demo_l_" enabled ="true"  comment ="">
+                <sql>select id from demo where t_name=?</sql>
+                <key>id</key>
+                <params>t_name</params>
+                <cache-item>id</cache-item>
+                <offset>0</offset>
+                <count>10</count>
+            </cache>
+            -->
+    </list-cache>
 </config>

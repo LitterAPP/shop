@@ -3,12 +3,12 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link type="text/css" rel="styleSheet"  href="../../css/productMng.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/table.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/search.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/page.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+    <link type="text/css" rel="styleSheet" href="../../css/productMng.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/table.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/search.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/mask.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/page.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/common.css"/>
 </head>
 <body>
 <div id="productMng" style="margin-bottom: 50px;">
@@ -18,11 +18,11 @@
         </div>
     </div>
     <div class="search">
-        <div>商品ID：<input  v-model="condition.productId" type="text" placeholder="商品ID"/></div>
-        <div>商品名：<input v-model="condition.productName"  type="text" placeholder="商品名"/></div>
+        <div>商品ID：<input v-model="condition.productId" type="text" placeholder="商品ID"/></div>
+        <div>商品名：<input v-model="condition.productName" type="text" placeholder="商品名"/></div>
         <div>状态：
             <select v-model="condition.status.selected">
-                <option  value="-1">请选择</option>
+                <option value="-1">请选择</option>
                 <option v-for="option in condition.status.options" v-bind:value="option.value">
                     {{ option.text }}
                 </option>
@@ -30,7 +30,7 @@
         </div>
         <div>秒杀：
             <select v-model="condition.joinSeckillings.selected">
-                <option  value="-1">请选择</option>
+                <option value="-1">请选择</option>
                 <option v-for="option in condition.joinSeckillings.options" v-bind:value="option.value">
                     {{ option.text }}
                 </option>
@@ -40,7 +40,7 @@
 
         <div>一级分类：
             <select v-on:change="pCategoryChanged" v-model="condition.pCategory.selected">
-                <option  value="">请选择</option>
+                <option value="">请选择</option>
                 <option v-for="option in condition.pCategory.options" v-bind:value="option.value">
                     {{ option.text }}
                 </option>
@@ -48,8 +48,8 @@
         </div>
         <div v-if="condition.subCategory">二级分类：
             <select v-on:change="subCategoryChanged" v-model="condition.subCategory.selected">
-                <option  value="">请选择</option>
-                <option  v-for="option in condition.subCategory.options" v-bind:value="option.value">
+                <option value="">请选择</option>
+                <option v-for="option in condition.subCategory.options" v-bind:value="option.value">
                     {{ option.text }}
                 </option>
             </select>
@@ -59,11 +59,11 @@
         </div>
 
         <div style="display: block;margin-top: 10px;">
-            <button class="button1"  @click="addProduct">新增</button>
-            <button class="button1"  data-flag="1" @click="operator">下架/下架</button>
-            <button class="button1"  data-flag="2" @click="operator">标为热门/非热门</button>
-            <button class="button1"  data-flag="3" @click="operator">标为打折/非打折</button>
-            <button class="button1"  data-flag="4" @click="operator">关闭秒杀活动</button>
+            <button class="button1" @click="addProduct">新增</button>
+            <button class="button1" data-flag="1" @click="operator">下架/下架</button>
+            <button class="button1" data-flag="2" @click="operator">标为热门/非热门</button>
+            <button class="button1" data-flag="3" @click="operator">标为打折/非打折</button>
+            <button class="button1" data-flag="4" @click="operator">关闭秒杀活动</button>
             <span>(操作总是根据当前商品的状态取反)</span>
         </div>
     </div>
@@ -71,29 +71,30 @@
 
     <table width="100%" border="1" class="t1">
         <thead>
-            <th width="8%">选择</th>
-            <th width="10%">商品ID</th>
-            <th width="18%">商品名称</th>
-            <th width="8%">商品原价</th>
-            <th width="8%">商品现价</th>
-            <th width="8%">是否参团</th>
-            <th width="8%">团购价</th>
-            <th width="8%">库存</th>
-            <th width="8%">状态</th>
-            <th width="8%">PV</th>
-            <th width="8%">交易量</th>
-            <th width="8%">是否热门</th>
-            <th width="8%">是否打折</th>
-            <th width="8%">参加秒杀</th>
-            <th width="8%">秒杀价格</th>
-            <th width="8%">秒杀时段</th>
-            <th width="8%">创建时间</th>
-            <th width="8%">修改时间</th>
-            <th width="8%">编辑</th>
+        <th width="8%">选择</th>
+        <th width="10%">商品ID</th>
+        <th width="18%">商品名称</th>
+        <th width="8%">商品原价</th>
+        <th width="8%">商品现价</th>
+        <th width="8%">是否参团</th>
+        <th width="8%">团购价</th>
+        <th width="8%">库存</th>
+        <th width="8%">状态</th>
+        <th width="8%">PV</th>
+        <th width="8%">交易量</th>
+        <th width="8%">是否热门</th>
+        <th width="8%">是否打折</th>
+        <th width="8%">参加秒杀</th>
+        <th width="8%">秒杀价格</th>
+        <th width="8%">秒杀时段</th>
+        <th width="8%">创建时间</th>
+        <th width="8%">修改时间</th>
+        <th width="8%">编辑</th>
         </thead>
-        <tr  v-for="item in list">
+        <tr v-for="item in list">
             <td>
-                <input style="height: 15px;width: 15px;" v-bind:id="item.productId" v-bind:value="item.productId" type="checkbox" v-model="productIdChecked" />
+                <input style="height: 15px;width: 15px;" v-bind:id="item.productId" v-bind:value="item.productId"
+                       type="checkbox" v-model="productIdChecked"/>
             </td>
             <td>{{item.productId}}</td>
             <td>{{item.productName}}</td>
@@ -106,33 +107,35 @@
             <td>{{item.sotre}}</td>
 
             <td v-if="item.status==1" class="table-cell">上架</td>
-            <td v-else  class="table-cell">下架</td>
+            <td v-else class="table-cell">下架</td>
 
             <td>{{item.pv}}</td>
             <td>{{item.deal}}</td>
 
             <td v-if="item.isHot" class="table-cell">是</td>
-            <td v-else  class="table-cell">否</td>
+            <td v-else class="table-cell">否</td>
 
             <td v-if="item.isSale" class="table-cell">是</td>
-            <td v-else  class="table-cell">否</td>
+            <td v-else class="table-cell">否</td>
 
             <td v-if="item.joinSeckilling==1" class="table-cell">是</td>
-            <td v-else  class="table-cell">否</td>
+            <td v-else class="table-cell">否</td>
             <td>{{item.seckillingPrice}}</td>
             <td>{{item.seckillingTime}}</td>
 
             <td>{{item.createTime}}</td>
             <td>{{item.updateTime}}</td>
 
-            <td> <button  class="button1"  v-bind:data-productid="item.productId"  @click="edit">编辑</button></td>
+            <td>
+                <button class="button1" v-bind:data-productid="item.productId" @click="edit">编辑</button>
+            </td>
         </tr>
     </table>
 
     <div v-cloak class="pageInfo">
         <div v-cloak data-flag="-1" @click="more">&lt;&lt;上一页</div>
         {{page}}/{{pageTotal}}
-        <div v-cloak  data-flag="1" @click="more">下一页&gt;&gt;</div>
+        <div v-cloak data-flag="1" @click="more">下一页&gt;&gt;</div>
     </div>
 
 </div>
@@ -142,12 +145,12 @@
 <script src="../../js/productMng.js"></script>
 <script>
     var flag = true
-    $(document).ready(function(){
-        $("table").bind("dblclick",function(){
-            if(flag){
-                $(this).attr('width',2000)
-            }else{
-                $(this).attr('width','100%')
+    $(document).ready(function () {
+        $("table").bind("dblclick", function () {
+            if (flag) {
+                $(this).attr('width', 2000)
+            } else {
+                $(this).attr('width', '100%')
             }
             flag = !flag;
         })

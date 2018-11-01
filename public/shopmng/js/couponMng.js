@@ -7,99 +7,93 @@
 /**
  * Created by fish on 2018/3/29.
  */
-var pageSize=15
+var pageSize = 15
 var couponMng = new Vue({
     el: '#couponMng',
     data: {
-        list:[
-
-        ],
-        condition:{
-            couponId:'',
-            keyword:'',
+        list: [],
+        condition: {
+            couponId: '',
+            keyword: '',
         },
-        mask:false,
-        mastText:'',
-        total:0,
-        pageTotal:0,
-        page:1
+        mask: false,
+        mastText: '',
+        total: 0,
+        pageTotal: 0,
+        page: 1
     },
-    watch:{
-
-    },
-    computed:{
-
-    },
-    methods:{
-        edit:function(e){
+    watch: {},
+    computed: {},
+    methods: {
+        edit: function (e) {
             var couponId = e.target.dataset.couponid
-            window.location.href='../func/addCoupon.html?couponId='+couponId
+            window.location.href = '../func/addCoupon.html?couponId=' + couponId
         },
-        add:function(){
-            window.location.href='../func/addCoupon.html'
+        add: function () {
+            window.location.href = '../func/addCoupon.html'
         },
-        getCondition:function(){
+        getCondition: function () {
             var params = {}
             params.couponId = this.condition.couponId || ''
             params.keyword = this.condition.keyword || ''
             return params
         },
-        search:function() {
+        search: function () {
             var that = this
             var params = this.getCondition()
-            that.page=1
-            that.listCoupon(params.couponId,params.keyword,that.page,pageSize,false)
+            that.page = 1
+            that.listCoupon(params.couponId, params.keyword, that.page, pageSize, false)
         },
-        more:function(event){
+        more: function (event) {
             var that = this
             var flag = parseInt(event.target.dataset.flag)
-            if(flag==1){
+            if (flag == 1) {
                 that.page += parseInt(event.target.dataset.flag)
-                if(that.page > that.pageTotal){
+                if (that.page > that.pageTotal) {
                     that.page = that.pageTotal
                     return
                 }
-            }else if(flag==-1  ){
+            } else if (flag == -1) {
                 that.page += parseInt(event.target.dataset.flag)
-                if(that.page<=0){
-                    that.page=1
-                    return ;
+                if (that.page <= 0) {
+                    that.page = 1
+                    return;
                 }
             }
             var params = this.getCondition()
-            this.listCoupon(params.couponId,params.keyword,that.page,pageSize,false)
+            this.listCoupon(params.couponId, params.keyword, that.page, pageSize, false)
         },
-        listCoupon: function (couponId,keyword,page,pageSize,append) {
+        listCoupon: function (couponId, keyword, page, pageSize, append) {
             var that = this
-            showLoading(that,'请稍后,正在加载代金券列表...')
+            showLoading(that, '请稍后,正在加载代金券列表...')
             $.ajax({
-                url:listCouponURL,
-                type:'POST',
-                dataType:'json',
-                data:{
-                    couponId:couponId,
-                    keyword:keyword,
-                    page:page,
-                    pageSize:pageSize
+                url: listCouponURL,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    couponId: couponId,
+                    keyword: keyword,
+                    page: page,
+                    pageSize: pageSize
                 },
-                success:function(result){
+                success: function (result) {
                     console.log(result)
-                    if(result && result.code==1 && result.data){
+                    if (result && result.code == 1 && result.data) {
                         hideLoading(that)
                         that.total = result.data.total
                         that.pageTotal = result.data.pageTotal
-                        if(append){
-                            var index = that.list.length-1
-                            for(var i in result.data.list){
+                        if (append) {
+                            var index = that.list.length - 1
+                            for (var i in result.data.list) {
                                 index++
                                 that.list.push(result.data.list[i])
-                                Vue.set(that.list,index,result.data.list[i])
+                                Vue.set(that.list, index, result.data.list[i])
                             }
-                        }else{
-                            that.list  = result.data.list
+                        } else {
+                            that.list = result.data.list
                         }
-                    }else{
-                        toast(that,'加载代金券列表失败')
+                    } else {
+                        toast(that, '加载代金券列表失败')
                     }
 
 
@@ -107,17 +101,17 @@ var couponMng = new Vue({
             })
         }
     },
-    created:function(){
+    created: function () {
         console.log('created')
         //检测登录态
         var that = this
-        checkLogin(function(result){
-            if(result && result.code==1){
+        checkLogin(function (result) {
+            if (result && result.code == 1) {
                 console.log('登录态校验成功.')
-            }else{
-                window.parent.location.href='../../html/login.html'
+            } else {
+                window.parent.location.href = '../../html/login.html'
             }
         })
-        that.listCoupon('','',1,pageSize,false)
+        that.listCoupon('', '', 1, pageSize, false)
     },
 })

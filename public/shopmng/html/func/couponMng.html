@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 
-    <link type="text/css" rel="styleSheet"  href="../../css/couponMng.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/table.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/search.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/mask.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/page.css" />
-    <link type="text/css" rel="styleSheet"  href="../../css/common.css" />
+    <link type="text/css" rel="styleSheet" href="../../css/couponMng.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/table.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/search.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/mask.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/page.css"/>
+    <link type="text/css" rel="styleSheet" href="../../css/common.css"/>
 </head>
 <body>
 <div id="couponMng" style="margin-bottom: 50px;">
@@ -19,8 +19,8 @@
         </div>
     </div>
     <div class="search">
-        <div>代金券ID：<input  v-model="condition.couponId" type="text" placeholder=" 代金券ID"/></div>
-        <div>搜索关键字：<input v-model="condition.keyword"  type="text" placeholder="关键字"/></div>
+        <div>代金券ID：<input v-model="condition.couponId" type="text" placeholder=" 代金券ID"/></div>
+        <div>搜索关键字：<input v-model="condition.keyword" type="text" placeholder="关键字"/></div>
         <div>
             <button class="button1" @click="search">查询</button>
             <button class="button1" @click="add">新建</button>
@@ -31,19 +31,19 @@
 
     <table width="100%" border="1" class="t1">
         <thead>
-            <th width="10%">代金券ID</th>
-            <th width="10%">代金券名称</th>
-            <th width="10%">面额</th>
-            <th width="10%">限商品ID</th>
-            <th width="10%">限支付额度</th>
-            <th width="10%">限领取次数</th>
-            <th width="10%">开始领取时间</th>
-            <th width="10%">结束领取时间</th>
-            <th width="10%">过期时间</th>
-            <th width="10%">创建时间</th>
-            <th width="10%">操作</th>
+        <th width="10%">代金券ID</th>
+        <th width="10%">代金券名称</th>
+        <th width="10%">面额</th>
+        <th width="10%">限商品ID</th>
+        <th width="10%">限支付额度</th>
+        <th width="10%">限领取次数</th>
+        <th width="10%">开始领取时间</th>
+        <th width="10%">结束领取时间</th>
+        <th width="10%">过期时间</th>
+        <th width="10%">创建时间</th>
+        <th width="10%">操作</th>
         </thead>
-        <tr  v-for="item in list">
+        <tr v-for="item in list">
             <td>{{item.couponId}}</td>
             <td>{{item.couponName}}</td>
             <td>{{item.amount}}</td>
@@ -64,7 +64,7 @@
     <div v-cloak class="pageInfo">
         <div v-cloak data-flag="-1" @click="more">&lt;&lt;上一页</div>
         {{page}}/{{pageTotal}}
-        <div v-cloak  data-flag="1" @click="more">下一页&gt;&gt;</div>
+        <div v-cloak data-flag="1" @click="more">下一页&gt;&gt;</div>
     </div>
 
 </div>
@@ -74,12 +74,12 @@
 <script src="../../js/couponMng.js"></script>
 <script>
     var flag = true
-    $(document).ready(function(){
-        $("table").bind("dblclick",function(){
-            if(flag){
-                $(this).attr('width',2000)
-            }else{
-                $(this).attr('width','100%')
+    $(document).ready(function () {
+        $("table").bind("dblclick", function () {
+            if (flag) {
+                $(this).attr('width', 2000)
+            } else {
+                $(this).attr('width', '100%')
             }
             flag = !flag;
         })

@@ -1,4 +1,4 @@
-.search{
+.search {
     padding: 5px;
     border: 1px solid #E0EEEE;
     margin-bottom: 10px;
@@ -6,10 +6,12 @@
     font-size: 14px;
     margin: 10px 10px;
 }
-.search div{
+
+.search div {
     display: inline-block;
     margin-left: 10px;
 }
+
 [v-cloak] {
     display: none;
 }

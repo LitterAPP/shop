@@ -1,40 +1,47 @@
-.container{
-   margin: 10px 10px;
+.container {
+    margin: 10px 10px;
     border: 1px solid #E0EEEE;
 }
-.pcat{
-    background:#fff;
+
+.pcat {
+    background: #fff;
     padding: 10px;
 }
-.pcat input{
+
+.pcat input {
     font-weight: bold;
 }
-.pcat div{
-    display:  inline-block;
-}
 
-.subcat{
-    margin:10px  40px;
-}
-.subcat div{
+.pcat div {
     display: inline-block;
 }
 
-.add{
+.subcat {
+    margin: 10px 40px;
+}
+
+.subcat div {
+    display: inline-block;
+}
+
+.add {
     margin: 10px 10px;
     padding: 10px 10px;
 }
 
-.add div{
+.add div {
     display: inline-block;
 }
-.sort{
-    background:#FFE4C4;
+
+.sort {
+    background: #FFE4C4;
 }
-.add-sub{
+
+.add-sub {
 
 }
-.add-sub div{
+
+.add-sub div {
     display: inline-block;
     margin: 10px 40px;
 }

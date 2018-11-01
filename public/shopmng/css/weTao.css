@@ -1,4 +1,4 @@
-.topPlaceHolder{
+.topPlaceHolder {
     height: 75px;
     width: 100%;
     background: rgba(0, 255, 255, 0);
@@ -7,33 +7,42 @@
 [v-cloak] {
     display: none;
 }
-.tips{
-    animation:mySecond 5s;
+
+.tips {
+    animation: mySecond 5s;
     text-align: center;
     height: 45px;
     line-height: 45px;
-    font-size:13px;
+    font-size: 13px;
 }
 
-@keyframes myfirst
-{
-    from {background: rgba(0,0,0,0.9);}
-    to {background: rgba(0,0,0,0);}
+@keyframes myfirst {
+    from {
+        background: rgba(0, 0, 0, 0.9);
+    }
+    to {
+        background: rgba(0, 0, 0, 0);
+    }
 }
 
-@keyframes mySecond
-{
-    from {background: #810020;color: #fff;}
-    to {background: #fff;color:#fff;}
+@keyframes mySecond {
+    from {
+        background: #810020;
+        color: #fff;
+    }
+    to {
+        background: #fff;
+        color: #fff;
+    }
 }
 
 .top-title {
-    font-family:Microsoft Yahei,"Times New Roman",Georgia,Serif;
-    font-size:18px;
-    color:#000;
+    font-family: Microsoft Yahei, "Times New Roman", Georgia, Serif;
+    font-size: 18px;
+    color: #000;
 }
 
-.top{
+.top {
     position: fixed;
     width: 100%;
     top: 0px;
@@ -48,57 +57,67 @@
     background: #fff;
     border-bottom: 1px solid #f2f2f2;
 }
-.container{
+
+.container {
     padding: 10px 10px;
     background: #fff;
     margin-bottom: 10px;
 }
-.title{
-    overflow:hidden;
-    text-overflow:ellipsis;
-    display:-webkit-box;
-    -webkit-box-orient:vertical;
-    -webkit-line-clamp:4;
+
+.title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
     font-size: 15px;
     color: #333333;
     word-break: break-all;
 }
-.images{
-    margin-top:10px ;
+
+.images {
+    margin-top: 10px;
     height: 100px;
     width: 100px;
     display: inline-block;
     margin: 3px;
 }
 
-.images img{
+.images img {
     width: auto;
     height: auto;
     max-width: 100%;
     max-height: 100%;
 }
 
-.bottom{
+.bottom {
     height: 45px;
     line-height: 45px;
 
 }
-.bottom div{
+
+.bottom div {
     display: inline-block;
 }
-.wrap{
-    margin-left:10px;
+
+.wrap {
+    margin-left: 10px;
 
 }
-.wrap *{display:inline-block;vertical-align:middle}
 
-.wrap img{
+.wrap * {
+    display: inline-block;
+    vertical-align: middle
+}
+
+.wrap img {
     height: 20px;
     width: 20px;
     display: inline-block;
     vertical-align: text-bottom;
 }
-.bottom span{
-    font-size:10px;
+
+.bottom span {
+    font-size: 10px;
     color: #cbcbcb;
 }

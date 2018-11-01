@@ -5,7 +5,7 @@ var frame = new Vue({
     el: '#frame',
     data: {
         contentSrc: '../html/wellcome.html',
-        userName:''
+        userName: ''
     },
     computed: {
         innerHeight: function () {
@@ -15,41 +15,39 @@ var frame = new Vue({
             return window.innerWidth
         }
     },
-    methods:{
-
-    },
-    created:function(){
+    methods: {},
+    created: function () {
         console.log('created')
         //检测登录态
         var that = this
-        checkLogin(function(result){
-            if(result && result.code==1){
+        checkLogin(function (result) {
+            if (result && result.code == 1) {
                 console.log('登录态校验成功.')
                 that.userName = result.data.userName
-            }else{
-                window.parent.location.href='./login.html'
+            } else {
+                window.parent.location.href = './login.html'
             }
         })
     },
-    beforeMount:function(){
+    beforeMount: function () {
         console.log('beforeMount')
     },
-    mounted:function(){
+    mounted: function () {
         console.log('mounted')
 
     },
-    beforeUpdate:function(){
+    beforeUpdate: function () {
         console.log('beforeUpdate')
     },
-    updated:function(){
+    updated: function () {
         console.log('updated')
 
     }
     ,
-    beforeDestroy:function(){
+    beforeDestroy: function () {
         console.log('beforeDestroy')
     },
-    destroyed:function(){
+    destroyed: function () {
         console.log('destroyed')
     }
 })

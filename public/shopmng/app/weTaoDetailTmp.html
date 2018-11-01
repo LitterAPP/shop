@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <title>微淘</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link type="text/css" rel="styleSheet"  href="/shopmng/css/mask.css" />
-    <link type="text/css" rel="styleSheet"  href="../css/weTao.css" />
+    <link type="text/css" rel="styleSheet" href="/shopmng/css/mask.css"/>
+    <link type="text/css" rel="styleSheet" href="../css/weTao.css"/>
     <meta name="title" content="${detail.seoTitle}">
     <meta name="keywords" content="${detail.seoKey}">
-    <meta name="description" content="${detail.seoDesc}" />
+    <meta name="description" content="${detail.seoDesc}"/>
 </head>
 <body style="background: #E0EEEE;margin: auto;">
 <div id="weTao">
@@ -19,8 +19,8 @@
         </div>
     </div>
 
-    <div class="container" style="" v-for="item in list" >
-        <div style="cursor: pointer;z-index:99;" @click.stop="getDetail"  v-bind:data-id="item.id">
+    <div class="container" style="" v-for="item in list">
+        <div style="cursor: pointer;z-index:99;" @click.stop="getDetail" v-bind:data-id="item.id">
             <div class="">
                 <span v-html="item.content"></span>
             </div>
@@ -40,7 +40,7 @@
                 </div>
                 <div style="float: right;">
                     <div class="wrap">
-                        <img v-if="item.isZan" src="../images/zan-1.png"  @click.stop="zan" v-bind:data-id="item.id" >
+                        <img v-if="item.isZan" src="../images/zan-1.png" @click.stop="zan" v-bind:data-id="item.id">
                         <img @click.stop="zan" v-bind:data-id="item.id" v-else src="../images/zan-0.png">
                         <span>{{item.zan}}</span>
                     </div>
@@ -53,7 +53,8 @@
         </div>
     </div>
     <div class="top">
-        <img @click="goBackMinapp" src="/public/shopmng/images/pull_down_icon.png" style="height:30px;width:30px;transform: rotate(90deg);">
+        <img @click="goBackMinapp" src="/public/shopmng/images/pull_down_icon.png"
+             style="height:30px;width:30px;transform: rotate(90deg);">
         <span class="top-title">微淘</span>
     </div>
 </div>
@@ -63,8 +64,8 @@
 <script src="/public/shopmng/js/config.js"></script>
 <script src="/public/shopmng/js/weTao.js"></script>
 <script>
-    $(document).ready(function(){
-        $("a").click(function(){
+    $(document).ready(function () {
+        $("a").click(function () {
             alert('test')
             return false
         });

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config> 
+<config>
     <!--虚拟库配置
         name: 业务关注的虚拟数据源名称
                    对cluster,r_cluster,w_cluster三个选项，必须要存在一个，具体使用场景：
@@ -13,18 +13,18 @@
         1）对使用ucmha的，需要确保同一个虚拟池中中配置的proxy是连到相同的后台DB；
         2）使用读写分离的，需要确保同一个虚拟池中的节点连接的后台数据库配置了主从同步，且写连到主库，读连接到从库；
         -->
-    
-        <!--ucmha配置虚拟数据源示例-->
-        <!--
-        <virtual-db name="vdb_01" cluster="p1_db_01,p2_db_01" check_cycle="5"/> 
-        <virtual-db name="vdb_02" cluster="p1_db_02,p2_db_02" check_cycle="5"/> 
-        -->
-        <!--读写分离配置虚拟数据源示例-->
-        <!--
-        <virtual-db name="vdb_01" r_cluster="db_01_r1,db_01_r2" w_cluster="db_01_w" check_cycle="5"/> 
-        <virtual-db name="vdb_02" r_cluster="db_02_r1,db_02_r2" w_cluster="db_02_w" check_cycle="5"/> 
-        -->
-        
-     	<virtual-db name="shop_db" cluster="shop_db_0" check_cycle="10"/>
+
+    <!--ucmha配置虚拟数据源示例-->
+    <!--
+    <virtual-db name="vdb_01" cluster="p1_db_01,p2_db_01" check_cycle="5"/>
+    <virtual-db name="vdb_02" cluster="p1_db_02,p2_db_02" check_cycle="5"/>
+    -->
+    <!--读写分离配置虚拟数据源示例-->
+    <!--
+    <virtual-db name="vdb_01" r_cluster="db_01_r1,db_01_r2" w_cluster="db_01_w" check_cycle="5"/>
+    <virtual-db name="vdb_02" r_cluster="db_02_r1,db_02_r2" w_cluster="db_02_w" check_cycle="5"/>
+    -->
+
+    <virtual-db name="shop_db" cluster="shop_db_0" check_cycle="10"/>
 
 </config>

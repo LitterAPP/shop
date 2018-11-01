@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <title>商铺管理后台</title>
-    <link type="text/css" rel="styleSheet"  href="../css/index.css" />
+    <link type="text/css" rel="styleSheet" href="../css/index.css"/>
     <meta name="title" content="小程序电商后台">
     <meta name="keywords" content="小程序商店,一键生成小程序商店,快速生成小程序商店,小程序微店,小程序店铺,小程序开店">
-    <meta name="description" content="快速注册，永久免费小程序商店" />
+    <meta name="description" content="快速注册，永久免费小程序商店"/>
 </head>
 <body>
 <div id="frame">
@@ -16,7 +16,7 @@
             <iframe frameborder="0" src="../html/common/nav.html"></iframe>
         </div>
         <div class="content">
-            <iframe id="contentFrame" frameborder="0"  v-bind:src="contentSrc"></iframe>
+            <iframe id="contentFrame" frameborder="0" v-bind:src="contentSrc"></iframe>
         </div>
     </div>
 </div>
@@ -25,13 +25,13 @@
 <script src="../js/config.js"></script>
 <script src="../js/index.js"></script>
 <script>
-    $(".nav").css("height",window.innerHeight)
-    $(".content").css("height",window.innerHeight)
-    $(".content").css("width",window.innerWidth-80-30)
-    $(window).resize(function() {
-        $(".content").css("width",window.innerWidth-80-30)
-        $(".nav").css("height",window.innerHeight)
-        $(".content").css("height",window.innerHeight)
+    $(".nav").css("height", window.innerHeight)
+    $(".content").css("height", window.innerHeight)
+    $(".content").css("width", window.innerWidth - 80 - 30)
+    $(window).resize(function () {
+        $(".content").css("width", window.innerWidth - 80 - 30)
+        $(".nav").css("height", window.innerHeight)
+        $(".content").css("height", window.innerHeight)
     });
 </script>
 </body>

@@ -4,46 +4,42 @@
 var overview = new Vue({
     el: '#overview',
     data: {
-        today:{
-            orderCount:0,
-            orderTogetherCount:0,
-            productCount:0,
-            deliverCount:0,
-            orderAmountSum:0
+        today: {
+            orderCount: 0,
+            orderTogetherCount: 0,
+            productCount: 0,
+            deliverCount: 0,
+            orderAmountSum: 0
         },
-        yestoday:{
-            orderCount:0,
-            orderTogetherCount:0,
-            productCount:0,
-            deliverCount:0,
-            orderAmountSum:0
+        yestoday: {
+            orderCount: 0,
+            orderTogetherCount: 0,
+            productCount: 0,
+            deliverCount: 0,
+            orderAmountSum: 0
         }
     },
-    computed: {
-
-    },
-    methods:{
-
-    },
-    created:function(){
+    computed: {},
+    methods: {},
+    created: function () {
         var that = this
         console.log('created')
         $.ajax({
-            url:dataOverViewUrl,
-            type:'POST',
-            dataType:'json',
-            data:{
-                flag:1,
-                beginTime:'',
-                endTime:''
+            url: dataOverViewUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                flag: 1,
+                beginTime: '',
+                endTime: ''
             },
-            success:function(result){
-                var tmp={
-                    orderCount:0,
-                    orderTogetherCount:0,
-                    productCount:0,
-                    deliverCount:0,
-                    orderAmountSum:0
+            success: function (result) {
+                var tmp = {
+                    orderCount: 0,
+                    orderTogetherCount: 0,
+                    productCount: 0,
+                    deliverCount: 0,
+                    orderAmountSum: 0
                 }
                 tmp.deliverCount = result.data.deliverCount[0]
                 tmp.orderCount = result.data.orderCount[0]
@@ -55,21 +51,21 @@ var overview = new Vue({
             }
         })
         $.ajax({
-            url:dataOverViewUrl,
-            type:'POST',
-            dataType:'json',
-            data:{
-                flag:2,
-                beginTime:'',
-                endTime:''
+            url: dataOverViewUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                flag: 2,
+                beginTime: '',
+                endTime: ''
             },
-            success:function(result){
-                var tmp={
-                    orderCount:0,
-                    orderTogetherCount:0,
-                    productCount:0,
-                    deliverCount:0,
-                    orderAmountSum:0
+            success: function (result) {
+                var tmp = {
+                    orderCount: 0,
+                    orderTogetherCount: 0,
+                    productCount: 0,
+                    deliverCount: 0,
+                    orderAmountSum: 0
                 }
                 tmp.deliverCount = result.data.deliverCount[0]
                 tmp.orderCount = result.data.orderCount[0]
@@ -80,23 +76,23 @@ var overview = new Vue({
             }
         })
     },
-    beforeMount:function(){
+    beforeMount: function () {
         console.log('beforeMount')
     },
-    mounted:function(){
+    mounted: function () {
         console.log('mounted')
 
     },
-    beforeUpdate:function(){
+    beforeUpdate: function () {
         console.log('beforeUpdate')
     },
-    updated:function(){
+    updated: function () {
         console.log('updated')
     },
-    beforeDestroy:function(){
+    beforeDestroy: function () {
         console.log('beforeDestroy')
     },
-    destroyed:function(){
+    destroyed: function () {
         console.log('destroyed')
     }
 })

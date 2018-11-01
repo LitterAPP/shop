@@ -2,22 +2,22 @@
     display: none;
 }
 
-.prompt{
+.prompt {
     height: 100%;
     width: 100%;
     position: fixed;
     top: 0px;
     left: 0px;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.8);
 }
 
-.prompt-1{
+.prompt-1 {
     height: 400px;
     width: 400px;
     background: #E0EEEE;
     color: #000;
     position: absolute;
-    top:50%;
+    top: 50%;
     left: 50%;
     margin-left: -200px;
     margin-top: -200px;
@@ -26,6 +26,7 @@
     text-align: left;
     border-radius: 6px;
 }
-.prompt-1 div{
+
+.prompt-1 div {
     margin: 10px;
 }
